@@ -119,10 +119,17 @@ input:focus-visible,select:focus-visible,button:focus-visible,textarea:focus-vis
 .toggle button[aria-pressed="true"]{background:var(--surface);color:var(--fg);box-shadow:0 1px 2px rgb(0 0 0/.12)}
 .toast{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(16px + env(safe-area-inset-bottom,0px));background:var(--fg);color:var(--bg);border-radius:12px;padding:10px 12px 10px 16px;display:flex;gap:12px;align-items:center;z-index:50;max-width:calc(100% - 32px);font-size:14px;box-shadow:0 6px 20px rgb(0 0 0/.25)}
 .toast button{background:none;border:1px solid currentColor;color:inherit;border-radius:8px;padding:6px 10px;font:600 13px var(--body);cursor:pointer}
-.subnav{display:flex;gap:6px;overflow-x:auto;margin:6px 0 4px;padding-bottom:4px}
+.subnav{display:flex;gap:6px;overflow-x:auto;margin:6px 0 4px;padding:4px 0;position:sticky;top:var(--hdrH,64px);z-index:15;background:var(--bg)}
 .subnav button{border:0;background:none;padding:8px 12px;min-height:44px;border-radius:8px;font:600 14px var(--body);color:var(--muted);cursor:pointer;white-space:nowrap}
 .subnav button[aria-pressed="true"]{background:var(--accent-soft);color:var(--fg);box-shadow:inset 0 -3px 0 var(--brand-2)}
 .panel{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:16px;min-width:0}
+details.fold>summary{list-style:none;cursor:pointer;display:flex;align-items:center;justify-content:space-between;gap:12px;min-height:44px;margin:-6px 0}
+details.fold>summary::-webkit-details-marker{display:none}
+details.fold>summary h2{margin:0}
+details.fold>summary::after{content:"";flex:none;width:10px;height:10px;border-right:2.5px solid var(--muted);border-bottom:2.5px solid var(--muted);transform:rotate(45deg);margin:0 6px 4px 0;transition:transform .2s}
+details.fold[open]>summary{margin-bottom:8px}
+details.fold[open]>summary::after{transform:rotate(-135deg);margin-bottom:-4px}
+details.fold>summary:focus-visible{outline:2px solid var(--accent);outline-offset:4px;border-radius:6px}
 .cols{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:14px;margin-top:14px}
 .alerts{display:flex;flex-direction:column;gap:8px;margin-top:10px}
 .alert{display:flex;gap:10px;align-items:flex-start;border-radius:10px;padding:10px 12px;font-size:14px;border:1px solid}
@@ -224,7 +231,7 @@ details.cat>.grid{margin:0;padding:0 10px 10px}
 .subs{display:flex;flex-direction:column;gap:8px;padding:0 10px 10px}
 .pbtn{float:right;margin:0 0 6px 10px;gap:6px}
 .twx{overflow-x:auto;margin-top:10px}
-.svnav{display:flex;gap:6px;overflow-x:auto;margin:10px 0 2px;padding-bottom:6px;scrollbar-width:thin}
+.svnav{display:flex;gap:6px;overflow-x:auto;margin:10px 0 2px;padding:4px 0 6px;scrollbar-width:thin;position:sticky;top:calc(var(--hdrH,64px) + var(--subH,52px));z-index:14;background:var(--bg)}
 .svnav button{flex:none;border:1px solid var(--line);background:var(--surface);color:var(--fg);border-radius:999px;padding:8px 14px;min-height:40px;font:600 13px var(--body);cursor:pointer;white-space:nowrap}
 .svnav button[aria-pressed="true"]{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
 .dn{display:grid;grid-template-columns:minmax(0,240px) minmax(0,1fr);gap:16px;align-items:center;margin-top:10px}
@@ -418,7 +425,7 @@ function actIcon(a,cls){if(!a||!a.icone)return "";if(a.icone.startsWith("ic:")){
 const BASE_RDR=[
  ["Kit injection","injection",["stéri","stéribox","kit+","kit inj"]],
  ["Seringues 1 ml","injection",["shoot","pompe"]],
- ["Cupules de chauffe","injection",["stéricup","cup"]],
+ ["Stéricup","injection",["stericup","cupule","cup"]],
  ["Filtres","injection",["stérifilt","filtre"]],
  ["Tampons alcoolisés","injection",["tampons","alcool"]],
  ["Eau stérile","injection",["eau ppi","fiole"]],
@@ -651,6 +658,10 @@ seringue:{l:"Seringue",s:`<g transform="rotate(-45 32 32)" ${st}><line x1="32" y
 pipe:{l:"Pipe",s:`<path d="M24 58 L24 32 Q24 16 41 11" fill="none" stroke="${K}" stroke-width="14" stroke-linecap="round"/><path d="M24 58 L24 32 Q24 16 41 11" fill="none" stroke="${GL}" stroke-width="8" stroke-linecap="round"/><path d="M21 52 L21 33 Q21 24 27 19" fill="none" stroke="${W}" stroke-width="2.5" stroke-linecap="round"/><g transform="rotate(-18 44 11)" ${st}><rect x="40" y="4" width="15" height="14" rx="4" fill="${Y}"/></g>`},
 pipeDroite:{l:"Pipe droite",s:`<path d="M32 58 L32 18" fill="none" stroke="${K}" stroke-width="14" stroke-linecap="round"/><path d="M32 58 L32 18" fill="none" stroke="${GL}" stroke-width="8" stroke-linecap="round"/><path d="M29 52 L29 24" fill="none" stroke="${W}" stroke-width="2.5" stroke-linecap="round"/><g ${st}><rect x="24.5" y="4" width="15" height="14" rx="4" fill="${Y}"/></g>`},
 cup:{l:"Stericup",s:`<g ${st}><rect x="44" y="30" width="16" height="6" rx="2" fill="${AL2}"/><path d="M8 26 L12 44 Q28 51 44 44 L48 26 Z" fill="${AL}"/><ellipse cx="28" cy="26" rx="20" ry="7" fill="#EEF3F4"/><ellipse cx="28" cy="27" rx="13" ry="3.5" fill="${AL2}" stroke-width="2"/></g><line x1="15" y1="33" x2="17" y2="41" stroke="${W}" stroke-width="2.5" stroke-linecap="round"/>`},
+filtreCoton:{l:"Filtre coton",s:`<path d="M13 43 Q6 42 8 34 Q9 28 16 29 Q16 20 25 21 Q29 13 38 18 Q47 15 49 24 Q57 25 56 33 Q57 42 48 43 Z" fill="${W}" ${st}/><path d="M18 36 q5 -4 10 0 M30 32 q5 -4 10 0 M24 27 q4 -3 8 0" fill="none" stroke="${AL2}" stroke-width="2.5" stroke-linecap="round"/><path d="M20 48 l-3 7 M32 49 v7 M44 48 l3 7" stroke="${AL2}" stroke-width="2.5" stroke-linecap="round"/>`},
+filtreMembrane:{l:"Filtre membrane (Stérifilt)",s:`<g ${st}><path d="M26 44 L29 58 L35 58 L38 44 Z" fill="${AL2}"/><circle cx="32" cy="26" r="19" fill="${W}"/><circle cx="32" cy="26" r="12" fill="${BL}" stroke-width="2.5"/></g><g fill="${W}" opacity=".9"><circle cx="27" cy="22" r="1.6"/><circle cx="32" cy="20" r="1.6"/><circle cx="37" cy="22" r="1.6"/><circle cx="25" cy="27" r="1.6"/><circle cx="30" cy="26" r="1.6"/><circle cx="35" cy="26" r="1.6"/><circle cx="39" cy="28" r="1.6"/><circle cx="28" cy="31" r="1.6"/><circle cx="33" cy="31" r="1.6"/></g>`},
+filtreRapide:{l:"Filtre rapide (Stérifilt fast)",s:`<g ${st}><path d="M30 44 L33 58 L39 58 L42 44 Z" fill="${AL2}"/><circle cx="36" cy="26" r="19" fill="${Y}"/><circle cx="36" cy="26" r="11" fill="${W}" stroke-width="2.5"/></g><g stroke="${K}" stroke-width="1.6" opacity=".7"><line x1="31" y1="22" x2="41" y2="22"/><line x1="29" y1="26" x2="43" y2="26"/><line x1="31" y1="30" x2="41" y2="30"/></g><g stroke="${K}" stroke-width="3" stroke-linecap="round"><line x1="4" y1="18" x2="13" y2="18"/><line x1="2" y1="27" x2="13" y2="27"/><line x1="5" y1="36" x2="14" y2="36"/></g>`},
+filtreToupie:{l:"Filtre toupie",s:`<g ${st}><rect x="27" y="3" width="10" height="11" rx="2" fill="${AL2}"/><path d="M32 13 L14 30 L50 30 Z" fill="${GL}"/><rect x="11" y="29" width="42" height="6" rx="3" fill="${W}"/><path d="M14 34 L32 51 L50 34 Z" fill="${GL}"/><rect x="29" y="50" width="6" height="11" rx="2" fill="${AL2}"/></g><line x1="17" y1="32" x2="47" y2="32" stroke="${BL}" stroke-width="2.5"/>`},
 filtre:{l:"Filtre",s:`<g ${st}><rect x="27" y="40" width="10" height="18" rx="2" fill="${Y}"/><circle cx="32" cy="24" r="17" fill="${W}"/><circle cx="32" cy="24" r="10" fill="${AL}" stroke-width="2.5"/></g><g stroke="${K}" stroke-width="1.5" opacity=".7"><line x1="25" y1="20" x2="39" y2="20"/><line x1="23" y1="24" x2="41" y2="24"/><line x1="25" y1="28" x2="39" y2="28"/><line x1="28" y1="15" x2="28" y2="33"/><line x1="32" y1="14" x2="32" y2="34"/><line x1="36" y1="15" x2="36" y2="33"/></g>`},
 paille:{l:"Roule-ta-paille",s:`<g ${st}><rect x="8" y="20" width="32" height="38" rx="3" fill="${Y}"/><line x1="14" y1="30" x2="34" y2="30" stroke-width="2.5"/><line x1="14" y1="37" x2="30" y2="37" stroke-width="2.5"/><g transform="rotate(22 46 34)"><rect x="41" y="8" width="10" height="48" rx="1" fill="${W}"/><ellipse cx="46" cy="8" rx="5" ry="2.5" fill="${W}"/></g></g><g transform="rotate(22 46 34)"><path d="M43 18 L49 22 M43 30 L49 34 M43 42 L49 46" stroke="${AL2}" stroke-width="2"/></g>`},
 preservatif:{l:"Préservatif",s:`<g ${st}><rect x="9" y="9" width="46" height="46" rx="7" fill="${G3}"/><rect x="14" y="14" width="36" height="36" rx="4" fill="none" stroke="${W}" stroke-width="1.5" stroke-dasharray="3 3"/><circle cx="32" cy="32" r="12" fill="${W}"/><circle cx="32" cy="32" r="12" fill="none" stroke="${Y}" stroke-width="5"/><circle cx="32" cy="32" r="6" fill="none" stroke-width="2"/></g>`},
@@ -679,7 +690,7 @@ champ:{l:"Champ propre",s:`<g ${st}><path d="M8 18 L48 12 L56 44 L16 52 Z" fill=
 carton:{l:"Carton",s:`<g ${st}><path d="M8 24 L32 32 L32 58 L8 50 Z" fill="${G}"/><path d="M56 24 L32 32 L32 58 L56 50 Z" fill="#2E6B52"/><path d="M8 24 L32 16 L56 24 L32 32 Z" fill="${G3}"/><path d="M26 18 L50 26" stroke="${Y}" stroke-width="4"/></g>`}
 };
 function iconSvg(k){const i=ICONS[k]||ICONS.carton;return '<svg viewBox="0 0 64 64" aria-hidden="true">'+i.s+'</svg>'}
-const ICON_RULES=[[/aiguille/,"aiguille"],[/kit hygiene|hygiene/,"trousse"],[/acide|ascorbique|citrique/,"sachet"],[/kraft|\bsacs?\b|sachet/,"sac"],[/masque/,"masque"],[/bouchon|oreille/,"bouchons"],[/couverture|survie/,"couverture"],[/grille/,"grille"],[/canule/,"canule"],[/\bsha\b|hydroalcool/,"sha"],[/\bmad\b|intranasal|atomis/,"mad"],[/champ/,"champ"],[/\balu/,"alu"],[/naloxone inj|seringue/,"seringue"],[/kit inj|kit\+|steribox|kit prev/,"kit"],[/cup|cupule|cooker|mix/,"cup"],[/filtre|filt/,"filtre"],[/garrot/,"garrot"],[/tampon|lingette/,"tampon"],[/\beau\b|serum|ppi|fiole/,"eau"],[/(kit base|pipe).*droite|pipe droite/,"pipeDroite"],[/kit base|pipe|doseur|embout/,"pipe"],[/alu/,"alu"],[/paille|rtp/,"paille"],[/preservatif|capote|femidom/,"preservatif"],[/lubri|gel|creme/,"gel"],[/naloxone|nyxoid|spray/,"spray"],[/trod|test/,"trod"],[/collecteur|dasri/,"collecteur"],[/pansement/,"pansement"],[/acide|ascorbique|citrique/,"tampon"]];
+const ICON_RULES=[[/aiguille/,"aiguille"],[/kit hygiene|hygiene/,"trousse"],[/acide|ascorbique|citrique/,"sachet"],[/kraft|\bsacs?\b|sachet/,"sac"],[/masque/,"masque"],[/bouchon|oreille/,"bouchons"],[/couverture|survie/,"couverture"],[/grille/,"grille"],[/canule/,"canule"],[/\bsha\b|hydroalcool/,"sha"],[/\bmad\b|intranasal|atomis/,"mad"],[/champ/,"champ"],[/\balu/,"alu"],[/naloxone inj|seringue/,"seringue"],[/kit inj|kit\+|steribox|kit prev/,"kit"],[/cup|cupule|cooker|mix|maxicup|stericup/,"cup"],[/coton/,"filtreCoton"],[/toupie/,"filtreToupie"],[/rapide|fast/,"filtreRapide"],[/membrane|sterifilt/,"filtreMembrane"],[/filtre|filt/,"filtre"],[/garrot/,"garrot"],[/tampon|lingette/,"tampon"],[/\beau\b|serum|ppi|fiole/,"eau"],[/(kit base|pipe).*droite|pipe droite/,"pipeDroite"],[/kit base|pipe|doseur|embout/,"pipe"],[/alu/,"alu"],[/paille|rtp/,"paille"],[/preservatif|capote|femidom/,"preservatif"],[/lubri|gel|creme/,"gel"],[/naloxone|nyxoid|spray/,"spray"],[/trod|test/,"trod"],[/collecteur|dasri/,"collecteur"],[/pansement/,"pansement"],[/acide|ascorbique|citrique/,"tampon"]];
 const CAT_ICON={injection:"seringue",inhalation:"pipe",sniff:"paille",sexualite:"preservatif",surdose:"spray",depistage:"trod",hygiene:"trousse",dechets:"collecteur",autre:"carton"};
 function catIcon(k){const d=catDefs().find(x=>x.id===k);return (d&&d.icone&&ICONS[d.icone])?d.icone:(CAT_ICON[k]||"carton")}
 function guessIcon(p){const n=norm(p.nom||"");for(const [re,k] of ICON_RULES)if(re.test(n))return k;return CAT_ICON[p.categorie]||"carton"}
@@ -980,8 +991,8 @@ const STARTER=[
  ["Filtres rapides","injection","Filtres",1000,100,["filtre fast"]],
  ["Filtres coton","injection","Filtres",0,100,["coton"]],
  ["Filtres toupies","injection","Filtres",0,50,["toupie"]],
- ["Cupules de chauffe","injection","Cupules",1000,100,["cup","cupule","stéricup"]],
- ["Grandes cupules","injection","Cupules",1000,100,["maxicup","grande cup"]],
+ ["Stéricup","injection","Stéricup et Maxicup",1000,100,["stericup","cupule","cup","cupule de chauffe"]],
+ ["Maxicup","injection","Stéricup et Maxicup",1000,100,["grande cupule","grande cup","cupule"]],
  ["Garrots","injection","Garrots",0,100,["garrot"]],
  ["Garrots sans latex","injection","Garrots",0,100,["garrot"]],
  ["Eau stérile (dosettes)","injection","Eau et sérum",0,0,["eau","ppi","eppi","fiole"]],
@@ -1266,13 +1277,13 @@ function svPratiques(){const n=num(S.svn||"12",12),M=derniersMois(n,true),cats=O
     '<div class="seg" role="group" aria-label="Durée" style="margin-top:8px">'+[["12","12 mois"],["24","24 mois"]].map(([v,l])=>'<button data-act="svn" data-v="'+v+'" aria-pressed="'+((S.svn||"12")===v)+'">'+l+'</button>').join("")+'</div><div class="chart" style="margin-top:10px">'+courbes(ser,M.map(m=>m.l),{ref:100,titre:"Évolution des pratiques"})+'</div>'+legende(ser.map(s=>({label:s.label,col:s.col,extra:nfr(s.moy)+" u./mois"}))))}
 
 // 3. Cohérence des kits
-const KITM=[["Filtres",p=>(p.groupe==="Filtres")||(/filtre/i.test(p.nom)&&p.categorie==="injection"&&!/pipe|cuivre|paille/i.test(p.nom))],["Cupules",p=>/cup/i.test(p.nom)||p.groupe==="Cupules"||p.groupe==="Cups"],["Eau stérile",p=>/(^|\W)eau(\W|$)|eppi|ppi/i.test(p.nom)],["Tampons alcool",p=>/tampon/i.test(p.nom)],["Acide",p=>/acide/i.test(p.nom)]];
+const KITM=[["Filtres",p=>(p.groupe==="Filtres")||(/filtre/i.test(p.nom)&&p.categorie==="injection"&&!/pipe|cuivre|paille/i.test(p.nom))],["Stéricup et Maxicup",p=>/cup/i.test(p.nom)||p.groupe==="Cupules"||p.groupe==="Cups"||p.groupe==="Stéricup et Maxicup"],["Eau stérile",p=>/(^|\W)eau(\W|$)|eppi|ppi/i.test(p.nom)],["Tampons alcool",p=>/tampon/i.test(p.nom)],["Acide",p=>/acide/i.test(p.nom)]];
 const isSer=p=>p.groupe==="Seringues"||/^seringue/i.test(p.nom);
 function svCoherence(){const {a,b}=periodeSV(),ms=sortiesEntre(a,b,S.sva),P=id=>S.produits.get(id)||{nom:""};
   const ser=ms.filter(m=>isSer(P(m.produit))).reduce((x,m)=>x+num(m.qte,0),0),kits=ms.filter(m=>/kit/i.test(P(m.produit).nom)&&P(m.produit).categorie==="injection").reduce((x,m)=>x+num(m.qte,0),0);
   const corps=segP()+actChips();if(!ser)return pan("Cohérence des kits","",corps+'<div class="empty">Aucune seringue sortie sur cette période.</div>');
   const rows=KITM.map(([l,f],i)=>{const v=ms.filter(m=>f(P(m.produit))).reduce((x,m)=>x+num(m.qte,0),0);return {label:l,v:Math.round(v/ser*100),col:v/ser>=0.8?"--good":v/ser>=0.5?"--warn":"--crit"}});
-  return pan("Cohérence des kits","Pour <b>100 seringues</b> sorties en vrac, combien de filtres, de cupules, d\'eau… sont partis avec. Sous 100, certains usagers repartent probablement sans le matériel complet. Les kits tout prêts ("+nfr(kits)+" sur la période) sont comptés à part.",
+  return pan("Cohérence des kits","Pour <b>100 seringues</b> sorties en vrac, combien de filtres, de Stéricup, d\'eau… sont partis avec. Sous 100, certains usagers repartent probablement sans le matériel complet. Les kits tout prêts ("+nfr(kits)+" sur la période) sont comptés à part.",
     corps+'<div class="chart" style="margin-top:10px">'+barresH(rows,v=>v+" pour 100",{ref:100,refLabel:"100 seringues",max:120,titre:"Cohérence des kits"})+'</div><p class="note">'+nfr(ser)+' seringues sorties en vrac sur la période.</p>')}
 
 // 4. Par activité
@@ -1687,8 +1698,26 @@ function tabReg(st){
   h+='<div class="panel" style="margin-top:14px"><h2>Partager et tester</h2><div class="list"><div class="it"><span style="flex:1">Importer le modèle d\'un autre CAARUD : catalogue, dossiers et conditionnements, sans stocks ni prix.</span><label class="btn small">Choisir un fichier<input type="file" accept=".json" id="impCfg" hidden></label></div>'
    +'<div class="it"><span style="flex:1">Importer le catalogue d\'un fournisseur (CSV : nom ; catégorie ; unités par carton ; prix unitaire ; fournisseur ; délai).</span><label class="btn small">Choisir un CSV<input type="file" accept=".csv,.txt" id="impCsv" hidden></label></div>'
    +'<div class="it"><span style="flex:1">Charger un an de mouvements d\'exemple pour tester les graphiques et les alertes (quelques minutes).</span><button class="btn small" data-act="loadDemo">Charger</button><button class="btn small danger" data-act="delDemo">Supprimer les exemples</button></div></div>'+importPreview()+'</div>'+dangerPanel();
-  return h;
+  return foldPanels(h);
 }
+/* Réglages : chaque bloc se replie sous son titre ; ce qui est ouvert est retenu sur cet appareil */
+function foldPanels(html){
+  const t=document.createElement("template");t.innerHTML=html;const open=new Set(ls.get("regOpen",[]));
+  [...t.content.children].forEach(el=>{
+    if(!el.classList||!el.classList.contains("panel"))return;
+    const h2=el.querySelector(":scope > h2");if(!h2)return;
+    const key=h2.textContent.trim(),d=document.createElement("details");
+    d.className=el.className+" fold";const stl=el.getAttribute("style");if(stl)d.setAttribute("style",stl);d.dataset.fold=key;if(open.has(key))d.open=true;
+    const sm=document.createElement("summary");sm.appendChild(h2);d.appendChild(sm);
+    while(el.firstChild)d.appendChild(el.firstChild);el.replaceWith(d);
+  });
+  const w=document.createElement("div");w.appendChild(t.content);return w.innerHTML;
+}
+document.addEventListener("toggle",e=>{const d=e.target;if(!d||!d.dataset||!d.dataset.fold)return;const o=new Set(ls.get("regOpen",[]));d.open?o.add(d.dataset.fold):o.delete(d.dataset.fold);ls.set("regOpen",[...o])},true);
+/* hauteur du bandeau du haut et des onglets, pour que les menus restent visibles en faisant défiler */
+(()=>{const set=()=>{const t=document.querySelector(".top"),n=document.querySelector(".subnav");document.documentElement.style.setProperty("--hdrH",(t?t.getBoundingClientRect().height:64)+"px");document.documentElement.style.setProperty("--subH",(n?n.getBoundingClientRect().height+4:52)+"px")};
+ const go=()=>{set();if(window.ResizeObserver){const ro=new ResizeObserver(set);const t=document.querySelector(".top");if(t)ro.observe(t);new MutationObserver(set).observe(document.getElementById("app")||document.body,{childList:true})}};
+ document.readyState==="loading"?document.addEventListener("DOMContentLoaded",go):go();addEventListener("resize",set)})();
 function catalogue(){
   const all=[...S.produits.values()].sort((a,b)=>a.nom.localeCompare(b.nom,"fr"));
   const have=new Set(all.map(p=>norm(p.nom)));
