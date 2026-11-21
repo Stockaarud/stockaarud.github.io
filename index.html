@@ -52,7 +52,6 @@
     <div class="container">
       <div class="section-head">
         <h2 id="epingler">À épingler au garage</h2>
-        <p class="lead">Stockaarud en quatre feuilles.</p>
       </div>
       <div class="wall" data-wall>
         <div class="sheet sheet--fluoro flyer flyer--big" style="--r: -1deg"><b>3</b><span>touches pour noter une sortie</span></div>
@@ -67,7 +66,7 @@
     <div class="container">
       <div class="section-head">
         <h2 id="marche">Du garage au tableau de bord</h2>
-        <p class="lead">Quatre écrans de la vraie appli, avec des données fictives.</p>
+        <p class="lead">Captures de l’appli, avec des données fictives.</p>
       </div>
       <div class="switcher">
         <div class="tabs" role="tablist" aria-label="Les étapes">
@@ -90,7 +89,7 @@
     <div class="container contact">
       <div class="contact-text">
         <h2 id="ecrire">Une question ? Écrivez-nous</h2>
-        <p class="lead">Pour l’essayer chez vous, une démo ou un coup de main à l’installation.</p>
+        <p class="lead">Pour essayer Stockaarud dans votre CAARUD, ou pour de l’aide à l’installation.</p>
         <p>Ou directement à <a href="mailto:stockaarud@proton.me">stockaarud@proton.me</a></p>
       </div>
       <form class="sheet contact-form" data-endpoint="https://formspree.io/f/xljbwnjj" data-mailto="stockaarud@proton.me" action="https://formspree.io/f/xljbwnjj" method="post" novalidate>
@@ -171,7 +170,7 @@ document.querySelectorAll('form[data-endpoint]').forEach((form) => {
     const fields = [...form.querySelectorAll('[required]')];
     fields.forEach((f) => f.toggleAttribute('aria-invalid', !f.checkValidity()));
     const bad = fields.find((f) => !f.checkValidity());
-    if (bad) { bad.setAttribute('aria-describedby', help.id); help.textContent = bad.type === 'email' ? 'Cette adresse semble incomplète : écrivez-la comme nom@exemple.fr.' : 'Ce champ est à remplir.'; bad.focus(); return; }
+    if (bad) { bad.setAttribute('aria-describedby', help.id); help.textContent = bad.value.trim() === '' ? 'Ce champ est à remplir.' : 'Cette adresse semble incomplète : écrivez-la comme nom@exemple.fr.'; bad.focus(); return; }
     const d = Object.fromEntries(new FormData(form));
     if (!form.dataset.endpoint) {
       const body = `${d.message}\n\n${d.nom}${d.structure ? ', ' + d.structure : ''}\n${d.email}`;
