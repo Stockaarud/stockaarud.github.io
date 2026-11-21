@@ -81,7 +81,7 @@ a:hover { text-decoration-thickness: 3px; }
 .hero h1 { font-size: clamp(3.5rem, 8.5vw, 9rem); }
 .hero-text { display: grid; gap: var(--space-lg); }
 .hero .lead { max-width: 34ch; }
-.hero-visual { position: relative; justify-self: end; width: min(100%, 500px); }
+.hero-visual { position: relative; justify-self: end; width: min(100%, 580px); }
 .film { margin: 0; padding: var(--space-sm) var(--space-sm) var(--space-xs); }
 .film video { width: 100%; aspect-ratio: 4 / 5; background: var(--color-ink); }
 .film figcaption { margin-top: var(--space-xs); }
