@@ -87,6 +87,10 @@ h3{font-size:15px;font-weight:600;font-family:var(--body)}
 .chip{border:1px solid var(--line);background:var(--surface);color:var(--fg);border-radius:999px;padding:10px 16px;font:500 15px var(--body);cursor:pointer;min-height:44px}
 .chip[aria-pressed="true"]{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
 .chip.ghost{border-style:dashed;color:var(--muted)}
+.themebar{display:flex;align-items:center;justify-content:center;gap:10px;margin-top:24px}
+.alert.mute{background:none;border-color:var(--line);color:var(--muted)}
+.subnav{flex-direction:column;overflow:visible;gap:2px}.subnav .main,.subnav .more{display:flex;gap:4px;overflow-x:auto}.subnav .main button{padding-inline:10px}.subnav .main [data-act="tabMore"]{position:sticky;right:0;margin-left:auto;background:var(--bg);box-shadow:-10px 0 8px -4px var(--bg)}html[data-tint] .subnav .main [data-act="tabMore"]{background:color-mix(in srgb,var(--tint) 14%,var(--bg))}
+.recap .ri{flex-wrap:wrap}.recap .ri .rn{flex:1 1 130px;min-width:0}
 .quick{display:flex;flex-wrap:wrap;justify-content:center;gap:8px}
 .quick button{min-width:52px;min-height:44px;padding:0 14px;border:1px solid var(--line);border-radius:999px;background:var(--surface-2);color:var(--fg);font:700 16px var(--body);cursor:pointer}
 .quick button:active{background:var(--actc,var(--accent));border-color:var(--actc,var(--accent));color:#fff}
@@ -579,7 +583,7 @@ function computeStats(VL){
     const s=st[m.produit];if(!s)continue;const pp=S.produits.get(m.produit);
     const L=s.byLieu;const add=(l,v)=>{L[l]=(L[l]||0)+v};
     if(m.type==="inventaire"){L[m.lieu]=m.qte;s.ecart={t:m.t,theo:m.theorique,qte:m.qte,lieu:m.lieu}}
-    else if(m.type==="reception"||m.type==="entree"){add(m.lieu,m.qte);if(m.type==="reception")s.receptions.push(m)}
+    else if(m.type==="reception"||m.type==="entree"){add(m.lieu,m.qte);s.receptions.push(m)}
     else if(m.type==="transfert"){add(m.lieu,-m.qte);add(m.vers,m.qte)}
     else if(m.type==="sortie"||m.type==="depannage"||m.type==="perte"){add(m.lieu,-m.qte)}
     if(isOut(m)){
@@ -780,6 +784,9 @@ function actBar(){const L=actCycle(),i=L.indexOf(S.activite),a=cfg().activites.f
    +'<div class="actmid" aria-live="polite"><div class="actname'+(dir>0?" in-r":dir<0?" in-l":"")+'">'+(a?actIcon(a,"aic big"):"")+'<span>'+esc(actLabel(S.activite))+'</span></div><div class="actdots" aria-hidden="true">'+L.map((x,k)=>'<i'+(k===i?' class="on"':'')+'></i>').join("")+'</div></div>'
    +'<button class="actarr" data-act="actStep" data-v="1" aria-label="Activité suivante"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 5l7 7-7 7" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></button></div>'
    +'<div class="actmeta"><span class="note">Gardée pour la journée</span><button class="link" data-act="actOpen">'+(S.actOpen?"Fermer la liste":"Voir toutes les activités")+'</button></div>'}
+function themeBar(){const t=ls.get("theme","auto");return '<div class="themebar"><span class="note">Affichage</span><div class="seg" role="group" aria-label="Affichage clair ou sombre">'+[["auto","Auto"],["light","Clair"],["dark","Sombre"]].map(([v,l])=>'<button data-act="theme" data-v="'+v+'" aria-pressed="'+(t===v)+'">'+l+'</button>').join("")+'</div></div>'}
+function applyTheme(){const t=ls.get("theme","auto"),H=document.documentElement;if(t==="auto")delete H.dataset.theme;else H.dataset.theme=t}
+applyTheme();
 function viewEquipe(st){
   const acts=activitesActives(),L=lieux();
   if(!S.lieu||!L.find(l=>l.id===S.lieu))S.lieu=(principal()||{}).id;
@@ -814,7 +821,7 @@ function viewEquipe(st){
       h+='<details class="cat"'+dk("cat-"+k,ps.length<=12)+' style="--cat:var('+(CATCOL[k]||"--muted")+')"><summary><span class="cic">'+iconSvg(catIcon(k))+'</span><span class="ct">'+CATS[k]+'</span>'+(low?'<span class="pill crit">'+low+' stock bas</span>':'')+'<span class="cn">'+a.length+'</span></summary>'+catBody(k,a)+'</details>'}
   }
   h+=livraisonsEquipe();
-  h+=mesRecap();
+  h+=mesRecap()+themeBar();
   if(window.SKB&&!S.isAdmin)h+='<p class="note" style="text-align:center;margin-top:24px">Appareil connecté à l\'équipe. <button class="link" data-act="skbLogout">Déconnecter cet appareil</button></p>';
   const prets=allMvts().filter(m=>m.type==="depannage"&&m.aRendre&&!m.rendu);
   if(prets.length)h+='<details class="panel" style="margin-top:16px"><summary><b>Prêts en cours ('+prets.length+')</b> <span class="note">· touche « Rendu » quand l\'asso rend le matériel</span></summary><div class="list" style="margin-top:6px">'+prets.map(m=>{const p=S.produits.get(m.produit)||{nom:"?"};return '<div class="it"><span style="flex:1;min-width:150px"><b>'+esc(p.nom)+'</b> · '+esc(fmtQ(p,m.qte))+'<br><span class="note">'+esc(assoNom(m))+', le '+fmtDate(m.t)+'</span></span><button class="btn small" data-act="rendu" data-id="'+m.id+'">Rendu</button></div>'}).join("")+'</div></details>';
@@ -881,7 +888,7 @@ async function valider(){
   try{navigator.vibrate&&navigator.vibrate(12)}catch(e){}
   const saisi=s.n+" "+(s.mode==="unite"?(s.n>1?"unités":"unité"):plur(s.mode,s.n));
   const dest=dep?(s.aRendre?"Prêt à ":"Don à ")+(m.partenaireNom||partNom(m.partenaire)):trans?"Vers "+lieuNom(s.vers):perte?"Perte · "+motifNom(s.motif):actNom(S.activite);
-  mesAdd({id,t:m.t,prod:p.id,nom:p.nom,saisi,dest});
+  mesAdd({id,t:m.t,prod:p.id,nom:p.nom,saisi,dest,qte,ret:m.type==="sortie"});
   toast("Enregistré : "+p.nom+", "+saisi,async()=>{mesDel(id);S.queue=S.queue.filter(o=>o.path!=="mouvements/"+id);ls.set("queue",S.queue);await write("delete","mouvements/"+id);render()});
   await write("set","mouvements/"+id,m);
 }
@@ -899,12 +906,26 @@ function mesDel(id){mesSet(mesGet().filter(e=>e.id!==id))}
 function livraisonsEquipe(){const enc=S.cmds.filter(enAttente);if(!enc.length)return "";
   return '<details class="recap livr"'+dk("livr",false)+'><summary><b>Une livraison est arrivée ?</b><span class="note">'+enc.length+' commande'+(enc.length>1?"s":"")+' en attente</span></summary><p class="note" style="margin:6px 0 4px">Touche le produit livré et indique ce qui est arrivé. Le stock est mis à jour tout de suite.</p>'
    +enc.map(c=>{const p=S.produits.get(c.produit)||{nom:"?"},rest=Math.max(0,c.qte-recuOf(c));return '<div class="ri">'+(p.id?badge(p):'')+'<span class="rn"><b>'+esc(p.nom)+'</b><small>commandé le '+fmtDate(c.t)+' · attendu '+esc(fmtQ(p,rest))+'</small></span><button class="btn small primary" data-act="recevoir" data-id="'+c.id+'">Arrivé</button></div>'}).join("")+'</details>'}
+/* Retour de matériel : on réduit la sortie d'origine, le stock et les statistiques restent justes */
+let retS=null;
+function drawRet(){const e=retS&&mesGet().find(x=>x.id===retS.id);if(!e){$("#layer").innerHTML="";retS=null;return}
+  $("#layer").innerHTML='<div class="sheet-back enter" data-act="closeLayer"><div class="sheet" role="dialog" aria-modal="true" aria-label="Retour au stock"><h2>J\'en ramène combien ?</h2><p class="note" style="margin:0">'+esc(e.nom)+' · sorti : '+e.qte+' '+(e.qte>1?"unités":"unité")+' pour '+esc(e.dest)+'</p>'
+   +'<div class="stepper"><button data-act="retMinus" aria-label="Moins">−</button><input id="retQ" type="number" inputmode="numeric" min="1" max="'+e.qte+'" step="1" value="'+retS.n+'" aria-label="Quantité ramenée"><button data-act="retPlus" aria-label="Plus">+</button></div>'
+   +'<div class="note" style="text-align:center">'+(retS.n>=e.qte?"Tout revient au stock":"Il restera "+(e.qte-retS.n)+" de sorti")+'</div>'
+   +'<div class="quick"><button data-act="retAll">Tout ('+e.qte+')</button></div>'
+   +'<button class="btn primary big" data-act="retOk">Remettre au stock</button><button class="btn big" data-act="closeLayer" style="min-height:46px">Annuler</button></div></div>'}
+async function retOk(){const e=retS&&mesGet().find(x=>x.id===retS.id);if(!e)return;const n=Math.min(e.qte,Math.max(1,Math.round(num(val("retQ"),retS.n))));const left=e.qte-n,path="mouvements/"+e.id;
+  const qi=S.queue.findIndex(o=>o.path===path&&o.op==="set");
+  if(left<=0){mesDel(e.id);S.queue=S.queue.filter(o=>o.path!==path);ls.set("queue",S.queue);if(qi<0)await write("delete",path)}
+  else{const a=mesGet(),x=a.find(y=>y.id===e.id);x.qte=left;x.saisi=left+" "+(left>1?"unités":"unité");mesSet(a);
+    if(qi>=0){S.queue[qi].data.qte=left;S.queue[qi].data.ramene=(S.queue[qi].data.ramene||0)+n;ls.set("queue",S.queue)}else await write("update",path,{qte:left,ramene:(((allMvts().find(m=>m.id===e.id)||{}).ramene)||0)+n})}
+  retS=null;$("#layer").innerHTML="";toast("Remis au stock : "+n+" "+(n>1?"unités":"unité")+" · "+e.nom);render()}
 function mesRecap(){
   const known=new Set(allMvts().map(m=>m.id)),a=mesGet().filter(e=>!S.db||S.dbState!=="ok"||known.has(e.id)).sort((x,y)=>y.t-x.t);
-  if(!a.length)return '<div class="recap empty-r"><b>Mes saisies d\'aujourd\'hui</b><span class="note">Rien pour l\'instant. Ce que tu enregistres s\'affichera ici jusqu\'à ce soir, sur ce téléphone seulement.</span></div>';
+  if(!a.length)return '';
   const groups={};for(const e of a)(groups[e.dest]=groups[e.dest]||[]).push(e);
   return '<details class="recap"'+dk("recap",true)+'><summary><b>Mes saisies d\'aujourd\'hui ('+a.length+')</b><span class="note">sur ce téléphone, jusqu\'à ce soir</span></summary>'
-   +Object.entries(groups).map(([d,es])=>'<div class="rg"><div class="label" style="margin:10px 0 4px;display:flex;align-items:center;gap:6px">'+actIcon(cfg().activites.find(a=>a.nom===d))+esc(d)+'</div>'+es.map(e=>{const p=S.produits.get(e.prod);return '<div class="ri">'+(p?badge(p):'')+'<span class="rn"><b>'+esc(e.nom)+'</b><small>'+new Date(e.t).toLocaleTimeString("fr-FR",{hour:"2-digit",minute:"2-digit"})+'</small></span><span class="rq">'+esc(e.saisi)+'</span><button class="btn small" data-act="mesUndo" data-id="'+esc(e.id)+'" aria-label="Annuler cette saisie">Annuler</button></div>'}).join("")+'</div>').join("")
+   +Object.entries(groups).map(([d,es])=>'<div class="rg"><div class="label" style="margin:10px 0 4px;display:flex;align-items:center;gap:6px">'+actIcon(cfg().activites.find(a=>a.nom===d))+esc(d)+'</div>'+es.map(e=>{const p=S.produits.get(e.prod);return '<div class="ri">'+(p?badge(p):'')+'<span class="rn"><b>'+esc(e.nom)+'</b><small>'+new Date(e.t).toLocaleTimeString("fr-FR",{hour:"2-digit",minute:"2-digit"})+'</small></span><span class="rq">'+esc(e.saisi)+'</span>'+(e.ret&&e.qte>0?'<button class="btn small" data-act="mesRet" data-id="'+esc(e.id)+'">J\'en ramène</button>':'')+'<button class="btn small" data-act="mesUndo" data-id="'+esc(e.id)+'" aria-label="Annuler cette saisie">Annuler</button></div>'}).join("")+'</div>').join("")
    +'</details>';
 }
 /* Accès coordo : compte Éditeur + code facultatif, retenu sur l'appareil */
@@ -960,7 +981,7 @@ function openMvt(id){
    +'<label>Lieu<select id="emL">'+cfg().lieux.map(l=>'<option value="'+l.id+'"'+(l.id===m.lieu?" selected":"")+'>'+esc(l.nom)+'</option>').join("")+'</select></label>';
   if(m.type==="sortie")h+='<label>Activité<select id="emA">'+cfg().activites.map(a=>'<option value="'+a.id+'"'+(a.id===m.activite?" selected":"")+'>'+esc(a.nom)+'</option>').join("")+'</select></label>';
   if(m.type==="perte")h+='<label>Motif<select id="emM">'+MOTIFS.map(([k,l])=>'<option value="'+k+'"'+(k===m.motif?" selected":"")+'>'+l+'</option>').join("")+'</select></label>';
-  if(m.type==="reception")h+='<label>Péremption<input id="emD" type="date" value="'+esc(m.peremption||"")+'"></label>';
+  if(m.type==="reception"||m.type==="entree")h+='<label>Péremption<input id="emD" type="date" value="'+esc(m.peremption||"")+'"></label>';
   if(m.type==="transfert")h+='<label>Vers<select id="emV">'+cfg().lieux.map(l=>'<option value="'+l.id+'"'+(l.id===m.vers?" selected":"")+'>'+esc(l.nom)+'</option>').join("")+'</select></label>';
   h+='</div><div class="row"><button class="btn primary" data-act="saveMvt" data-id="'+m.id+'">Enregistrer la correction</button><button class="btn" data-act="closeLayer">Annuler</button></div>';
   modal(h,"Modifier un mouvement");
@@ -1514,7 +1535,8 @@ function viewCoordo(st){
   let h=dbBanner();
   if(!coordoOK())return h+'<div class="empty">L\'espace gestion est réservé aux responsables stock.</div>';
   if(wizardNeeded())return h+viewWizard(st);
-  h+='<nav class="subnav">'+tabs.map(([k,v])=>'<button data-act="ctab" data-v="'+k+'" aria-pressed="'+(S.ctab===k)+'">'+v+'</button>').join("")+'</nav>';
+  {const tb=([k,v])=>'<button data-act="ctab" data-v="'+k+'" aria-pressed="'+(S.ctab===k)+'">'+v+'</button>',main=tabs.slice(0,3),extra=tabs.slice(3),inX=extra.some(([k])=>k===S.ctab),open=S.tabMore||inX;
+   h+='<nav class="subnav"><div class="main">'+main.map(tb).join("")+'<button data-act="tabMore" aria-expanded="'+!!open+'" aria-pressed="'+inX+'">Plus '+(open?"▴":"▾")+'</button></div>'+(open?'<div class="more">'+extra.map(tb).join("")+'</div>':'')+'</nav>'}
   if(S.ctab==="bord")h+=tabBord(st);
   if(S.ctab==="stats")h+=tabStats();
   if(S.ctab==="prev")h+=tabPrev(st);
@@ -1541,9 +1563,9 @@ function alertsList(st){
   const prets=allMvts().filter(m=>(m.type==="depannage"||m.type==="entree")&&m.aRendre&&!m.rendu);
   if(prets.length)out.push(["info",prets.length+' prêt'+(prets.length>1?"s":"")+' ou emprunt'+(prets.length>1?"s":"")+' à rendre (onglet Mouvements).']);
   for(const m of rupturesOuvertes()){const p=S.produits.get(m.produit);out.push(["crit",'<b>'+esc(p.nom)+'</b> : rupture signalée par l\'équipe le '+fmtDate(m.t)+(lieux().length>1?' ('+esc(lieuNom(m.lieu))+')':'')+'. Elle sera close à la prochaine livraison ou au prochain inventaire.'])}
-  {const ds=cfg().derniereSauvegarde;if(S.isAdmin&&S.mvts.length>=20&&(!ds||ds<now-35*DAY))out.push(["info",(ds?'Dernière sauvegarde le '+fmtDate(ds)+'.':'Aucune sauvegarde téléchargée pour l\'instant.')+' Supabase gratuit ne garde pas de copie : <button class="link" data-act="backup">télécharger une sauvegarde</button>.'])}
+  {const ds=cfg().derniereSauvegarde;if(S.isAdmin&&S.mvts.length>=20&&(!ds||ds<now-35*DAY))out.push(["mute",(ds?'Dernière sauvegarde le '+fmtDate(ds)+'.':'Aucune sauvegarde téléchargée pour l\'instant.')+' Supabase gratuit ne garde pas de copie : <button class="link" data-act="backup">télécharger une sauvegarde</button>.'])}
   if(S.sigs.length)out.push(["info",S.sigs.length+' signalement'+(S.sigs.length>1?"s":"")+' de l\'équipe (onglet Mouvements).']);
-  const ord={crit:0,warn:1,info:2};return out.sort((a,b)=>ord[a[0]]-ord[b[0]]);
+  const ord={crit:0,warn:1,info:2,mute:3};return out.sort((a,b)=>ord[a[0]]-ord[b[0]]);
 }
 function lieuKind(l){return l&&l.principal?"Stock central":"Stock intermédiaire"}
 function usedAt(L){const u=new Set();for(const m of allMvts())if(m.lieu===L||m.vers===L)u.add(m.produit);return u}
@@ -1655,9 +1677,9 @@ function tabCmd(st){
   const quand=p=>{const d=st[p.id].nextOrder;return d==null||d===0?"maintenant":fmtDay(d)};
   let h='<div class="panel" style="margin-top:12px"><h2>Commande proposée</h2><p class="note">Selon le rythme de chaque fournisseur : au besoin (dès le point de commande) ou à date fixe. Quantité pour tenir jusqu\'à la livraison suivante, arrondie au carton. Ajuste puis enregistre ce que tu as commandé.</p>';
   h+=prop.length?'<div class="props">'+prop.map(p=>{const s=st[p.id];return '<div class="prop"><div class="ph">'+badge(p)+'<span class="an"><b>'+esc(p.nom)+(s.ess?' <span class="pill ess">essentiel</span>':'')+'</b><small>'+esc(fournNom(p)||"Aucun fournisseur renseigné")+', à commander '+(quand(p)==="maintenant"?"maintenant":"le "+quand(p))+'</small></span><span class="sq">'+esc(fmtQ(p,s.suggere))+'</span></div>'
-    +'<div class="row" style="gap:8px;margin-top:8px"><label class="row note" style="gap:6px;flex-wrap:nowrap">Commandé<input id="cq-'+p.id+'" type="number" min="0" inputmode="numeric" value="'+s.suggere+'" style="width:110px"> unités</label><button class="btn small primary" data-act="commander" data-id="'+p.id+'">Enregistrer la commande</button></div>'
+    +'<div class="row" style="gap:8px;margin-top:8px"><label class="row note" style="gap:6px;flex-wrap:nowrap">Commandé<input id="cq-'+p.id+'" type="number" min="0" inputmode="numeric" value="'+s.suggere+'" style="width:110px"> unités</label><button class="btn small" data-act="commander" data-id="'+p.id+'">Commander celui-ci</button></div>'
     +'<details class="why"'+dk("why-"+p.id)+'><summary>Comment ce chiffre est calculé</summary>'+calcExplain(p,s)+'</details>'
-    +'<details class="why"'+dk("fc-"+p.id)+'><summary>Voir la prévision sur 3 mois</summary>'+(S.openD["fc-"+p.id]?fcBlock(p,st):'')+'</details></div>'}).join("")+'</div>':'<div class="empty">Rien à commander pour l\'instant.</div>';
+    +'<details class="why"'+dk("fc-"+p.id)+'><summary>Voir la prévision sur 3 mois</summary>'+(S.openD["fc-"+p.id]?fcBlock(p,st):'')+'</details></div>'}).join("")+'</div><button class="btn primary big" style="margin-top:12px;width:100%" data-act="commanderTout">Enregistrer les '+prop.length+' commande'+(prop.length>1?"s":"")+'</button>':'<div class="empty">Rien à commander pour l\'instant.</div>';
   if(prop.length){const byF={};for(const p of prop){const f=fournNom(p)||"Sans fournisseur";(byF[f]=byF[f]||[]).push(p)}
     h+='<div class="panel" style="margin-top:14px;background:var(--bg)"><h3 style="font-family:var(--display);font-size:16px">Bon de commande</h3><p class="note">Le texte à envoyer au fournisseur, avec ses références. Il reprend les quantités proposées ci-dessus.</p>'
      +Object.entries(byF).map(([f,a])=>'<div style="margin-top:10px"><div class="row" style="justify-content:space-between"><b>'+esc(f)+'</b><span class="row" style="gap:6px"><button class="btn small" data-act="bonCopy" data-v="'+esc(f)+'">Copier</button><button class="btn small" data-act="bonCsv" data-v="'+esc(f)+'">Tableur (.csv)</button></span></div><pre class="bon">'+esc(bonTexte(f,a,st))+'</pre></div>').join("")+'</div>'}
@@ -1675,7 +1697,7 @@ function openReception(c){lastFocus=document.activeElement;setTimeout(focusDialo
 /* Mouvements */
 function prodOpts(id){return prodsActifs().map(p=>'<option value="'+p.id+'"'+(p.id===id?" selected":"")+'>'+esc(p.nom)+'</option>').join("")}
 function tabMvt(st){
-  let h='<div class="panel" style="margin-top:12px"><h2>Entrée hors commande</h2><p class="note">Don, matériel rendu par une asso, emprunt, cartons qui reviennent d\'une activité.</p><div class="form" style="margin-top:10px"><label>Produit<select id="enP">'+prodOpts()+'</select></label><label>Quantité<input id="enQ" type="number" min="1" inputmode="numeric"></label><label>En<select id="enM"><option value="carton">cartons</option><option value="unite">unités</option></select></label><label>Origine<select id="enO"><option value="don">Don</option><option value="retour">Retour d\'activité</option><option value="rendu">Rendu par une asso</option><option value="emprunt">Emprunt à une asso (à rendre)</option></select></label><label>Asso<select id="enA"><option value="">—</option>'+cfg().partenaires.map(a=>'<option value="'+a.id+'">'+esc(a.nom)+'</option>').join("")+'</select></label><label>Lieu<select id="enL">'+lieux().map(l=>'<option value="'+l.id+'">'+esc(l.nom)+'</option>').join("")+'</select></label><button class="btn primary" data-act="enAdd">Enregistrer</button></div></div>';
+  let h='<div class="panel" style="margin-top:12px"><h2>Entrée hors commande</h2><p class="note">Don, matériel rendu par une asso, emprunt, cartons qui reviennent d\'une activité.</p><div class="form" style="margin-top:10px"><label>Produit<select id="enP">'+prodOpts()+'</select></label><label>Quantité<input id="enQ" type="number" min="1" inputmode="numeric"></label><label>En<select id="enM"><option value="carton">cartons</option><option value="unite">unités</option></select></label><label>Origine<select id="enO"><option value="don">Don</option><option value="retour">Retour d\'activité</option><option value="rendu">Rendu par une asso</option><option value="emprunt">Emprunt à une asso (à rendre)</option></select></label><label>Asso<select id="enA"><option value="">—</option>'+cfg().partenaires.map(a=>'<option value="'+a.id+'">'+esc(a.nom)+'</option>').join("")+'</select></label><label>Lieu<select id="enL">'+lieux().map(l=>'<option value="'+l.id+'">'+esc(l.nom)+'</option>').join("")+'</select></label><label>Péremption <span class="note">(facultatif)</span><input id="enD" type="date"></label><button class="btn primary" data-act="enAdd">Enregistrer</button></div></div>';
   const prets=allMvts().filter(m=>(m.type==="depannage"||m.type==="entree")&&m.aRendre&&!m.rendu);
   h+='<div class="panel" style="margin-top:14px"><h2>Prêts et emprunts à rendre</h2>'+(prets.length?'<div class="list">'+prets.map(m=>{const p=S.produits.get(m.produit)||{nom:"?"};return '<div class="it"><span style="flex:1;min-width:150px"><b>'+esc(p.nom)+'</b> · '+esc(fmtQ(p,m.qte))+'<br><span class="note">'+(m.type==="depannage"?"Prêté à ":"Emprunté à ")+esc(assoNom(m))+' le '+fmtDate(m.t)+'</span></span><button class="btn small" data-act="rendu" data-id="'+m.id+'">'+(m.type==="depannage"?"Rendu par l\'asso":"Rendu à l\'asso")+'</button></div>'}).join("")+'</div>':'<div class="empty">Rien à rendre.</div>')+'</div>';
   if(S.sigs.length)h+='<div class="panel" style="margin-top:14px"><h2>Signalements de l\'équipe</h2><div class="list">'+S.sigs.map(s=>'<div class="it"><span style="flex:1">Produit cherché : « '+esc(s.texte)+' »</span><span class="note">'+fmtDT(s.t)+'</span><button class="btn small" data-act="delSig" data-id="'+s.id+'">Traité</button></div>').join("")+'</div></div>';
@@ -2219,7 +2241,8 @@ document.addEventListener("click",async e=>{
     const salt=uid()+uid(),hash=await sha(salt+a);await write("set","secret/coordo",{salt,hash,t:Date.now()});ls.set("coordoKey",hash);S.unlockKey=hash;S.secret={salt,hash};toast("Code de l\'espace gestion enregistré");render();break}
   case "delCode":if(b.dataset.sure!=="1"){b.dataset.sure="1";b.textContent="Confirmer la suppression";break}await write("delete","secret/coordo");S.secret=null;toast("Code supprimé");render();break;
   case "lockDevice":try{localStorage.removeItem("stk:coordoKey")}catch(_){}S.unlockKey=null;S.view="equipe";ls.set("view","equipe");toast("Espace gestion verrouillé sur cet appareil");render();break;
-  case "ctab":S.ctab=b.dataset.v;render();break;
+  case "ctab":S.ctab=b.dataset.v;S.tabMore=false;render();break;
+  case "tabMore":S.tabMore=!S.tabMore;render();break;
   case "lieu":S.lieu=id;ls.set("lieu",id);render();break;
   case "activite":setActivite(id,0);S.actOpen=false;render();break;
   case "actStep":{const L=actCycle(),i=L.indexOf(S.activite);setActivite(L[(i+(+b.dataset.v)+L.length)%L.length],+b.dataset.v);render();break}
@@ -2227,7 +2250,11 @@ document.addEventListener("click",async e=>{
   case "vueLieu":S.vueLieu=id||null;render();break;
   case "pick":openPick(id);break;
   case "closeSheet":case "cancelSheet":closeSheet();restoreFocus();break;
-  case "closeLayer":$("#layer").innerHTML="";S.editProd=null;break;
+  case "mesRet":{const e=mesGet().find(x=>x.id===id);if(!e)break;lastFocus=document.activeElement;{const t=$(".toast");if(t)t.remove()}retS={id,n:Math.min(e.qte,1)};drawRet();setTimeout(focusDialog,30);break}
+  case "retPlus":case "retMinus":case "retAll":{const e=retS&&mesGet().find(x=>x.id===retS.id);if(!e)break;const c=Math.round(num(val("retQ"),retS.n));retS.n=a==="retAll"?e.qte:Math.min(e.qte,Math.max(1,c+(a==="retPlus"?1:-1)));drawRet();break}
+  case "retOk":await retOk();break;
+  case "theme":ls.set("theme",b.dataset.v);applyTheme();render();break;
+  case "closeLayer":retS=null;$("#layer").innerHTML="";S.editProd=null;break;
   case "qadd":{const cur=Math.max(0,Math.round(num(val("qty"),0)));sheet.n=(cur===1&&!sheet.touched?0:cur)+(+b.dataset.v);sheet.touched=true;sheet.confirm=false;drawSheet();bumpQty();break}
   case "mode":sheet.mode=b.dataset.v;sheet.n=1;sheet.confirm=false;drawSheet();break;
   case "plus":sheet.n=Math.max(0,Math.round(num(val("qty"),0)))+1;sheet.confirm=false;drawSheet();bumpQty();break;
@@ -2241,6 +2268,7 @@ document.addEventListener("click",async e=>{
   case "valider":valider();break;
   case "signal":await write("set","signalements/"+uid(),{t:Date.now(),texte:S.query.trim()});toast("Signalé au responsable stock");S.query="";render();break;
   case "delSig":await write("delete","signalements/"+id);break;
+  case "commanderTout":{let n=0;for(const el of document.querySelectorAll('input[id^="cq-"]')){const pid=el.id.slice(3),q=Math.round(num(el.value)),p=S.produits.get(pid);if(p&&q>0){await write("set","commandes/"+uid(),{t:Date.now(),produit:pid,qte:q,recu:0,statut:"commandee",fournisseur:fournNom(p)});n++}}toast(n?n+" commande"+(n>1?"s":"")+" enregistrée"+(n>1?"s":""):"Rien à commander");break}
   case "commander":{const q=Math.round(num(val("cq-"+id)));if(q>0){const p=S.produits.get(id);await write("set","commandes/"+uid(),{t:Date.now(),produit:id,qte:q,recu:0,statut:"commandee",fournisseur:fournNom(p)});toast("Commande enregistrée")}break}
   case "ncAdd":{const p=S.produits.get(val("ncP")),q=num(val("ncQ"));if(!p||q<=0){toast("Indique une quantité");break}const u=val("ncM")==="carton"?q*(p.parCarton||1):q;await write("set","commandes/"+uid(),{t:Date.now(),produit:p.id,qte:Math.round(u),recu:0,statut:"commandee",fournisseur:fournNom(p)});toast("Commande enregistrée");break}
   case "delCmd":await write("delete","commandes/"+id);toast("Commande annulée");break;
@@ -2250,7 +2278,7 @@ document.addEventListener("click",async e=>{
     if(S.view==="equipe")mesAdd({id:mid,t:m.t,prod:c.produit,nom:(p0||{}).nom||"?",saisi:fmtQ(p0||{},q),dest:"Livraison reçue"});toast("Livraison enregistrée : "+fmtQ(p0||{},q)+(recu<c.qte?" (il en manque encore)":""));render();break}
   case "enAdd":{const p=S.produits.get(val("enP")),q=num(val("enQ"));if(!p||q<=0){toast("Indique une quantité");break}const o=val("enO"),u=Math.round(val("enM")==="carton"?q*(p.parCarton||1):q);
     if((o==="emprunt"||o==="rendu")&&!val("enA")){toast("Choisis l'asso");break}
-    const m={t:Date.now(),type:"entree",produit:p.id,qte:u,lieu:val("enL"),origine:o};if(val("enA"))m.partenaire=val("enA");if(o==="emprunt")m.aRendre=true;
+    const m={t:Date.now(),type:"entree",produit:p.id,qte:u,lieu:val("enL"),origine:o};if(val("enA"))m.partenaire=val("enA");if(o==="emprunt")m.aRendre=true;if(val("enD"))m.peremption=val("enD");
     await write("set","mouvements/"+uid(),m);toast("Entrée enregistrée");break}
   case "rendu":{const m=allMvts().find(x=>x.id===id);if(!m)break;
     await write("update","mouvements/"+id,{rendu:true,renduLe:Date.now()});
