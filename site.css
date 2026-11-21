@@ -237,7 +237,7 @@ code { font-family: var(--font-body); font-weight: 700; background: var(--color-
 .stage-area { display: grid; place-items: center; min-height: 40rem; }
 .stage-area .panel { grid-area: 1 / 1; }
 .shot--desk { width: 100%; }
-.js .panel { opacity: 0; visibility: hidden; translate: 40px 0; rotate: calc(var(--r, 0deg) + 6deg); transition: opacity var(--dur-long) var(--ease-out), translate var(--dur-long) var(--ease-out), rotate var(--dur-long) var(--ease-out), visibility 0s linear var(--dur-long); }
+.js .panel { opacity: 0; visibility: hidden; translate: 40px 0; rotate: calc(var(--r, 0deg) + 6deg); transition: opacity 0.5s var(--ease-out), translate 0.5s var(--ease-out), rotate 0.5s var(--ease-out), visibility 0s linear 0.5s; }
 .js .panel.is-on { opacity: 1; visibility: visible; translate: 0 0; rotate: var(--r, 0deg); transition-delay: 0s; }
 
 /* the one reveal: the flyers are pinned onto the wall as it comes into view */
@@ -256,6 +256,7 @@ code { font-family: var(--font-body); font-weight: 700; background: var(--color-
   .stage-area { min-height: 0; display: block; }
   .stage-area .panel { margin-inline: auto; }
   .js .stage-area .panel:not(.is-on) { display: none; }
+  .js .stage-area .panel.is-on { animation: panelIn 0.5s var(--ease-out) both; }
   .stage-area .shot--phone { width: min(62%, 240px); }
   .stage-area .shot--phone [data-slot] { aspect-ratio: 390 / 700; }
 }
@@ -314,3 +315,6 @@ html { scroll-behavior: smooth; }
 .tab[aria-selected="true"] .tab-n { animation: pick 0.3s var(--ease-out); }
 @keyframes pick { 0% { transform: scale(0.85); } 60% { transform: scale(1.12); } 100% { transform: none; } }
 @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } .tapfx { display: none; } .flyer:hover, .shot:hover, .film:hover { transform: none; } .nav-menu[open] .nav-drop, .tab[aria-selected="true"] .tab-n { animation: none; } }
+
+@keyframes panelIn { from { opacity: 0; translate: 36px 6px; rotate: calc(var(--r, 0deg) + 5deg); } to { opacity: 1; translate: 0 0; rotate: var(--r, 0deg); } }
+@media (prefers-reduced-motion: reduce) { .js .stage-area .panel.is-on { animation: none; } }
