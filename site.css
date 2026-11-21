@@ -237,12 +237,21 @@ code { font-family: var(--font-body); font-weight: 700; background: var(--color-
   .stage-area { min-height: 0; }
 }
 
+/* tutorial videos (installer page) */
+.shot--vid { justify-self: center; width: min(100%, 300px); }
+.shot--vid video { width: 100%; aspect-ratio: 600 / 1300; height: auto; background: var(--color-paper-2); display: block; }
+.print-only { display: none !important; }
+.vids { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: var(--space-2xl) var(--space-3xl); }
+.vid-item { display: grid; gap: var(--space-sm); align-content: start; justify-items: start; }
+.vid-item .shot--vid { justify-self: start; margin-top: var(--space-md); }
+@media (max-width: 40rem) { .vids { grid-template-columns: minmax(0, 1fr); } }
+
 /* print: the installer guide as a clean A4 document (also used to build docs/guide-installation-stockaarud.pdf) */
 @media print {
   @page { size: A4; margin: 14mm 14mm 16mm; }
   html, body { background: none; }
   body { font-size: 11pt; }
-  .fibre::before, .nav ul, .toc, .doc-hero .actions, .footer-grid ul, .fill, video { display: none !important; }
+  .screen-only, .fibre::before, .nav ul, .toc, .doc-hero .actions, .footer-grid ul, .fill, video { display: none !important; }
   .sheet { box-shadow: none !important; rotate: 0deg !important; border: 1px solid var(--color-rule-2); }
   .sheet--fluoro { border-color: var(--color-ink); }
   .nav-wrap { padding: 0 0 6mm; }
@@ -263,4 +272,6 @@ code { font-family: var(--font-body); font-weight: 700; background: var(--color-
   a { text-decoration: none; }
   .container { max-width: none; padding-inline: 0; }
   .js .panel, .js [data-wall] > .flyer { opacity: 1; visibility: visible; translate: none; }
+  .print-only { display: grid !important; }
+  figure.print-only { display: block !important; }
 }

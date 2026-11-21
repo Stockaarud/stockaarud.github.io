@@ -80,7 +80,7 @@
     Object.keys(localStorage).filter((k) => k === KEY || k.startsWith("stk:")).forEach((k) => localStorage.removeItem(k));
     location.reload();
   }
-  const demoLink = () => location.origin + location.pathname;
+  const demoLink = () => "https://stockaarud.github.io/demo/";
   window.SKB = Object.freeze({
     get role() { return role; },
     get url() { return "démo (données dans ce navigateur)"; },
