@@ -25,11 +25,26 @@
   <div class="container">
     <nav class="nav sheet" aria-label="Principale">
       <a class="wordmark" href="./" aria-label="Stockaarud, accueil"><img src="img/icon.png" width="40" height="40" alt=""><img class="wm" src="img/wordmark.png" width="1133" height="115" alt=""></a>
-      <ul>
+      <ul class="nav-links">
         <li class="nav-link"><a href="installer.html" aria-current="page">Installer</a></li>
-        <li class="nav-link"><a href="https://github.com/Stockaarud/stockaarud">Code source</a></li>
-        <li><a href="https://stockaarud.github.io/stockaarud/">Ouvrir l’appli</a></li>
+        <li class="nav-link"><a href="demo/">Démo</a></li>
+        <li class="nav-link"><a href="docs/guide-installation-stockaarud.pdf">Guide PDF</a></li>
+        <li class="nav-link"><a href="./#contact">Contact</a></li>
+        <li><a class="btn btn--primary btn--nav" href="https://stockaarud.github.io/stockaarud/">Ouvrir l’appli</a></li>
       </ul>
+      <details class="nav-menu">
+        <summary aria-label="Menu"><span class="burger" aria-hidden="true"><i></i><i></i><i></i></span>Menu</summary>
+        <div class="nav-drop sheet">
+          <ul>
+            <li><a href="installer.html" aria-current="page">Installer</a></li>
+            <li><a href="demo/">Démo</a></li>
+            <li><a href="docs/guide-installation-stockaarud.pdf">Guide PDF</a></li>
+            <li><a href="./#contact">Contact</a></li>
+            <li><a href="https://github.com/Stockaarud/stockaarud">Code source</a></li>
+          </ul>
+          <a class="btn btn--primary" href="https://stockaarud.github.io/stockaarud/">Ouvrir l’appli</a>
+        </div>
+      </details>
     </nav>
   </div>
 </header>
@@ -184,5 +199,7 @@
 </footer>
 <script>window.hallmarkSlots = (m) => { for (const [k, v] of Object.entries(m)) { const s = document.querySelector(`[data-slot="${k}"]`); if (!s) continue; const im = new Image(); im.src = typeof v === 'string' ? v : v.src; im.alt = (typeof v === 'object' && v.alt) || s.dataset.alt || ''; s.querySelectorAll(':scope > img').forEach((o) => o.remove()); s.prepend(im); } };
 document.querySelectorAll('[data-slot] img').forEach((i) => { if (i.complete && !i.naturalWidth) i.remove(); else i.addEventListener('error', () => i.remove(), { once: true }); });</script>
+<script>if(!matchMedia('(prefers-reduced-motion: reduce)').matches)document.addEventListener('pointerdown',(e)=>{const t=e.target.closest&&e.target.closest('a,button,summary,.tab');if(!t)return;const d=document.createElement('span');d.className='tapfx';d.style.left=e.clientX+'px';d.style.top=e.clientY+'px';document.body.appendChild(d);setTimeout(()=>d.remove(),500)},{passive:true});
+document.addEventListener('click',(e)=>{const m=document.querySelector('.nav-menu[open]');if(m&&(!m.contains(e.target)||e.target.closest('.nav-drop a')))m.open=false});</script>
 </body>
 </html>
