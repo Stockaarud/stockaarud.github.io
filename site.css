@@ -379,3 +379,7 @@ html { scroll-behavior: smooth; }
 .qsheet .rows li:last-child { border-bottom: 0; padding-bottom: 0; }
 .qsheet code { background: var(--color-paper); }
 @media print { .qsheet { background: none; box-shadow: none; padding: 0; margin-top: 6mm; } }
+
+.qsheet .shot { background: none; box-shadow: none; padding: 0; outline: 1px solid var(--color-rule); }
+.qsheet .shot figcaption { padding: 0 var(--space-xs) var(--space-xs); }
+#quotidien + .section { padding-top: var(--space-2xl); }
