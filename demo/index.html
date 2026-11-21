@@ -87,6 +87,11 @@ h3{font-size:15px;font-weight:600;font-family:var(--body)}
 .chip{border:1px solid var(--line);background:var(--surface);color:var(--fg);border-radius:999px;padding:10px 16px;font:500 15px var(--body);cursor:pointer;min-height:44px}
 .chip[aria-pressed="true"]{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
 .chip.ghost{border-style:dashed;color:var(--muted)}
+html[data-tint] body{background:var(--tintbg);background-attachment:fixed}
+html[data-tint] header.top,html[data-tint] body::before,html[data-tint] .subnav,html[data-tint] .svnav{background:color-mix(in srgb,var(--tint) 14%,var(--bg))}
+html[data-tint] header.top{box-shadow:inset 0 -3px 0 var(--tint)}
+.chip.actc[aria-pressed="true"]{background:var(--c);border-color:var(--c);color:#fff}
+@media (prefers-reduced-motion:no-preference){body,header.top,.subnav,.svnav{transition:background-color .35s ease}}
 .actbar{display:flex;align-items:center;gap:8px;padding:8px;border-radius:16px;border:2px solid var(--actc,var(--accent));background:color-mix(in srgb,var(--actc,var(--accent)) 12%,var(--surface));touch-action:pan-y;user-select:none}
 .actarr{flex:none;width:48px;height:48px;border-radius:50%;border:1px solid var(--line);background:var(--surface);color:var(--fg);display:grid;place-items:center;cursor:pointer}
 .actarr svg{width:22px;height:22px}
@@ -759,7 +764,12 @@ function actLabel(id){return id==="__dep"?"Prêt / don à une asso":id==="__tran
 function actColor(id){if(id==="__perte")return "var(--crit)";if(id==="__dep"||id==="__trans")return "var(--muted)";const A=activitesActives(),a=A.find(x=>x.id===id);if(a&&a.couleur)return a.couleur;const i=A.findIndex(x=>x.id===id);return "var("+["--c1","--c2","--c3","--c4","--c5","--c6"][(i<0?0:i)%6]+")"}
 function setActivite(id,dir){S.activite=id;S.actDir=dir||0;ls.set("activite",id);ls.set("activiteJour",today());
   const a=cfg().activites.find(x=>x.id===id);if(a&&a.lieu&&lieux().some(l=>l.id===a.lieu)){S.lieu=a.lieu;ls.set("lieu",a.lieu)}}
-function paintAct(){document.documentElement.style.setProperty("--actc",S.activite&&actCycle().includes(S.activite)?actColor(S.activite):"var(--accent)")}
+function paintAct(){const H=document.documentElement,teamOn=S.view!=="coordo"&&S.activite&&actCycle().includes(S.activite);
+  H.style.setProperty("--actc",teamOn?actColor(S.activite):"var(--accent)");
+  const cols=teamOn?[actColor(S.activite)]:(S.view==="coordo"&&S.ctab==="stats"&&SV_SCOPED.has(S.sv||"conso")?scopeIds().map(actColor):[]);
+  if(!cols.length){delete H.dataset.tint;H.style.removeProperty("--tint");H.style.removeProperty("--tintbg");return}
+  H.dataset.tint="";H.style.setProperty("--tint",cols[0]);
+  H.style.setProperty("--tintbg",cols.length>1?"linear-gradient(160deg,"+cols.map((c,i)=>"color-mix(in srgb,"+c+" 14%,var(--bg)) "+Math.round(i/(cols.length-1)*100)+"%").join(",")+")":"color-mix(in srgb,"+cols[0]+" 14%,var(--bg))")}
 function actBar(){const L=actCycle(),i=L.indexOf(S.activite),a=cfg().activites.find(x=>x.id===S.activite),dir=S.actDir;S.actDir=0;
   return '<div class="label"><span class="stepn">1</span>Pour quoi ?</div><div class="actbar" data-swipe="act"><button class="actarr" data-act="actStep" data-v="-1" aria-label="Activité précédente"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 5l-7 7 7 7" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></button>'
    +'<div class="actmid" aria-live="polite"><div class="actname'+(dir>0?" in-r":dir<0?" in-l":"")+'">'+(a?actIcon(a,"aic big"):"")+'<span>'+esc(actLabel(S.activite))+'</span></div><div class="actdots" aria-hidden="true">'+L.map((x,k)=>'<i'+(k===i?' class="on"':'')+'></i>').join("")+'</div></div>'
@@ -1261,7 +1271,7 @@ const rgbOf=s=>{const m=String(s).match(/\d+(\.\d+)?/g);return m&&m.length>=3?m.
 async function chartPdf(panel){
   const h2=panel.querySelector("h2"),titre=h2?[...h2.childNodes].filter(n=>n.nodeType===3).map(n=>n.textContent).join("").trim():"Graphique";
   const sous=[...panel.querySelectorAll("select")].map(s=>s.options[s.selectedIndex]&&s.options[s.selectedIndex].text).filter(Boolean)
-    .concat([...panel.querySelectorAll('.seg button[aria-pressed="true"],.chips .chip[aria-pressed="true"]')].map(b=>b.textContent.trim())).concat(SV_SCOPED.has(S.sv||"conso")?[S.sva?actNom(S.sva):"Tout le CAARUD"]:[]).join(" · ");
+    .concat([...panel.querySelectorAll('.seg button[aria-pressed="true"],.chips .chip[aria-pressed="true"]')].map(b=>b.textContent.trim())).concat(SV_SCOPED.has(S.sv||"conso")?[scopeIds().length?scopeNames():"Tout le CAARUD"]:[]).join(" · ");
   const svgs=[...panel.querySelectorAll(".stwrap svg,.chart svg")].filter(s=>s.getBoundingClientRect().width>100);
   const doc=await newPdf("landscape"),C=PDFC;let y=pdfHead(doc,titre,sous);
   if(panel.querySelector("#stWrap")&&STAT)y=pdfConsoTable(doc,y,titre);
@@ -1302,8 +1312,8 @@ const MOIS=["janv.","févr.","mars","avr.","mai","juin","juil.","août","sept.",
 const JOURS_C=["lun.","mar.","mer.","jeu.","ven.","sam.","dim."];
 const nfr=v=>Math.round(v).toLocaleString("fr-FR");
 const VW=()=>Math.round(Math.max(300,Math.min(640,(window.innerWidth||640)-72)));
-let ACT_SCOPE="";/* activité choisie en haut des statistiques, appliquée pendant le rendu des graphiques concernés */
-function sortiesEntre(a,b,act){if(act===undefined)act=ACT_SCOPE;return allMvts().filter(m=>m.type==="sortie"&&m.t>=a&&m.t<b&&(!act||m.activite===act)&&S.produits.has(m.produit))}
+let ACT_SCOPE=[];/* activité choisie en haut des statistiques, appliquée pendant le rendu des graphiques concernés */
+function sortiesEntre(a,b,act){if(act===undefined)act=ACT_SCOPE;const inA=Array.isArray(act)?(id=>!act.length||act.includes(id)):(id=>!act||id===act);return allMvts().filter(m=>m.type==="sortie"&&m.t>=a&&m.t<b&&inA(m.activite)&&S.produits.has(m.produit))}
 function moisDebut(y,m){return new Date(y,m,1).getTime()}
 function derniersMois(n,fin){const d=new Date(),out=[];for(let i=n-1+(fin?1:0);i>=(fin?1:0);i--){const y=d.getFullYear(),m=d.getMonth()-i,a=moisDebut(y,m),b=moisDebut(y,m+1),dd=new Date(a);out.push({a,b,l:MOIS[dd.getMonth()]+(dd.getMonth()===0||i===n-1+(fin?1:0)?" "+String(dd.getFullYear()).slice(2):"")})}return out}
 function periodeSV(){const n=num(S.svp||"3",3);return {a:Date.now()-n*30.44*DAY,b:Date.now()+1,n}}
@@ -1336,14 +1346,13 @@ function batons(vals,labels,col,fmt){const W=VW(),H=230,L=44,T=10,B=28,mx=Math.m
 const pan=(titre,note,corps)=>'<div class="panel" style="margin-top:12px"><h2>'+titre+'</h2>'+(note?'<p class="note">'+note+'</p>':'')+corps+'</div>';
 const chipsSV=(act,cur,opts)=>'<div class="chips" style="margin-top:8px">'+opts.map(([v,l])=>'<button class="chip" data-act="'+act+'" data-v="'+esc(v)+'" aria-pressed="'+(String(cur)===String(v))+'">'+esc(l)+'</button>').join("")+'</div>';
 const segP=()=>'<div class="seg" role="group" aria-label="Période" style="margin-top:8px">'+[["1","1 mois"],["3","3 mois"],["6","6 mois"],["12","1 an"]].map(([v,l])=>'<button data-act="svp" data-v="'+v+'" aria-pressed="'+((S.svp||"3")===v)+'">'+l+'</button>').join("")+'</div>';
-const actChips=()=>chipsSV("sva",S.sva||"",[["","Toutes les activités"]].concat(cfg().activites.filter(a=>!a.archive).map(a=>[a.id,a.nom])));
 function sumBy(ms,key){const o={};for(const m of ms){const k=key(m);if(k==null)continue;o[k]=(o[k]||0)+num(m.qte,0)}return o}
 
 // 1. Répartition dans un dossier
 function svRepart(){const gs=[...new Set(prodsActifs().map(p=>p.groupe).filter(Boolean))].sort((a,b)=>a.localeCompare(b,"fr"));
   if(!gs.length)return pan("Répartition dans un dossier","","<div class=\"empty\">Range d\'abord le matériel en dossiers (Réglages › Matériel) pour comparer les produits d\'un même dossier.</div>");
   if(!S.svg||!gs.includes(S.svg))S.svg=gs.includes("Seringues")?"Seringues":gs[0];
-  const {a,b}=periodeSV(),ms=sortiesEntre(a,b,S.sva).filter(m=>(S.produits.get(m.produit)||{}).groupe===S.svg),by=sumBy(ms,m=>m.produit);
+  const {a,b}=periodeSV(),ms=sortiesEntre(a,b).filter(m=>(S.produits.get(m.produit)||{}).groupe===S.svg),by=sumBy(ms,m=>m.produit);
   const sl=parts(Object.entries(by).map(([id,v])=>({label:S.produits.get(id).nom,v})),6),tot=ms.reduce((x,m)=>x+num(m.qte,0),0);
   const corps=chipsSV("svg",S.svg,gs.map(g=>[g,g]))+segP()+(tot?'<div class="dn"><div class="chart">'+(S.svbar?barresH(sl,v=>nfr(v)+" u."):donut(sl,nfr(tot)+"|unités"))+'</div>'+legende(sl)+'</div><button class="link" data-act="svbar">'+(S.svbar?"Voir en camembert":"Voir en barres")+'</button>':'<div class="empty">Aucune sortie de ce dossier sur la période.</div>');
   return pan("Répartition · "+esc(S.svg),"Quels produits les usagers choisissent, dans un même dossier. En nombre d\'unités sorties.",corps)}
@@ -1358,7 +1367,7 @@ function svPratiques(){const n=num(S.svn||"12",12),M=derniersMois(n,true),cats=O
 // 3. Cohérence des kits
 const KITM=[["Filtres",p=>(p.groupe==="Filtres")||(/filtre/i.test(p.nom)&&p.categorie==="injection"&&!/pipe|cuivre|paille/i.test(p.nom))],["Stéricup et Maxicup",p=>/cup/i.test(p.nom)||p.groupe==="Cupules"||p.groupe==="Cups"||p.groupe==="Stéricup et Maxicup"],["Eau stérile",p=>/(^|\W)eau(\W|$)|eppi|ppi/i.test(p.nom)],["Tampons alcool",p=>/tampon/i.test(p.nom)],["Acide",p=>/acide/i.test(p.nom)]];
 const isSer=p=>p.groupe==="Seringues"||/^seringue/i.test(p.nom);
-function svCoherence(){const {a,b}=periodeSV(),ms=sortiesEntre(a,b,S.sva),P=id=>S.produits.get(id)||{nom:""};
+function svCoherence(){const {a,b}=periodeSV(),ms=sortiesEntre(a,b),P=id=>S.produits.get(id)||{nom:""};
   const ser=ms.filter(m=>isSer(P(m.produit))).reduce((x,m)=>x+num(m.qte,0),0),kits=ms.filter(m=>/kit/i.test(P(m.produit).nom)&&P(m.produit).categorie==="injection").reduce((x,m)=>x+num(m.qte,0),0);
   const corps=segP();if(!ser)return pan("Cohérence des kits","",corps+'<div class="empty">Aucune seringue sortie sur cette période.</div>');
   const rows=KITM.map(([l,f],i)=>{const v=ms.filter(m=>f(P(m.produit))).reduce((x,m)=>x+num(m.qte,0),0);return {label:l,v:Math.round(v/ser*100),col:v/ser>=0.8?"--good":v/ser>=0.5?"--warn":"--crit"}});
@@ -1374,7 +1383,7 @@ function svActivites(){const {a,b}=periodeSV(),acts=cfg().activites.filter(x=>!x
 
 // 5. Jours forts
 function svJours(){const W=12,now=new Date();now.setHours(0,0,0,0);const lundi=new Date(now.getTime()-((now.getDay()+6)%7)*DAY),a0=lundi.getTime()-(W-1)*7*DAY;
-  const g=Array.from({length:7},()=>Array(W).fill(0));for(const m of sortiesEntre(a0,Date.now()+1,S.sva)){const d=Math.floor((m.t-a0)/DAY),w=Math.floor(d/7),j=(new Date(m.t).getDay()+6)%7;if(w>=0&&w<W)g[j][w]++}
+  const g=Array.from({length:7},()=>Array(W).fill(0));for(const m of sortiesEntre(a0,Date.now()+1)){const d=Math.floor((m.t-a0)/DAY),w=Math.floor(d/7),j=(new Date(m.t).getDay()+6)%7;if(w>=0&&w<W)g[j][w]++}
   const mx=Math.max(1,...g.flat()),L=40,cw=Math.max(20,Math.floor((VW()-L-4)/W)),ch=Math.min(26,cw),T=22,svgW=L+W*cw+4,svgH=T+7*ch+4;let s='<svg viewBox="0 0 '+svgW+' '+svgH+'" role="img" aria-label="Jours forts">';
   for(let w=0;w<W;w++){const d=new Date(a0+w*7*DAY);if(w%(cw<30?3:2)===0)s+='<text x="'+(L+w*cw+cw/2)+'" y="14" text-anchor="middle" style="font:10px var(--body);fill:var(--muted)">'+d.getDate()+" "+MOIS[d.getMonth()]+'</text>'}
   for(let j=0;j<7;j++){s+='<text x="'+(L-6)+'" y="'+(T+j*ch+17)+'" text-anchor="end" style="font:11px var(--body);fill:var(--muted)">'+JOURS_C[j]+'</text>';
@@ -1879,7 +1888,7 @@ function statData(){
   const key=m=>{const p=S.produits.get(m.produit);if(!p)return null;return st.group==="produit"?p.id:catOf(p)};
   const val=m=>{if(st.measure==="u")return m.qte;const p=S.produits.get(m.produit);return m.qte*num(p&&p.prix)};
   const ser={},prev={};
-  for(const m of allMvts()){if(m.type!=="sortie"||m.t<p0||m.t>=end||(ACT_SCOPE&&m.activite!==ACT_SCOPE))continue;const k=key(m);if(!k)continue;const v=val(m);
+  for(const m of allMvts()){if(m.type!=="sortie"||m.t<p0||m.t>=end||(ACT_SCOPE.length&&!ACT_SCOPE.includes(m.activite)))continue;const k=key(m);if(!k)continue;const v=val(m);
     if(m.t<a0){prev[k]=(prev[k]||0)+v;continue}
     const i=B.findIndex(b=>m.t>=b.a&&m.t<b.b);if(i<0)continue;(ser[k]=ser[k]||new Array(B.length).fill(0))[i]+=v}
   const keys=Object.keys(ser).sort((x,y)=>sum(ser[y])-sum(ser[x]));
@@ -1891,12 +1900,15 @@ const sum=a=>a.reduce((x,y)=>x+y,0);
 const fmtV=v=>S.stat.measure==="e"?eur(v):Math.round(v).toLocaleString("fr-FR");
 let STAT=null,CW=640;
 const SV_SCOPED=new Set(["conso","repart","prat","coh","jours","annee"]);
-function actScopeBar(){const acts=cfg().activites.filter(a=>!a.archive);if(!acts.length)return "";const v=S.sv||"conso",cur=S.sva||"";
-  return '<div class="scopebar"><span class="lbl">Pour</span><div class="chips">'+[["","Tout le CAARUD"]].concat(acts.map(a=>[a.id,a.nom])).map(([id,l])=>'<button class="chip" data-act="sva" data-v="'+esc(id)+'" aria-pressed="'+(cur===id)+'">'+esc(l)+'</button>').join("")+'</div>'
-   +(cur&&!SV_SCOPED.has(v)?'<p class="note" style="margin:6px 0 0;flex-basis:100%">Ce graphique porte toujours sur tout le CAARUD.</p>':'')+'</div>'}
+function scopeIds(){const ok=new Set(activitesActives().map(a=>a.id));return (S.svas||[]).filter(id=>ok.has(id))}
+function scopeNames(){return scopeIds().map(actNom).join(" + ")}
+function actScopeBar(){const acts=cfg().activites.filter(a=>!a.archive);if(!acts.length)return "";const v=S.sv||"conso",cur=scopeIds();
+  return '<div class="scopebar"><span class="lbl">Pour</span><div class="chips"><button class="chip" data-act="sva" data-v="" aria-pressed="'+!cur.length+'">Tout le CAARUD</button>'+acts.map(a=>'<button class="chip actc" style="--c:'+actColor(a.id)+'" data-act="sva" data-v="'+esc(a.id)+'" aria-pressed="'+cur.includes(a.id)+'">'+actIcon(a)+esc(a.nom)+'</button>').join("")+'</div>'
+   +(cur.length>1?'<p class="note" style="margin:6px 0 0;flex-basis:100%">'+cur.length+' activités additionnées. Touche-les pour en ajouter ou en retirer.</p>':'')
+   +(cur.length&&!SV_SCOPED.has(v)?'<p class="note" style="margin:6px 0 0;flex-basis:100%">Ce graphique porte toujours sur tout le CAARUD.</p>':'')+'</div>'}
 function tabStats(){
-  const v=S.sv||"conso";ACT_SCOPE=SV_SCOPED.has(v)?(S.sva||""):"";
-  try{return tabStatsIn()}finally{ACT_SCOPE=""}
+  const v=S.sv||"conso";ACT_SCOPE=SV_SCOPED.has(v)?scopeIds():[];
+  try{return tabStatsIn()}finally{ACT_SCOPE=[]}
 }
 function tabStatsIn(){
   {const alt=svView();if(alt!==null)return svNav()+actScopeBar()+alt}
@@ -1912,7 +1924,7 @@ function tabStatsIn(){
   const first=Math.min(...allMvts().filter(m=>m.type==="sortie").map(m=>m.t));
   const delta=ptot>0&&first<=statBuckets(st.period,1)[0].a+7*DAY?Math.round((tot-ptot)/ptot*100):null;
   const titre=st.focus?D.name(st.focus):(vis.length===shown.length?(st.group==="produit"?"Tous les produits":"Toutes les catégories"):vis.length+" sélectionné"+(vis.length>1?"s":""));
-  h+='<div class="panel" style="margin-top:12px"><div class="row" style="justify-content:space-between;align-items:baseline"><div><h2>Consommation · '+esc(titre)+(ACT_SCOPE?' · '+esc(actNom(ACT_SCOPE)):'')+'</h2><p class="note">Sorties vers les activités, dépannages exclus, '+(st.period==="3"?"par semaine":"par mois")+(st.measure==="e"?", au prix unitaire du catalogue":"")+'.</p></div>'
+  h+='<div class="panel" style="margin-top:12px"><div class="row" style="justify-content:space-between;align-items:baseline"><div><h2>Consommation · '+esc(titre)+(ACT_SCOPE.length?' · '+esc(ACT_SCOPE.map(actNom).join(" + ")):'')+'</h2><p class="note">Sorties vers les activités, dépannages exclus, '+(st.period==="3"?"par semaine":"par mois")+(st.measure==="e"?", au prix unitaire du catalogue":"")+'.</p></div>'
    +'<div style="text-align:right"><div class="kpi" style="border:0;padding:0;background:none"><div class="v">'+fmtV(tot)+'</div><div class="k">sur la période'+(delta!=null?' · <span class="delta '+(delta>0?"up":"down")+'">'+(delta>0?"+":"")+delta+' %</span> vs période précédente':"")+'</div></div></div></div>'
    +'<div class="stwrap" id="stWrap">'+lineChart(D,vis)+'<div class="tip" id="stTip" hidden></div></div>'
    +'<div class="lg">'+shown.map(k=>'<button data-act="st-toggle" data-id="'+esc(k)+'" aria-pressed="'+(st.focus?k===st.focus:!st.hidden.has(k))+'"><i style="background:'+D.color(k,D.keys.indexOf(k))+'"></i>'+esc(D.name(k))+'</button>').join("")
@@ -2276,7 +2288,7 @@ document.addEventListener("click",async e=>{
   case "schemaPdf":case "listePdf":case "chartPdf":{const t0=b.innerHTML;b.disabled=true;try{if(a==="schemaPdf")await schemaPdf();else if(a==="listePdf")await listePdf();else await chartPdf(b.closest(".panel"))}catch(err){toast("Impression impossible (connexion ?)")}finally{if(b.isConnected){b.disabled=false;b.innerHTML=t0}}break}
   case "sv":S.sv=b.dataset.v;window.scrollTo(0,0);render();break;
   case "svp":S.svp=b.dataset.v;render();break;
-  case "sva":S.sva=b.dataset.v;render();break;
+  case "sva":{const v=b.dataset.v,cur=scopeIds();S.svas=!v?[]:cur.includes(v)?cur.filter(x=>x!==v):cur.concat(v);render();break}
   case "svg":S.svg=b.dataset.v;render();break;
   case "svbar":S.svbar=!S.svbar;render();break;
   case "svn":S.svn=b.dataset.v;render();break;
