@@ -1,0 +1,222 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Stockaarud : le stock de matériel RdR des CAARUD, suivi en direct</title>
+<meta name="description" content="Appli web gratuite pour les CAARUD : l’équipe note ses sorties de matériel en trois touches, le responsable stock voit venir les ruptures.">
+<meta name="theme-color" content="#1f4d3a">
+<link rel="icon" href="img/icon.png">
+<link rel="stylesheet" href="site.css">
+</head>
+<body class="fibre">
+
+<header class="nav-wrap">
+  <div class="container">
+    <nav class="nav sheet" aria-label="Principale">
+      <a class="wordmark" href="./" aria-label="Stockaarud, accueil"><img src="img/icon.png" width="40" height="40" alt=""><img class="wm" src="img/wordmark.png" width="1133" height="115" alt=""></a>
+      <ul>
+        <li class="nav-link"><a href="installer.html">Installer</a></li>
+        <li class="nav-link"><a href="https://github.com/Stockaarud/stockaarud">Code source</a></li>
+        <li><a href="https://stockaarud.github.io/stockaarud/">Ouvrir l’appli</a></li>
+      </ul>
+    </nav>
+  </div>
+</header>
+
+<main>
+  <section class="hero" aria-labelledby="titre">
+    <div class="container">
+      <div class="hero-text">
+        <h1 id="titre">Le stock RdR, suivi en direct.</h1>
+        <p class="lead">L’équipe note en trois touches, le coordo voit venir les ruptures.</p>
+        <div class="actions">
+          <a class="btn btn--primary" href="installer.html">Installer pour mon CAARUD</a>
+          <a class="btn btn--secondary" href="https://stockaarud.github.io/stockaarud/">Ouvrir l’appli</a>
+        </div>
+      </div>
+      <div class="hero-visual">
+        <figure class="sheet film" style="--r: 1.5deg">
+          <video controls playsinline preload="none" poster="video/stockaarud-film-poster.jpg" width="720" height="900" aria-label="Film de présentation de Stockaarud, 1 minute 35">
+            <source src="video/stockaarud-film.mp4" type="video/mp4">
+          </video>
+          <figcaption>Le film, 1 min 35, avec le son.</figcaption>
+        </figure>
+        <p class="sheet sheet--fluoro tag-free" style="--r: -3deg"><span>Gratuit</span> Sans abonnement, sans licence.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" aria-labelledby="epingler">
+    <div class="container">
+      <div class="section-head">
+        <h2 id="epingler">À épingler au garage</h2>
+        <p class="lead">Stockaarud en quatre feuilles.</p>
+      </div>
+      <div class="wall">
+        <div class="sheet sheet--fluoro flyer flyer--big" style="--r: -1deg"><b>3</b><span>touches pour noter une sortie</span></div>
+        <div class="sheet flyer flyer--wide"><b>10 minutes</b><span>pour l’installer, sans rien télécharger.</span></div>
+        <div class="sheet flyer" style="--r: 1.5deg"><b>Hors ligne</b><span>En maraude, en festival, au fond d’un local.</span></div>
+        <div class="sheet sheet--wall flyer"><b>Vos données chez vous</b><span>Chaque CAARUD a sa propre base.</span></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" aria-label="Comment ça marche">
+    <div class="container">
+      <ol class="stages">
+        <li class="stage">
+          <div class="stage-text">
+            <h2>Votre organisation, vos règles</h2>
+            <p class="lead">Un stock principal ou plusieurs, vos activités, votre matériel.</p>
+            <p>Un catalogue de départ d’environ 60 produits RdR, à décocher selon ce que vous distribuez.</p>
+          </div>
+          <figure class="sheet shot shot--phone" style="--r: 1.2deg"><div data-slot="etape-activites" data-kind="product" data-alt="L’étape « Vos activités » de l’installation guidée"><img src="img/w2.jpg" width="780" height="1688" alt="L’écran « Vos activités » de l’installation guidée : Accueil, Maraude, Festif et Permanence au local sont cochés." loading="lazy"></div></figure>
+        </li>
+        <li class="stage stage--mirror">
+          <div class="stage-text">
+            <h2>Trois touches, c’est noté</h2>
+            <ol class="taps">
+              <li>Pour quoi ?</li>
+              <li>Quel matos ?</li>
+              <li>Combien ?</li>
+            </ol>
+            <p>Sans réseau, la saisie attend sur le téléphone et part au retour de la connexion.</p>
+          </div>
+          <figure class="sheet shot shot--phone" style="--r: -1.5deg"><div data-slot="etape-saisie" data-kind="product" data-alt="La saisie d’une sortie sur téléphone"><img src="img/k3.jpg" width="780" height="1688" alt="Saisie d’une sortie : Maraude, Kits d’injection, quantité 3, bouton Valider." loading="lazy"></div></figure>
+        </li>
+        <li class="stage">
+          <div class="stage-text">
+            <h2>L’alerte avant la rupture</h2>
+            <p class="lead">Jours d’autonomie, quoi commander et combien, pour chaque produit.</p>
+          </div>
+          <figure class="sheet shot shot--phone" style="--r: 0.8deg"><div data-slot="etape-alertes" data-kind="product" data-alt="Le tableau de bord du responsable stock avec ses alertes"><img src="img/dash.jpg" width="780" height="1688" alt="Tableau de bord : alertes de commande pour les kits base et les seringues, produits à commander, budget dépensé." loading="lazy"></div></figure>
+        </li>
+        <li class="stage stage--wide">
+          <div class="stage-text">
+            <h2>Chaque rupture, datée et comptée</h2>
+            <p class="lead">Statistiques, budget et ruptures sur l’année, prêts pour le rapport d’activité.</p>
+          </div>
+          <figure class="sheet shot shot--desk"><div data-slot="etape-ruptures" data-kind="product" data-alt="L’écran Statistiques, vue Ruptures sur un an"><img src="img/desk-ruptures.jpg" width="2560" height="1600" alt="Statistiques, vue Les ruptures sur un an : produits touchés, jours de rupture cumulés, frise par produit." loading="lazy"></div><figcaption>Données fictives.</figcaption></figure>
+        </li>
+      </ol>
+    </div>
+  </section>
+
+  <section class="section" aria-labelledby="avant">
+    <div class="container">
+      <div class="typed sheet" style="--r: -0.6deg">
+        <h2 id="avant">Avant, et avec Stockaarud</h2>
+        <table class="compare">
+          <thead><tr><th scope="col">Pour</th><th scope="col">Avant</th><th scope="col">Avec Stockaarud</th></tr></thead>
+          <tbody>
+            <tr><td>Les sorties</td><td>Un cahier au garage, quand on y pense</td><td>Notées sur le téléphone, même sans réseau</td></tr>
+            <tr><td>Les commandes</td><td>Quand l’étagère est vide</td><td>Quand l’alerte dit quoi et combien</td></tr>
+            <tr><td>Le bilan</td><td>Reconstitué en fin d’année</td><td>Les chiffres de l’année, à imprimer</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <section class="band" aria-label="Un stock ou plusieurs">
+    <div class="container">
+      <p class="band-line">Un stock ou dix : à vous de voir.</p>
+    </div>
+  </section>
+
+  <section class="section" aria-labelledby="equipe">
+    <div class="container close">
+      <div class="close-text">
+        <h2 id="equipe">L’équipe rejoint par QR code</h2>
+        <p class="lead">Pas de compte à créer : le lien branche le téléphone sur votre base.</p>
+        <div class="actions"><a class="btn btn--primary" href="installer.html">Installer pour mon CAARUD</a></div>
+      </div>
+      <figure class="sheet shot shot--phone" style="--r: 1.8deg"><div data-slot="invitation" data-kind="product" data-alt="L’écran Inviter l’équipe avec son QR code"><img src="img/inv.jpg" width="780" height="1688" alt="Écran Inviter l’équipe : un QR code, le lien, et les boutons Copier le lien, Envoyer par e-mail et Fiche équipe en PDF." loading="lazy"></div></figure>
+    </div>
+  </section>
+  <section class="section" id="contact" aria-labelledby="ecrire">
+    <div class="container contact">
+      <div class="contact-text">
+        <h2 id="ecrire">Une question ? Écrivez-nous</h2>
+        <p class="lead">Pour l’essayer chez vous, une démo ou un coup de main à l’installation.</p>
+        <p>Ou directement à <a href="mailto:stockaarud@proton.me">stockaarud@proton.me</a></p>
+      </div>
+      <form class="sheet contact-form" data-endpoint="https://formspree.io/f/xljbwnjj" data-mailto="stockaarud@proton.me" action="https://formspree.io/f/xljbwnjj" method="post" novalidate>
+        <div class="field">
+          <label for="c-nom">Votre nom</label>
+          <input id="c-nom" name="nom" type="text" autocomplete="name" required>
+        </div>
+        <div class="field">
+          <label for="c-mail">Votre e-mail</label>
+          <input id="c-mail" name="email" type="email" autocomplete="email" inputmode="email" required>
+        </div>
+        <div class="field">
+          <label for="c-struct">Votre structure <span>(facultatif)</span></label>
+          <input id="c-struct" name="structure" type="text" autocomplete="organization">
+        </div>
+        <div class="field">
+          <label for="c-objet">C’est pour</label>
+          <select id="c-objet" name="objet">
+            <option>Une question</option>
+            <option>Essayer Stockaarud chez nous</option>
+            <option>De l’aide pour l’installation</option>
+            <option>Signaler un problème</option>
+          </select>
+        </div>
+        <div class="field field--wide">
+          <label for="c-msg">Votre message</label>
+          <textarea id="c-msg" name="message" rows="5" required></textarea>
+        </div>
+        <div class="field--wide form-foot">
+          <button class="btn btn--primary" type="submit">Envoyer le message</button>
+          <p class="form-help" id="c-help" role="status" aria-live="polite"></p>
+        </div>
+      </form>
+    </div>
+  </section>
+</main>
+
+<footer class="footer">
+  <div class="container">
+    <p class="footer-line">Conçu sur le terrain, dans un CAARUD.</p>
+    <div class="footer-grid">
+      <ul>
+        <li><a href="installer.html">Installer Stockaarud</a></li>
+        <li><a href="https://stockaarud.github.io/stockaarud/">Ouvrir l’appli</a></li>
+        <li><a href="https://github.com/Stockaarud/stockaarud">Code source sur GitHub</a></li>
+        <li><a href="#contact">Nous écrire</a></li>
+        <li><a href="https://github.com/Stockaarud/stockaarud/issues">Signaler un problème</a></li>
+      </ul>
+      <p><small>Contact : <a href="mailto:stockaarud@proton.me">stockaarud@proton.me</a>. Les captures montrent des données fictives.</small></p>
+    </div>
+  </div>
+</footer>
+<script>
+document.querySelectorAll('form[data-endpoint]').forEach((form) => {
+  const help = form.querySelector('[role="status"]');
+  form.addEventListener('submit', (e) => {
+    e.preventDefault();
+    const fields = [...form.querySelectorAll('[required]')];
+    fields.forEach((f) => f.toggleAttribute('aria-invalid', !f.checkValidity()));
+    const bad = fields.find((f) => !f.checkValidity());
+    if (bad) { bad.setAttribute('aria-describedby', help.id); help.textContent = bad.type === 'email' ? 'Cette adresse semble incomplète : écrivez-la comme nom@exemple.fr.' : 'Ce champ est à remplir.'; bad.focus(); return; }
+    const d = Object.fromEntries(new FormData(form));
+    if (!form.dataset.endpoint) {
+      const body = `${d.message}\n\n${d.nom}${d.structure ? ', ' + d.structure : ''}\n${d.email}`;
+      help.textContent = 'Votre logiciel de messagerie s’ouvre avec le message prêt : il reste à l’envoyer.';
+      location.href = `mailto:${form.dataset.mailto}?subject=${encodeURIComponent('Stockaarud : ' + d.objet)}&body=${encodeURIComponent(body)}`;
+      return;
+    }
+    const btn = form.querySelector('button[type="submit"]'); btn.disabled = true; help.textContent = 'Envoi en cours…';
+    fetch(form.dataset.endpoint, { method: 'POST', body: new FormData(form), headers: { Accept: 'application/json' } })
+      .then((r) => { help.textContent = r.ok ? 'Merci, votre message est parti. Réponse à ' + d.email + '.' : 'Le message n’est pas parti. Réessayez dans une minute, ou écrivez à ' + form.dataset.mailto + '.'; if (r.ok) form.reset(); })
+      .catch(() => { help.textContent = 'Le message n’est pas parti. Réessayez dans une minute, ou écrivez à ' + form.dataset.mailto + '.'; })
+      .finally(() => { btn.disabled = false; });
+  });
+});
+</script>
+<script>window.hallmarkSlots = (m) => { for (const [k, v] of Object.entries(m)) { const s = document.querySelector(`[data-slot="${k}"]`); if (!s) continue; const im = new Image(); im.src = typeof v === 'string' ? v : v.src; im.alt = (typeof v === 'object' && v.alt) || s.dataset.alt || ''; s.querySelectorAll(':scope > img').forEach((o) => o.remove()); s.prepend(im); } };
+document.querySelectorAll('[data-slot] img').forEach((i) => { if (i.complete && !i.naturalWidth) i.remove(); else i.addEventListener('error', () => i.remove(), { once: true }); });</script>
+</body>
+</html>

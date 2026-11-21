@@ -1,0 +1,162 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Installer Stockaarud pour votre CAARUD</title>
+<meta name="description" content="Le guide pas à pas pour installer Stockaarud : créer votre base Supabase gratuite, brancher l’appli, suivre l’installation guidée et inviter l’équipe.">
+<meta name="theme-color" content="#1f4d3a">
+<link rel="icon" href="img/icon.png">
+<link rel="stylesheet" href="site.css">
+</head>
+<body class="fibre">
+
+<header class="nav-wrap">
+  <div class="container">
+    <nav class="nav sheet" aria-label="Principale">
+      <a class="wordmark" href="./" aria-label="Stockaarud, accueil"><img src="img/icon.png" width="40" height="40" alt=""><img class="wm" src="img/wordmark.png" width="1133" height="115" alt=""></a>
+      <ul>
+        <li class="nav-link"><a href="installer.html" aria-current="page">Installer</a></li>
+        <li class="nav-link"><a href="https://github.com/Stockaarud/stockaarud">Code source</a></li>
+        <li><a href="https://stockaarud.github.io/stockaarud/">Ouvrir l’appli</a></li>
+      </ul>
+    </nav>
+  </div>
+</header>
+
+<main>
+  <section class="doc-hero" aria-labelledby="titre">
+    <div class="container">
+      <h1 id="titre" class="h1-wide">Installer Stockaarud chez vous</h1>
+      <p class="lead">Dix minutes, un compte Supabase gratuit, rien à télécharger.</p>
+      <div class="actions">
+        <a class="btn btn--primary" href="#base">Commencer l’installation</a>
+        <a class="btn btn--secondary" href="https://stockaarud.github.io/stockaarud/">Ouvrir l’appli</a>
+      </div>
+    </div>
+  </section>
+
+  <div class="container doc">
+    <nav class="toc" aria-label="Étapes">
+      <ol>
+        <li><a href="#base">Supabase</a></li>
+        <li><a href="#preparer">La base</a></li>
+        <li><a href="#brancher">L’appli</a></li>
+        <li><a href="#compte">Le compte</a></li>
+        <li><a href="#guidee">Installation guidée</a></li>
+        <li><a href="#inviter">L’équipe</a></li>
+        <li><a href="#savoir">Bon à savoir</a></li>
+      </ol>
+    </nav>
+
+    <div>
+      <ol class="steps">
+        <li class="step" id="base">
+          <h2>Créer le projet Supabase</h2>
+          <div class="step-body">
+            <ol>
+              <li>Créez un compte sur <a href="https://supabase.com">supabase.com</a>.</li>
+              <li><strong>New project</strong> : nom <code>stockaarud</code>, région <strong>Europe (Paris)</strong>.</li>
+            </ol>
+          </div>
+          <p><span class="fill" data-fill="video-supabase">Vidéo de cette étape à venir</span></p>
+        </li>
+
+        <li class="step" id="preparer">
+          <h2>La base</h2>
+          <div class="step-body">
+            <ol>
+              <li><strong>SQL Editor</strong> : collez <a href="https://github.com/Stockaarud/stockaarud/blob/main/supabase/setup.sql">setup.sql</a>, puis <strong>Run</strong>.</li>
+              <li><strong>Authentication</strong> : activez <strong>Allow anonymous sign-ins</strong>, coupez <strong>Confirm email</strong>.</li>
+              <li><strong>Project Settings › API</strong> : notez l’adresse et la clé <strong>anon</strong>.</li>
+            </ol>
+            <p class="sheet sheet--fluoro warn" style="--r: -0.8deg">Jamais la clé <code>service_role</code> : elle donne tous les droits.</p>
+          </div>
+        </li>
+
+        <li class="step" id="brancher">
+          <h2>Brancher l’appli sur votre base</h2>
+          <div class="step-body">
+            <p>Sur l’ordinateur, ouvrez <a href="https://stockaarud.github.io/stockaarud/">l’appli</a>.</p>
+            <p>Dans <strong>Installer Stockaarud pour mon CAARUD</strong>, collez l’adresse du projet et la clé anon, puis <strong>Enregistrer</strong>.</p>
+          </div>
+          <figure class="sheet shot shot--setup" style="--r: 1.2deg"><div data-slot="brancher" data-kind="product" data-alt="L’écran de connexion à la base, ou la vidéo de cette étape"><img src="img/setup1.jpg" width="780" height="1688" alt="Écran Installer Stockaarud pour mon CAARUD, avec l’adresse du projet et la clé publique remplies." loading="lazy"></div></figure>
+        </li>
+
+        <li class="step" id="compte">
+          <h2>Créer le compte responsable stock</h2>
+          <div class="step-body">
+            <p>Touchez <strong>Première installation : créer le compte responsable stock</strong>, puis entrez un e-mail et un mot de passe.</p>
+            <p>Ce compte gère le stock et sert de compte de secours : gardez bien le mot de passe.</p>
+          </div>
+          <figure class="sheet shot shot--setup" style="--r: -1deg"><div data-slot="compte" data-kind="product" data-alt="L’écran de connexion, ou la vidéo de cette étape"><img src="img/setup2.jpg" width="780" height="1688" alt="Écran de connexion : rejoindre l’équipe avec un code, ou se connecter comme responsable stock." loading="lazy"></div></figure>
+        </li>
+
+        <li class="step step--full" id="guidee">
+          <h2>Suivre l’installation guidée</h2>
+          <div class="step-body">
+            <p>Cinq écrans : votre structure, vos activités, votre matériel, l’inventaire de départ (possible plus tard), puis l’invitation de l’équipe.</p>
+          </div>
+          <div class="trio">
+            <figure class="sheet shot"><div class="phone-ratio" data-slot="guidee-1" data-kind="product" data-alt="Étape Votre structure"><img src="img/w1.jpg" width="780" height="1688" alt="Étape 1, Votre structure : le nom du stock principal, ici Garage." loading="lazy"></div><figcaption>Votre structure</figcaption></figure>
+            <figure class="sheet shot"><div class="phone-ratio" data-slot="guidee-2" data-kind="product" data-alt="Étape Vos activités"><img src="img/w2.jpg" width="780" height="1688" alt="Étape 2, Vos activités : Accueil, Maraude, Festif, Permanence au local." loading="lazy"></div><figcaption>Vos activités</figcaption></figure>
+            <figure class="sheet shot"><div class="phone-ratio" data-slot="guidee-3" data-kind="product" data-alt="Étape Votre matériel"><img src="img/w3.jpg" width="780" height="1688" alt="Étape 3, Votre matériel : le catalogue de départ rangé par catégorie." loading="lazy"></div><figcaption>Votre matériel</figcaption></figure>
+          </div>
+        </li>
+
+        <li class="step" id="inviter">
+          <h2>Inviter l’équipe</h2>
+          <div class="step-body">
+            <p>L’appli donne un QR code, un lien, un e-mail tout prêt et la fiche équipe en PDF.</p>
+            <p>L’adresse de votre base voyage dans le lien : les téléphones de l’équipe se branchent sans rien taper.</p>
+          </div>
+          <figure class="sheet shot shot--setup" style="--r: 1.5deg"><div data-slot="inviter" data-kind="product" data-alt="L’écran Inviter l’équipe, ou la vidéo de cette étape"><img src="img/inv.jpg" width="780" height="1688" alt="Écran Inviter l’équipe avec le QR code et le lien." loading="lazy"></div></figure>
+        </li>
+      </ol>
+
+      <section class="section" id="roles" aria-labelledby="qui">
+        <h2 id="qui" class="doc-h2">Qui peut faire quoi</h2>
+        <div class="typed sheet"><table class="table">
+          <thead><tr><th scope="col">Action</th><th scope="col">Équipe</th><th scope="col">Responsable stock</th></tr></thead>
+          <tbody>
+            <tr><td>Noter une sortie, un retour, une perte</td><td class="yes">oui</td><td class="yes">oui</td></tr>
+            <tr><td>Voir le stock</td><td class="yes">oui</td><td class="yes">oui</td></tr>
+            <tr><td>Tableaux de bord, alertes, commandes, statistiques</td><td>non</td><td class="yes">oui</td></tr>
+            <tr><td>Modifier le matériel et les réglages</td><td>non</td><td class="yes">oui</td></tr>
+            <tr><td>Corriger, sauvegarder, tout effacer</td><td>non</td><td class="yes">oui</td></tr>
+          </tbody>
+        </table></div>
+      </section>
+
+      <section class="section" id="savoir" aria-labelledby="bon">
+        <h2 id="bon" class="doc-h2">Bon à savoir</h2>
+        <ul class="rows">
+          <li><h3>Hors connexion</h3><p>Les saisies restent sur le téléphone et partent dès le retour du réseau.</p></li>
+          <li><h3>Pause du projet</h3><p>Supabase met en pause un projet gratuit resté 7 jours sans activité. Cliquez sur <strong>Restore project</strong> : rien n’est perdu.</p></li>
+          <li><h3>Sauvegardes</h3><p>Dans <strong>Réglages › Sauvegarde et remise à zéro</strong>, exportez le fichier une fois par mois.</p></li>
+          <li><h3>Mises à jour</h3><p>Elles arrivent seules : les téléphones prennent la nouvelle version à la prochaine ouverture.</p></li>
+        </ul>
+      </section>
+    </div>
+  </div>
+</main>
+
+<footer class="footer">
+  <div class="container">
+    <p class="footer-line">Conçu sur le terrain, dans un CAARUD.</p>
+    <div class="footer-grid">
+      <ul>
+        <li><a href="./">Accueil</a></li>
+        <li><a href="https://stockaarud.github.io/stockaarud/">Ouvrir l’appli</a></li>
+        <li><a href="https://github.com/Stockaarud/stockaarud#readme">Le guide complet sur GitHub</a></li>
+        <li><a href="./#contact">Nous écrire</a></li>
+        <li><a href="https://github.com/Stockaarud/stockaarud/issues">Signaler un problème</a></li>
+      </ul>
+      <p><small>Contact : <a href="mailto:stockaarud@proton.me">stockaarud@proton.me</a>. Les captures montrent des données fictives.</small></p>
+    </div>
+  </div>
+</footer>
+<script>window.hallmarkSlots = (m) => { for (const [k, v] of Object.entries(m)) { const s = document.querySelector(`[data-slot="${k}"]`); if (!s) continue; const im = new Image(); im.src = typeof v === 'string' ? v : v.src; im.alt = (typeof v === 'object' && v.alt) || s.dataset.alt || ''; s.querySelectorAll(':scope > img').forEach((o) => o.remove()); s.prepend(im); } };
+document.querySelectorAll('[data-slot] img').forEach((i) => { if (i.complete && !i.naturalWidth) i.remove(); else i.addEventListener('error', () => i.remove(), { once: true }); });</script>
+</body>
+</html>
