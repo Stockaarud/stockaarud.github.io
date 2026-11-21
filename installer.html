@@ -26,24 +26,28 @@
     <nav class="nav sheet" aria-label="Principale">
       <a class="wordmark" href="./" aria-label="Stockaarud, accueil"><img src="img/icon.png" width="40" height="40" alt=""><img class="wm" src="img/wordmark.png" width="1133" height="115" alt=""></a>
       <ul class="nav-links">
+        <li class="nav-link"><a href="./">Accueil</a></li>
         <li class="nav-link"><a href="installer.html" aria-current="page">Installer</a></li>
-        <li class="nav-link"><a href="demo/">Démo</a></li>
+        <li class="nav-link"><a href="guide.html">Guide</a></li>
+        <li class="nav-link"><a href="demo/" target="_blank" rel="noopener">Démo</a></li>
         <li class="nav-link"><a href="questions.html">Questions</a></li>
         <li class="nav-link"><a href="./#contact">Contact</a></li>
-        <li><a class="btn btn--primary btn--nav" href="https://stockaarud.github.io/stockaarud/">Ouvrir l’appli</a></li>
+        <li><a class="btn btn--primary btn--nav" href="https://stockaarud.github.io/stockaarud/" target="_blank" rel="noopener">Ouvrir l’appli</a></li>
       </ul>
       <details class="nav-menu">
         <summary aria-label="Menu"><span class="burger" aria-hidden="true"><i></i><i></i><i></i></span>Menu</summary>
         <div class="nav-drop sheet">
           <ul>
+            <li><a href="./">Accueil</a></li>
             <li><a href="installer.html" aria-current="page">Installer</a></li>
-            <li><a href="demo/">Démo</a></li>
+            <li><a href="guide.html">Guide</a></li>
+            <li><a href="demo/" target="_blank" rel="noopener">Démo</a></li>
             <li><a href="questions.html">Questions</a></li>
-            <li><a href="docs/guide-installation-stockaarud.pdf">Guide PDF</a></li>
+            <li><a href="docs/guide-stockaarud.pdf">Guide PDF</a></li>
             <li><a href="./#contact">Contact</a></li>
             <li><a href="https://github.com/Stockaarud/stockaarud">Code source</a></li>
           </ul>
-          <a class="btn btn--primary" href="https://stockaarud.github.io/stockaarud/">Ouvrir l’appli</a>
+          <a class="btn btn--primary" href="https://stockaarud.github.io/stockaarud/" target="_blank" rel="noopener">Ouvrir l’appli</a>
         </div>
       </details>
     </nav>
@@ -58,7 +62,7 @@
       <p class="lead">Quinze minutes sur un ordinateur, un compte Supabase gratuit, rien à télécharger, aucun mot de passe à retenir.</p>
       <div class="actions">
         <a class="btn btn--primary" href="#base">Commencer l’installation</a>
-        <a class="btn btn--secondary" href="docs/guide-installation-stockaarud.pdf" download>Le guide en PDF</a>
+        <a class="btn btn--secondary" href="docs/guide-stockaarud.pdf" download>Le guide complet en PDF</a>
       </div>
       </div>
       <div class="sheet sheet--fluoro need screen-only" style="--r: 2deg">
@@ -81,7 +85,6 @@
         <li><a href="#brancher">L’appli</a></li>
         <li><a href="#guidee">Installation guidée</a></li>
         <li><a href="#inviter">L’équipe</a></li>
-        <li><a href="#quotidien">Au quotidien</a></li>
         <li><a href="#savoir">Bon à savoir</a></li>
       </ol>
     </nav>
@@ -102,7 +105,7 @@
         <li class="step" id="preparer">
           <h2>Installer les tables</h2>
           <div class="step-body">
-            <p>Ouvrez <a href="https://stockaarud.github.io/stockaarud/">l’appli</a> sur l’ordinateur : l’écran <strong>Installer Stockaarud pour mon CAARUD</strong> a un bouton pour chaque étape.</p>
+            <p>Ouvrez <a href="https://stockaarud.github.io/stockaarud/" target="_blank" rel="noopener">l’appli</a> sur l’ordinateur : l’écran <strong>Installer Stockaarud pour mon CAARUD</strong> a un bouton pour chaque étape.</p>
             <ol>
               <li><strong>Copier le script</strong>, puis <strong>Ouvrir l’éditeur SQL</strong>.</li>
               <li>Collez, cliquez sur <strong>Run</strong>.</li>
@@ -157,30 +160,9 @@
       <div class="sheet sheet--wall done screen-only">
         <p class="done-t">C’est installé.</p>
         <p>Votre équipe peut noter sa première sortie.</p>
-        <div class="actions"><a class="btn btn--primary" href="https://stockaarud.github.io/stockaarud/">Ouvrir l’appli</a><a class="btn btn--secondary" href="./#contact">Un souci ? Écrivez-nous</a></div>
+        <div class="actions"><a class="btn btn--primary" href="https://stockaarud.github.io/stockaarud/" target="_blank" rel="noopener">Ouvrir l’appli</a><a class="btn btn--secondary" href="guide.html">Lire le guide d’utilisation</a></div>
+        <p>Un souci ? <a href="./#contact">Écrivez-nous</a>.</p>
       </div>
-
-      <section class="qsheet qsheet--top screen-only" id="quotidien" aria-labelledby="auquotidien">
-        <h2 id="auquotidien" class="doc-h2">Au quotidien</h2>
-        <div class="vids">
-          <div class="vid-item"><h3>Noter une sortie en 3 clics</h3><p>Ce que fait l’équipe, en maraude ou à l’accueil.</p><figure class="sheet shot shot--vid screen-only" style="--r: -1deg"><video controls muted playsinline preload="none" poster="video/tuto-sortie.jpg" width="600" height="1300" aria-label="Vidéo, 15 s : noter une sortie"><source src="video/tuto-sortie.mp4" type="video/mp4"></video><figcaption>Vidéo, 15 s : noter une sortie</figcaption></figure></div>
-          <div class="vid-item"><h3>Le tableau de bord et les statistiques</h3><p>Ce que voit le responsable stock.</p><figure class="sheet shot shot--vid screen-only" style="--r: 1.2deg"><video controls muted playsinline preload="none" poster="video/tuto-stats.jpg" width="600" height="1300" aria-label="Vidéo, 24 s : alertes, autonomie, statistiques et ruptures"><source src="video/tuto-stats.mp4" type="video/mp4"></video><figcaption>Vidéo, 24 s : alertes, autonomie, statistiques et ruptures</figcaption></figure></div>
-        </div>
-      </section>
-
-      <section class="section" id="roles" aria-labelledby="qui">
-        <h2 id="qui" class="doc-h2">Une équipe de choc</h2>
-        <div class="typed sheet"><table class="table">
-          <thead><tr><th scope="col">Action</th><th scope="col">Équipe</th><th scope="col">Responsable stock</th></tr></thead>
-          <tbody>
-            <tr><td>Noter une sortie, un retour, une perte</td><td class="yes">oui</td><td class="yes">oui</td></tr>
-            <tr><td>Voir le stock</td><td class="yes">oui</td><td class="yes">oui</td></tr>
-            <tr><td>Tableaux de bord, alertes, commandes, statistiques</td><td>non</td><td class="yes">oui</td></tr>
-            <tr><td>Modifier le matériel et les réglages</td><td>non</td><td class="yes">oui</td></tr>
-            <tr><td>Corriger, sauvegarder, tout effacer</td><td>non</td><td class="yes">oui</td></tr>
-          </tbody>
-        </table></div>
-      </section>
 
       <section class="qsheet qsheet--top" id="savoir" aria-labelledby="bon">
         <h2 id="bon" class="doc-h2">Bon à savoir</h2>
@@ -201,11 +183,12 @@
     <div class="footer-grid">
       <ul>
         <li><a href="./">Accueil</a></li>
-        <li><a href="demo/">Essayer la démo</a></li>
+        <li><a href="demo/" target="_blank" rel="noopener">Essayer la démo</a></li>
         <li><a href="questions.html">Qui, vos données, vos questions</a></li>
         <li><a href="https://wa.me/?text=Le%20guide%20pour%20installer%20Stockaarud%20dans%20ton%20CAARUD%20%28gratuit%2C%2015%20minutes%29%20%3A%20https%3A//stockaarud.github.io/installer.html" target="_blank" rel="noopener">Partager sur WhatsApp</a></li>
-        <li><a href="https://stockaarud.github.io/stockaarud/">Ouvrir l’appli</a></li>
-        <li><a href="docs/guide-installation-stockaarud.pdf">Le guide d’installation (PDF)</a></li>
+        <li><a href="https://stockaarud.github.io/stockaarud/" target="_blank" rel="noopener">Ouvrir l’appli</a></li>
+        <li><a href="guide.html">Le guide d’utilisation</a></li>
+        <li><a href="docs/guide-stockaarud.pdf">Le guide complet (PDF)</a></li>
         <li><a href="https://github.com/Stockaarud/stockaarud#readme">Le guide complet sur GitHub</a></li>
         <li><a href="./#contact">Nous écrire</a></li>
         <li><a href="https://github.com/Stockaarud/stockaarud/issues">Signaler un problème</a></li>

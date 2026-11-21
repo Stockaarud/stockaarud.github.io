@@ -393,3 +393,34 @@ html { scroll-behavior: smooth; }
 .section:has(.penbox) + .section:has(.penbox) { padding-top: var(--space-xl); }
 @media (max-width: 40rem) { .penbox { padding: var(--space-lg) var(--space-md); } }
 @media print { .penbox .pen { display: none; } .penbox { padding: 0; } }
+
+/* Guide d'utilisation */
+.guide-part { margin-top: var(--space-3xl); }
+.guide-part .steps { margin-top: var(--space-lg); }
+.part-h { font-size: clamp(2.5rem, 3vw + 1.25rem, 4.5rem); }
+.part-lead { margin: var(--space-sm) 0 0; max-width: 60ch; }
+.rows--tight { margin: 0; border-top: 1px solid var(--color-ink); }
+.rows--tight > div { padding-block: var(--space-sm); gap: var(--space-md); }
+.rows--tight dt { font-size: var(--text-body); }
+#roles .typed { margin-top: var(--space-lg); }
+
+/* Transitions entre pages et vers les ancres */
+@media (prefers-reduced-motion: no-preference) {
+  html { scroll-behavior: smooth; }
+  @view-transition { navigation: auto; }
+  ::view-transition-old(root) { animation: 180ms ease-in both pageOut; }
+  ::view-transition-new(root) { animation: 260ms ease-out both pageIn; }
+  @keyframes pageOut { to { opacity: 0; translate: 0 -8px; } }
+  @keyframes pageIn { from { opacity: 0; translate: 0 12px; } }
+  :target { animation: targetIn 700ms ease-out; }
+  @keyframes targetIn { from { outline: 3px solid var(--color-accent); outline-offset: 6px; } to { outline: 3px solid transparent; outline-offset: 6px; } }
+}
+html { scroll-padding-top: calc(var(--space-3xl) + var(--space-lg)); }
+@media (max-width: 75rem) { .nav-links { display: none !important; } .nav-menu { display: block; } }
+@media print {
+  #equipe, #gestion, #roles { break-before: page; margin-top: 0; }
+  .doc-h2, .part-h, .part-lead { break-after: avoid; }
+  .qsheet { break-inside: auto; }
+  .rows li, .rows--dl > div { break-inside: avoid; }
+}
+.done a:not(.btn) { color: inherit; }

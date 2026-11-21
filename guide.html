@@ -1,0 +1,274 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Le guide d’utilisation de Stockaarud</title>
+<meta name="description" content="Tout ce que fait Stockaarud, écran par écran : noter les sorties, suivre l’autonomie du stock, commander, faire l’inventaire et sortir les statistiques.">
+<meta name="theme-color" content="#1f4d3a">
+<meta property="og:type" content="article">
+<meta property="og:locale" content="fr_FR">
+<meta property="og:site_name" content="Stockaarud">
+<meta property="og:url" content="https://stockaarud.github.io/guide.html">
+<meta property="og:title" content="Le guide d’utilisation de Stockaarud">
+<meta property="og:description" content="Tout ce que fait Stockaarud, écran par écran, pour l’équipe et pour le responsable stock.">
+<meta property="og:image" content="https://stockaarud.github.io/img/og-stockaarud.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="627">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="img/icon.png">
+<link rel="stylesheet" href="site.css">
+</head>
+<body class="fibre">
+
+<header class="nav-wrap">
+  <div class="container">
+    <nav class="nav sheet" aria-label="Principale">
+      <a class="wordmark" href="./" aria-label="Stockaarud, accueil"><img src="img/icon.png" width="40" height="40" alt=""><img class="wm" src="img/wordmark.png" width="1133" height="115" alt=""></a>
+      <ul class="nav-links">
+        <li class="nav-link"><a href="./">Accueil</a></li>
+        <li class="nav-link"><a href="installer.html">Installer</a></li>
+        <li class="nav-link"><a href="guide.html" aria-current="page">Guide</a></li>
+        <li class="nav-link"><a href="demo/" target="_blank" rel="noopener">Démo</a></li>
+        <li class="nav-link"><a href="questions.html">Questions</a></li>
+        <li class="nav-link"><a href="./#contact">Contact</a></li>
+        <li><a class="btn btn--primary btn--nav" href="https://stockaarud.github.io/stockaarud/" target="_blank" rel="noopener">Ouvrir l’appli</a></li>
+      </ul>
+      <details class="nav-menu">
+        <summary aria-label="Menu"><span class="burger" aria-hidden="true"><i></i><i></i><i></i></span>Menu</summary>
+        <div class="nav-drop sheet">
+          <ul>
+            <li><a href="./">Accueil</a></li>
+            <li><a href="installer.html">Installer</a></li>
+            <li><a href="guide.html" aria-current="page">Guide</a></li>
+            <li><a href="demo/" target="_blank" rel="noopener">Démo</a></li>
+            <li><a href="questions.html">Questions</a></li>
+            <li><a href="docs/guide-stockaarud.pdf">Guide PDF</a></li>
+            <li><a href="./#contact">Contact</a></li>
+            <li><a href="https://github.com/Stockaarud/stockaarud">Code source</a></li>
+          </ul>
+          <a class="btn btn--primary" href="https://stockaarud.github.io/stockaarud/" target="_blank" rel="noopener">Ouvrir l’appli</a>
+        </div>
+      </details>
+    </nav>
+  </div>
+</header>
+
+<main>
+  <section class="doc-hero" aria-labelledby="titre">
+    <div class="container doc-hero-grid">
+      <div class="doc-hero-text">
+      <h1 id="titre" class="h1-wide">Le guide d’utilisation</h1>
+      <p class="lead">Tout ce que fait Stockaarud, écran par écran : pour l’équipe qui note les sorties, pour le responsable stock qui commande et suit les chiffres.</p>
+      <div class="actions">
+        <a class="btn btn--primary" href="docs/guide-stockaarud.pdf" download>Le guide complet en PDF</a>
+        <a class="btn btn--secondary" href="demo/" target="_blank" rel="noopener">Essayer dans la démo</a>
+      </div>
+      </div>
+      <div class="sheet sheet--fluoro need screen-only" style="--r: 2deg">
+        <p class="need-t">Le PDF contient</p>
+        <ul>
+          <li>L’installation, pas à pas</li>
+          <li>Ce guide d’utilisation</li>
+          <li>Qui peut faire quoi</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <div class="container doc">
+    <nav class="toc sheet" aria-label="Sommaire">
+      <ol>
+        <li><a href="#quotidien">Au quotidien</a></li>
+        <li><a href="#equipe">L’équipe</a></li>
+        <li><a href="#gestion">Le responsable stock</a></li>
+        <li><a href="#roles">Qui peut faire quoi</a></li>
+      </ol>
+    </nav>
+
+    <div>
+      <div id="print-install" hidden></div>
+
+      <section class="qsheet qsheet--top screen-only" id="quotidien" aria-labelledby="auquotidien">
+        <h2 id="auquotidien" class="doc-h2">Au quotidien</h2>
+        <div class="vids">
+          <div class="vid-item"><h3>Noter une sortie en 3 clics</h3><p>Ce que fait l’équipe, en maraude ou à l’accueil.</p><figure class="sheet shot shot--vid" style="--r: -1deg"><video controls muted playsinline preload="none" poster="video/tuto-sortie.jpg" width="600" height="1300" aria-label="Vidéo, 15 s : noter une sortie"><source src="video/tuto-sortie.mp4" type="video/mp4"></video><figcaption>Vidéo, 15 s : noter une sortie</figcaption></figure></div>
+          <div class="vid-item"><h3>Le tableau de bord et les statistiques</h3><p>Ce que voit le responsable stock.</p><figure class="sheet shot shot--vid" style="--r: 1.2deg"><video controls muted playsinline preload="none" poster="video/tuto-stats.jpg" width="600" height="1300" aria-label="Vidéo, 24 s : alertes, autonomie, statistiques et ruptures"><source src="video/tuto-stats.mp4" type="video/mp4"></video><figcaption>Vidéo, 24 s : alertes, autonomie, statistiques et ruptures</figcaption></figure></div>
+        </div>
+      </section>
+
+      <section class="guide-part" id="equipe" aria-labelledby="t-equipe">
+        <h2 id="t-equipe" class="doc-h2 part-h">L’équipe</h2>
+        <p class="part-lead">Ce que fait chaque personne qui distribue du matériel, depuis son téléphone.</p>
+      <ol class="steps">
+        <li class="step" id="sortie">
+          <h2>Noter une sortie</h2>
+          <div class="step-body">
+            <p>Trois touches, debout au stock ou en maraude.</p>
+            <ol>
+              <li><strong>Pour quoi ?</strong> L’activité : accueil, maraude, festif… Elle reste choisie toute la journée.</li>
+              <li><strong>Quel matos ?</strong> Le produit. Les plus utilisés pour cette activité sont en haut, et la recherche comprend « capotes » ou « paille ».</li>
+              <li><strong>Combien ?</strong> Tapez le nombre, ou touchez +5, +10, +20, +50 autant de fois qu’il faut. En unités, boîtes ou cartons : l’appli convertit. Puis <strong>Valider</strong>.</li>
+            </ol>
+            <p>Une estimation honnête suffit : pas besoin de compter au carton près.</p>
+          </div>
+          <figure class="sheet shot shot--setup" style="--r: -1deg"><div data-slot="g-combien" data-kind="product" data-alt="L’écran Combien : la quantité, les boutons +5, +10, +20, +50 et Valider."><img src="img/guide/combien.jpg" width="780" height="1688" alt="L’écran Combien : la quantité, les boutons +5, +10, +20, +50 et Valider." loading="lazy"></div></figure>
+        </li>
+        <li class="step" id="activite">
+          <h2>Changer d’activité</h2>
+          <div class="step-body">
+            <p>Les flèches, ou un glissement du doigt, passent d’une activité à l’autre. L’écran prend la couleur de l’activité : on voit d’un coup d’œil pour quoi on note.</p>
+            <p><strong>Voir toutes les activités</strong> ouvre la liste complète, avec le prêt ou don à une asso et la perte ou casse.</p>
+          </div>
+          <figure class="sheet shot shot--setup" style="--r: 1.2deg"><div data-slot="g-equipe" data-kind="product" data-alt="L’écran équipe : l’activité Maraude choisie avec ses flèches, puis les produits les plus utilisés."><img src="img/guide/equipe.jpg" width="780" height="1688" alt="L’écran équipe : l’activité Maraude choisie avec ses flèches, puis les produits les plus utilisés." loading="lazy"></div></figure>
+        </li>
+        <li class="step step--full" id="cas">
+          <h2>Les autres cas</h2>
+          <div class="step-body">
+            <dl class="rows--dl rows--tight">
+              <div><dt>Casse, perte, périmé</dt><dd>Choisissez <strong>Perte / casse</strong> comme activité.</dd></div>
+              <div><dt>Prêt ou don à une asso</dt><dd>Choisissez <strong>Prêt / don à une asso</strong>. Quand l’asso rend le matériel, touchez <strong>Rendu</strong>.</dd></div>
+              <div><dt>Du matériel revient</dt><dd>Dans <strong>Mes saisies d’aujourd’hui</strong>, touchez <strong>J’en ramène</strong> : la sortie d’origine est réduite, les statistiques restent justes.</dd></div>
+              <div><dt>Une erreur</dt><dd>Dans <strong>Mes saisies d’aujourd’hui</strong>, touchez <strong>Annuler</strong>.</dd></div>
+              <div><dt>Une livraison arrive</dt><dd><strong>Une livraison est arrivée ?</strong> en bas de l’écran : touchez le produit et indiquez ce qui est arrivé.</dd></div>
+              <div><dt>Il n’y en a plus</dt><dd>Dans l’écran Combien, <strong>Il n’y en a plus</strong> prévient le responsable stock.</dd></div>
+              <div><dt>Un produit manque</dt><dd>Cherchez-le, puis <strong>Signaler au responsable stock</strong>.</dd></div>
+              <div><dt>Pas de réseau</dt><dd>Notez quand même : tout part dès que le réseau revient.</dd></div>
+            </dl>
+          </div>
+          
+        </li>
+        <li class="step" id="plusieurs">
+          <h2>Travailler dans plusieurs CAARUD</h2>
+          <div class="step-body">
+            <p>Scannez une fois le QR code de chaque CAARUD. Le nom du CAARUD où vous êtes s’affiche dans la bande verte en haut ; <strong>Changer</strong> passe de l’un à l’autre sans retaper de code.</p>
+            <p>Les sorties notées hors connexion restent rattachées à leur CAARUD.</p>
+            <p>Sur iPhone, si l’appli est sur l’écran d’accueil, scanner un QR code ouvre Safari : collez plutôt le lien d’invitation dans <strong>Ajouter un autre CAARUD</strong>.</p>
+          </div>
+          <figure class="sheet shot shot--setup" style="--r: -1.2deg"><div data-slot="g-caarud" data-kind="product" data-alt="La liste Mes CAARUD : le CAARUD actuel, un deuxième CAARUD, et Ajouter un autre CAARUD."><img src="img/guide/caarud.jpg" width="780" height="1688" alt="La liste Mes CAARUD : le CAARUD actuel, un deuxième CAARUD, et Ajouter un autre CAARUD." loading="lazy"></div></figure>
+        </li>
+      </ol>
+      </section>
+
+      <section class="guide-part" id="gestion" aria-labelledby="t-gestion">
+        <h2 id="t-gestion" class="doc-h2 part-h">Le responsable stock</h2>
+        <p class="part-lead">Le bouton <strong>Gestion</strong>, en haut de l’appli, ouvre l’espace du responsable stock.</p>
+      <ol class="steps">
+        <li class="step" id="bord">
+          <h2>Tableau de bord</h2>
+          <div class="step-body">
+            <p>Les alertes d’abord : les produits qui seront épuisés avant la prochaine livraison.</p>
+            <p>Puis l’<strong>autonomie</strong> de chaque produit, en jours, du plus urgent au moins urgent. Touchez un produit pour voir son stock, sa consommation par semaine, son point de commande, ou corriger le stock.</p>
+            <p>Aussi : le budget dépensé dans l’année, les sorties et leur coût par activité sur 30 jours, et les exports en tableur (mouvements, totaux de l’année).</p>
+          </div>
+          <figure class="sheet shot shot--setup" style="--r: 1deg"><div data-slot="g-bord" data-kind="product" data-alt="Le tableau de bord : deux alertes, les produits à commander, le budget et l’autonomie du stock."><img src="img/guide/bord.jpg" width="780" height="1688" alt="Le tableau de bord : deux alertes, les produits à commander, le budget et l’autonomie du stock." loading="lazy"></div></figure>
+        </li>
+        <li class="step" id="commandes">
+          <h2>Commandes</h2>
+          <div class="step-body">
+            <p>L’appli propose une commande par fournisseur, arrondie au carton. <strong>Comment ce chiffre est calculé</strong> détaille le calcul ; la prévision sur 3 mois dit en clair si la quantité suffit.</p>
+            <p>Le <strong>bon de commande</strong> est prêt à copier ou en tableur, avec les références et le montant estimé.</p>
+            <p>Enregistrez la commande : à la livraison, l’équipe ou vous indiquez ce qui est arrivé, avec la date de péremption si besoin.</p>
+          </div>
+          <figure class="sheet shot shot--setup" style="--r: -1deg"><div data-slot="g-cmd" data-kind="product" data-alt="La commande proposée : chaque produit avec sa quantité, et le bouton Commander celui-ci."><img src="img/guide/cmd.jpg" width="780" height="1688" alt="La commande proposée : chaque produit avec sa quantité, et le bouton Commander celui-ci." loading="lazy"></div></figure>
+        </li>
+        <li class="step" id="stats">
+          <h2>Statistiques</h2>
+          <div class="step-body">
+            <p>Douze vues : consommation, camemberts par dossier, évolution des pratiques, cohérence des kits, par activité, jours forts, budget, année contre an dernier, météo du stock, ruptures, produits dormants, chiffres de l’année.</p>
+            <p>Pour tout le CAARUD, ou pour une ou plusieurs activités. Sur 3 mois, 6 mois ou un an, par produit ou par catégorie, en unités ou en euros.</p>
+            <p><strong>Imprimer</strong> sort un PDF avec le tableau de consommation par mois, prêt pour le rapport d’activité.</p>
+          </div>
+          <figure class="sheet shot shot--setup" style="--r: 1.2deg"><div data-slot="g-stats" data-kind="product" data-alt="Les statistiques : le choix de l’activité, de la période, et la courbe de consommation."><img src="img/guide/stats.jpg" width="780" height="1688" alt="Les statistiques : le choix de l’activité, de la période, et la courbe de consommation." loading="lazy"></div></figure>
+        </li>
+        <li class="step" id="previsions">
+          <h2>Prévisions</h2>
+          <div class="step-body">
+            <p>Les 3 prochains mois selon trois hypothèses : le rythme actuel, comme l’an dernier, ou une hausse ou baisse que vous fixez. L’appli compte les commandes à prévoir, leur coût et les ruptures possibles.</p>
+            <p><strong>Et si je commande</strong> : changez une quantité ou une date, la courbe du stock suit.</p>
+          </div>
+          <figure class="sheet shot shot--setup" style="--r: -1deg"><div data-slot="g-prev" data-kind="product" data-alt="Les prévisions : commandes à prévoir, coût estimé et la courbe du stock prévu."><img src="img/guide/prev.jpg" width="780" height="1688" alt="Les prévisions : commandes à prévoir, coût estimé et la courbe du stock prévu." loading="lazy"></div></figure>
+        </li>
+        <li class="step" id="mouvements">
+          <h2>Mouvements</h2>
+          <div class="step-body">
+            <p><strong>Entrée hors commande</strong> : un don, un retour d’activité, du matériel rendu ou emprunté à une asso, avec la péremption si besoin.</p>
+            <p>Les prêts et emprunts à rendre sont listés à part.</p>
+            <p>Le <strong>journal</strong> garde chaque mouvement, sans prénom. Une ligne se modifie ou se supprime ; les corrections restent signalées.</p>
+          </div>
+          <figure class="sheet shot shot--setup" style="--r: 1deg"><div data-slot="g-mvt" data-kind="product" data-alt="L’écran Mouvements : le formulaire d’entrée hors commande."><img src="img/guide/mvt.jpg" width="780" height="1688" alt="L’écran Mouvements : le formulaire d’entrée hors commande." loading="lazy"></div></figure>
+        </li>
+        <li class="step" id="inventaire">
+          <h2>Inventaire</h2>
+          <div class="step-body">
+            <p>Produit par produit, l’appli affiche le stock théorique : tapez ce que vous comptez, <strong>Valider et suivant</strong>. Ou tout sur une page.</p>
+            <p>Les écarts sont enregistrés et les inventaires passés restent consultables. Téléchargez ensuite la sauvegarde : l’appli vous le rappelle.</p>
+          </div>
+          <figure class="sheet shot shot--setup" style="--r: -1.2deg"><div data-slot="g-inv" data-kind="product" data-alt="L’inventaire guidé : un produit, son stock théorique, Valider et suivant."><img src="img/guide/inv.jpg" width="780" height="1688" alt="L’inventaire guidé : un produit, son stock théorique, Valider et suivant." loading="lazy"></div></figure>
+        </li>
+        <li class="step" id="reglages">
+          <h2>Réglages</h2>
+          <div class="step-body">
+            <dl class="rows--dl rows--tight">
+              <div><dt>Inviter l’équipe</dt><dd>Un lien et un QR code, à envoyer par WhatsApp ou par e-mail, et la fiche équipe en PDF.</dd></div>
+              <div><dt>Accès et appareils</dt><dd>Ajouter un responsable stock. Un téléphone perdu : <strong>Retirer l’accès de toute l’équipe</strong>, puis donnez un nouveau code.</dd></div>
+              <div><dt>Stocks et organisation</dt><dd>Le nom de la structure, le stock central et les stocks intermédiaires, avec un schéma à imprimer.</dd></div>
+              <div><dt>Points de distribution</dt><dd>Les activités ; une date de fin en fait un point temporaire, pour un festival.</dd></div>
+              <div><dt>Partenaires et fournisseurs</dt><dd>Les assos pour les prêts et dons, les fournisseurs avec leur délai.</dd></div>
+              <div><dt>Saisonnalité</dt><dd>Une hausse l’été ou une baisse pendant une fermeture change les quantités proposées.</dd></div>
+              <div><dt>Matériel</dt><dd>Contenance du carton, prix, synonymes, photo. Une base RdR de départ est prête à activer.</dd></div>
+            </dl>
+          </div>
+          <figure class="sheet shot shot--setup" style="--r: 1deg"><div data-slot="g-reg" data-kind="product" data-alt="Les réglages, rangés en parties repliables."><img src="img/guide/reg.jpg" width="780" height="1688" alt="Les réglages, rangés en parties repliables." loading="lazy"></div></figure>
+        </li>
+      </ol>
+      </section>
+
+      <section class="section guide-part" id="roles" aria-labelledby="qui">
+        <h2 id="qui" class="doc-h2">Qui peut faire quoi</h2>
+        <div class="typed sheet"><table class="table">
+          <thead><tr><th scope="col">Action</th><th scope="col">Équipe</th><th scope="col">Responsable stock</th></tr></thead>
+          <tbody>
+            <tr><td>Noter une sortie, un retour, une perte</td><td class="yes">oui</td><td class="yes">oui</td></tr>
+            <tr><td>Voir le stock</td><td class="yes">oui</td><td class="yes">oui</td></tr>
+            <tr><td>Tableaux de bord, alertes, commandes, statistiques</td><td>non</td><td class="yes">oui</td></tr>
+            <tr><td>Modifier le matériel et les réglages</td><td>non</td><td class="yes">oui</td></tr>
+            <tr><td>Corriger, sauvegarder, tout effacer</td><td>non</td><td class="yes">oui</td></tr>
+          </tbody>
+        </table></div>
+      </section>
+
+      <div class="sheet sheet--wall done screen-only">
+        <p class="done-t">À vous d’essayer.</p>
+        <p>La démo a un an de données fictives : rien à installer, rien n’est envoyé.</p>
+        <div class="actions"><a class="btn btn--primary" href="demo/" target="_blank" rel="noopener">Ouvrir la démo</a><a class="btn btn--secondary" href="installer.html">Installer pour mon CAARUD</a></div>
+      </div>
+    </div>
+  </div>
+</main>
+
+<footer class="footer">
+  <div class="container">
+    <div class="footer-grid">
+      <ul>
+        <li><a href="./">Accueil</a></li>
+        <li><a href="demo/" target="_blank" rel="noopener">Essayer la démo</a></li>
+        <li><a href="questions.html">Qui, vos données, vos questions</a></li>
+        <li><a href="https://wa.me/?text=Le%20guide%20pour%20installer%20Stockaarud%20dans%20ton%20CAARUD%20%28gratuit%2C%2015%20minutes%29%20%3A%20https%3A//stockaarud.github.io/installer.html" target="_blank" rel="noopener">Partager sur WhatsApp</a></li>
+        <li><a href="https://stockaarud.github.io/stockaarud/" target="_blank" rel="noopener">Ouvrir l’appli</a></li>
+        <li><a href="guide.html">Le guide d’utilisation</a></li>
+        <li><a href="docs/guide-stockaarud.pdf">Le guide complet (PDF)</a></li>
+        <li><a href="https://github.com/Stockaarud/stockaarud#readme">Le guide complet sur GitHub</a></li>
+        <li><a href="./#contact">Nous écrire</a></li>
+        <li><a href="https://github.com/Stockaarud/stockaarud/issues">Signaler un problème</a></li>
+      </ul>
+      <p><small>Contact : <a href="mailto:stockaarud@proton.me">stockaarud@proton.me</a>. Les captures montrent des données fictives.</small></p>
+    </div>
+  </div>
+</footer>
+<script>window.hallmarkSlots = (m) => { for (const [k, v] of Object.entries(m)) { const s = document.querySelector(`[data-slot="${k}"]`); if (!s) continue; const im = new Image(); im.src = typeof v === 'string' ? v : v.src; im.alt = (typeof v === 'object' && v.alt) || s.dataset.alt || ''; s.querySelectorAll(':scope > img').forEach((o) => o.remove()); s.prepend(im); } };
+document.querySelectorAll('[data-slot] img').forEach((i) => { if (i.complete && !i.naturalWidth) i.remove(); else i.addEventListener('error', () => i.remove(), { once: true }); });</script>
+<script>if(!matchMedia('(prefers-reduced-motion: reduce)').matches)document.addEventListener('pointerdown',(e)=>{const t=e.target.closest&&e.target.closest('a,button,summary,.tab');if(!t)return;const d=document.createElement('span');d.className='tapfx';d.style.left=e.clientX+'px';d.style.top=e.clientY+'px';document.body.appendChild(d);setTimeout(()=>d.remove(),500)},{passive:true});
+document.addEventListener('click',(e)=>{const m=document.querySelector('.nav-menu[open]');if(m&&(!m.contains(e.target)||e.target.closest('.nav-drop a')))m.open=false});</script>
+</body>
+</html>
