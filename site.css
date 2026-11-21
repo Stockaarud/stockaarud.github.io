@@ -1,6 +1,6 @@
 /* Hallmark · shape: Narrative Workflow (accueil), Long Document (installer) · genre: playful · theme: Paste-up (manual, chosen by the user from the style sheet) · job: try · draw: 3648d8 · brand: Stockaarud (spec from app source index.html:20-25, 2026-11-21) · pasteup: kraft
  * hero: Stage · nav: floating sheet · footer: statement · imagery: screenshots 11 (real app, local run, fictional data) + the user's film · signature: the promo film pinned on a copy sheet beside the headline
- * axes: mid/display-condensed/brand-yellow · posture: committed · contrast: pass · fold: pass · v2.0.0 */
+ * axes: mid/display-condensed/brand-yellow · posture: committed · contrast: pass · fold: pass · copy: verbatim (installer.html carries the owner’s own guide text) · v2.0.0 */
 /* Hallmark · pre-emit critique: P2 H2 E2 S2 R2 V2 · weakest: R (screens are small phones), set them on lifted copy sheets at 2x and give the desktop capture the full width */
 /* Hallmark · waive 44c · installer.html is a Banner: the guide starts its first step right under the title · Installer Stockaarud se lit étape par étape, pour chaque CAARUD */
 /* Hallmark · dismissed 58 · installer.html: the Bon à savoir rows are a reference list read one line at a time, not a screen to take in at once */
@@ -42,7 +42,7 @@ a:hover { text-decoration-thickness: 3px; }
 .wordmark img.wm { width: auto; height: 22px; }
 
 /* nav: a floating copy sheet */
-.nav-wrap { position: sticky; top: 0; z-index: var(--z-sticky-nav); padding-top: var(--space-md); }
+.nav-wrap { position: relative; z-index: var(--z-sticky-nav); padding-top: var(--space-md); }
 .nav { display: flex; align-items: center; justify-content: space-between; gap: var(--space-lg); padding: var(--space-sm) var(--space-lg); min-height: 64px; box-shadow: var(--shadow-card); }
 .nav ul { display: flex; align-items: center; gap: var(--space-lg); list-style: none; margin: 0; padding: 0; }
 .nav a:not(.wordmark) { font-size: var(--text-md); white-space: nowrap; text-decoration: none; }
@@ -60,7 +60,7 @@ a:hover { text-decoration-thickness: 3px; }
 .actions { display: flex; flex-wrap: wrap; gap: var(--space-md); }
 
 /* hero */
-.hero { min-height: calc(100svh - 96px); display: grid; align-items: center; padding-block: var(--space-2xl); }
+.hero { min-height: min(calc(100svh - 96px), 880px); display: grid; align-items: center; padding-block: var(--space-2xl); }
 .hero .container { display: grid; grid-template-columns: minmax(0, 7fr) minmax(0, 5fr); gap: var(--space-3xl); align-items: end; }
 .hero-text { display: grid; gap: var(--space-lg); }
 .hero .lead { max-width: 34ch; }
@@ -186,7 +186,8 @@ code { font-family: var(--font-body); font-weight: 700; background: var(--color-
 .contact { display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); gap: var(--space-3xl); align-items: start; }
 .contact-text { display: grid; gap: var(--space-lg); }
 .contact-form { box-shadow: 6px 6px 0 var(--color-ink); display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: var(--space-lg); padding: var(--space-2xl); }
-.field { display: grid; gap: var(--space-xs); }
+.field { display: grid; gap: var(--space-xs); min-width: 0; }
+.field input, .field select, .field textarea { width: 100%; min-width: 0; }
 .field--wide { grid-column: 1 / -1; }
 .field label { font-weight: 700; font-size: var(--text-md); }
 .field label span { font-weight: 400; color: var(--color-muted); }
@@ -200,3 +201,31 @@ code { font-family: var(--font-body); font-weight: 700; background: var(--color-
 .btn:disabled { opacity: 0.55; cursor: not-allowed; }
 @media (max-width: 60rem) { .contact { grid-template-columns: minmax(0, 1fr); gap: var(--space-xl); } }
 @media (max-width: 40rem) { .contact-form { grid-template-columns: minmax(0, 1fr); padding: var(--space-lg); } }
+
+/* the switcher: four screens of the real app, one sheet laid on the board at a time */
+.switcher { display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); gap: var(--space-3xl); align-items: center; }
+.tabs { display: grid; gap: var(--space-sm); }
+.tab { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: var(--space-md); align-items: start; text-align: left; padding: var(--space-md) var(--space-lg); border: 0; border-radius: 0; background: transparent; color: var(--color-ink); cursor: pointer; transition: background-color var(--dur-short) var(--ease-out), translate var(--dur-micro) var(--ease-out); }
+.tab:hover { background: color-mix(in oklab, var(--color-paper-3) 45%, transparent); }
+.tab[aria-selected="true"] { background: var(--color-paper-3); box-shadow: 4px 4px 0 var(--color-ink); }
+.tab:focus-visible { outline: 2px solid var(--color-focus); outline-offset: 3px; }
+.tab-n { display: inline-grid; place-items: center; min-width: 2.6rem; padding: var(--space-2xs) var(--space-xs); background: var(--color-accent); color: var(--color-accent-ink); font-family: var(--font-display); font-stretch: 62%; font-weight: 800; font-size: 2rem; line-height: 1; }
+.tab-t { display: grid; gap: var(--space-2xs); font-size: var(--text-md); }
+.tab-t b { font-family: var(--font-display); font-stretch: 62%; font-weight: 800; text-transform: uppercase; font-size: clamp(1.75rem, 1vw + 1.25rem, 2.25rem); line-height: 1; }
+.stage-area { display: grid; place-items: center; min-height: 40rem; }
+.stage-area .panel { grid-area: 1 / 1; }
+.shot--desk { width: 100%; }
+.js .panel { opacity: 0; visibility: hidden; translate: 40px 0; rotate: calc(var(--r, 0deg) + 6deg); transition: opacity var(--dur-long) var(--ease-out), translate var(--dur-long) var(--ease-out), rotate var(--dur-long) var(--ease-out), visibility 0s linear var(--dur-long); }
+.js .panel.is-on { opacity: 1; visibility: visible; translate: 0 0; rotate: var(--r, 0deg); transition-delay: 0s; }
+
+/* the one reveal: the flyers are pinned onto the wall as it comes into view */
+.js [data-wall] > .flyer { opacity: 0; translate: 0 24px; scale: 0.96; transition: opacity var(--dur-long) var(--ease-out), translate var(--dur-long) var(--ease-out), scale var(--dur-long) var(--ease-out); }
+.js [data-wall] > .flyer:nth-child(2) { transition-delay: 90ms; } .js [data-wall] > .flyer:nth-child(3) { transition-delay: 180ms; } .js [data-wall] > .flyer:nth-child(4) { transition-delay: 270ms; }
+.js [data-wall].is-in > .flyer { opacity: 1; translate: 0 0; scale: 1; }
+@media (prefers-reduced-motion: reduce) { .js .panel, .js [data-wall] > .flyer { transition: none; translate: none; scale: none; } .js .panel { rotate: var(--r, 0deg); } .js [data-wall] > .flyer { opacity: 1; } }
+@media (max-width: 60rem) {
+  .switcher { grid-template-columns: minmax(0, 1fr); gap: var(--space-xl); }
+  .tabs { grid-auto-flow: column; grid-auto-columns: minmax(15rem, 1fr); overflow-x: auto; scroll-snap-type: x mandatory; padding-bottom: var(--space-sm); }
+  .tab { scroll-snap-align: start; }
+  .stage-area { min-height: 0; }
+}

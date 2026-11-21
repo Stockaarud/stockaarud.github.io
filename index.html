@@ -10,6 +10,7 @@
 <link rel="stylesheet" href="site.css">
 </head>
 <body class="fibre">
+<script>document.documentElement.classList.add('js');</script>
 
 <header class="nav-wrap">
   <div class="container">
@@ -53,7 +54,7 @@
         <h2 id="epingler">À épingler au garage</h2>
         <p class="lead">Stockaarud en quatre feuilles.</p>
       </div>
-      <div class="wall">
+      <div class="wall" data-wall>
         <div class="sheet sheet--fluoro flyer flyer--big" style="--r: -1deg"><b>3</b><span>touches pour noter une sortie</span></div>
         <div class="sheet flyer flyer--wide"><b>15 minutes</b><span>pour l’installer, sans rien télécharger.</span></div>
         <div class="sheet flyer" style="--r: 1.5deg"><b>Hors ligne</b><span>En maraude, en festival, au fond d’un local.</span></div>
@@ -62,79 +63,29 @@
     </div>
   </section>
 
-  <section class="section" aria-label="Comment ça marche">
+  <section class="section" aria-labelledby="marche">
     <div class="container">
-      <ol class="stages">
-        <li class="stage">
-          <div class="stage-text">
-            <h2>Votre organisation, vos règles</h2>
-            <p class="lead">Un stock principal ou plusieurs, vos activités, votre matériel.</p>
-            <p>Un catalogue de départ d’environ 60 produits RdR, à décocher selon ce que vous distribuez.</p>
-          </div>
-          <figure class="sheet shot shot--phone" style="--r: 1.2deg"><div data-slot="etape-activites" data-kind="product" data-alt="L’étape « Vos activités » de l’installation guidée"><img src="img/w2.jpg" width="780" height="1688" alt="L’écran « Vos activités » de l’installation guidée : Accueil, Maraude, Festif et Permanence au local sont cochés." loading="lazy"></div></figure>
-        </li>
-        <li class="stage stage--mirror">
-          <div class="stage-text">
-            <h2>Trois touches, c’est noté</h2>
-            <ol class="taps">
-              <li>Pour quoi ?</li>
-              <li>Quel matos ?</li>
-              <li>Combien ?</li>
-            </ol>
-            <p>Sans réseau, la saisie attend sur le téléphone et part au retour de la connexion.</p>
-          </div>
-          <figure class="sheet shot shot--phone" style="--r: -1.5deg"><div data-slot="etape-saisie" data-kind="product" data-alt="La saisie d’une sortie sur téléphone"><img src="img/k3.jpg" width="780" height="1688" alt="Saisie d’une sortie : Maraude, Kits d’injection, quantité 3, bouton Valider." loading="lazy"></div></figure>
-        </li>
-        <li class="stage">
-          <div class="stage-text">
-            <h2>L’alerte avant la rupture</h2>
-            <p class="lead">Jours d’autonomie, quoi commander et combien, pour chaque produit.</p>
-          </div>
-          <figure class="sheet shot shot--phone" style="--r: 0.8deg"><div data-slot="etape-alertes" data-kind="product" data-alt="Le tableau de bord du responsable stock avec ses alertes"><img src="img/dash.jpg" width="780" height="1688" alt="Tableau de bord : alertes de commande pour les kits base et les seringues, produits à commander, budget dépensé." loading="lazy"></div></figure>
-        </li>
-        <li class="stage stage--wide">
-          <div class="stage-text">
-            <h2>Chaque rupture, datée et comptée</h2>
-            <p class="lead">Statistiques, budget et ruptures sur l’année, prêts pour le rapport d’activité.</p>
-          </div>
-          <figure class="sheet shot shot--desk"><div data-slot="etape-ruptures" data-kind="product" data-alt="L’écran Statistiques, vue Ruptures sur un an"><img src="img/desk-ruptures.jpg" width="2560" height="1600" alt="Statistiques, vue Les ruptures sur un an : produits touchés, jours de rupture cumulés, frise par produit." loading="lazy"></div><figcaption>Données fictives.</figcaption></figure>
-        </li>
-      </ol>
-    </div>
-  </section>
-
-  <section class="section" aria-labelledby="avant">
-    <div class="container">
-      <div class="typed sheet" style="--r: -0.6deg">
-        <h2 id="avant">Avant, et avec Stockaarud</h2>
-        <table class="compare">
-          <thead><tr><th scope="col">Pour</th><th scope="col">Avant</th><th scope="col">Avec Stockaarud</th></tr></thead>
-          <tbody>
-            <tr><td>Les sorties</td><td>Un cahier au garage, quand on y pense</td><td>Notées sur le téléphone, même sans réseau</td></tr>
-            <tr><td>Les commandes</td><td>Quand l’étagère est vide</td><td>Quand l’alerte dit quoi et combien</td></tr>
-            <tr><td>Le bilan</td><td>Reconstitué en fin d’année</td><td>Les chiffres de l’année, à imprimer</td></tr>
-          </tbody>
-        </table>
+      <div class="section-head">
+        <h2 id="marche">Du garage au tableau de bord</h2>
+        <p class="lead">Quatre écrans de la vraie appli, avec des données fictives.</p>
+      </div>
+      <div class="switcher">
+        <div class="tabs" role="tablist" aria-label="Les étapes">
+          <button class="tab" type="button" role="tab" id="tab-organisation" aria-controls="pan-organisation" aria-selected="true" tabindex="0"><span class="tab-n">1</span><span class="tab-t"><b>Votre organisation</b>Un stock principal ou plusieurs, vos activités, votre matériel.</span></button>
+          <button class="tab" type="button" role="tab" id="tab-saisie" aria-controls="pan-saisie" aria-selected="false" tabindex="-1"><span class="tab-n">2</span><span class="tab-t"><b>Trois touches, c’est noté</b>Pour quoi ? Quel matos ? Combien ? Même sans réseau.</span></button>
+          <button class="tab" type="button" role="tab" id="tab-alertes" aria-controls="pan-alertes" aria-selected="false" tabindex="-1"><span class="tab-n">3</span><span class="tab-t"><b>L’alerte avant la rupture</b>Quoi commander, combien, et avant quand.</span></button>
+          <button class="tab" type="button" role="tab" id="tab-chiffres" aria-controls="pan-chiffres" aria-selected="false" tabindex="-1"><span class="tab-n">4</span><span class="tab-t"><b>Les chiffres de l’année</b>Statistiques, budget et ruptures, prêts pour le rapport d’activité.</span></button>
+        </div>
+        <div class="stage-area">
+        <figure class="panel sheet shot shot--phone" role="tabpanel" id="pan-organisation" aria-labelledby="tab-organisation" style="--r: 1.2deg"><div data-slot="organisation" data-kind="product" data-alt="L’écran « Vos activités » de l’installation guidée : Accueil, Maraude, Festif et Permanence au local sont cochés."><img src="img/w2.jpg" width="780" height="1688" alt="L’écran « Vos activités » de l’installation guidée : Accueil, Maraude, Festif et Permanence au local sont cochés." loading="lazy"></div></figure>
+        <figure class="panel sheet shot shot--phone" role="tabpanel" id="pan-saisie" aria-labelledby="tab-saisie" style="--r: -1.5deg"><div data-slot="saisie" data-kind="product" data-alt="Saisie d’une sortie : Maraude, Kits d’injection, quantité 3, bouton Valider."><img src="img/k3.jpg" width="780" height="1688" alt="Saisie d’une sortie : Maraude, Kits d’injection, quantité 3, bouton Valider." loading="lazy"></div></figure>
+        <figure class="panel sheet shot shot--phone" role="tabpanel" id="pan-alertes" aria-labelledby="tab-alertes" style="--r: 1deg"><div data-slot="alertes" data-kind="product" data-alt="Tableau de bord : alertes de commande pour les kits base et les seringues, produits à commander, budget dépensé."><img src="img/dash.jpg" width="780" height="1688" alt="Tableau de bord : alertes de commande pour les kits base et les seringues, produits à commander, budget dépensé." loading="lazy"></div></figure>
+        <figure class="panel sheet shot shot--desk" role="tabpanel" id="pan-chiffres" aria-labelledby="tab-chiffres" style="--r: -0.8deg"><div data-slot="chiffres" data-kind="product" data-alt="Statistiques, vue Les ruptures sur un an : produits touchés, jours de rupture cumulés, frise par produit."><img src="img/desk-ruptures.jpg" width="2560" height="1600" alt="Statistiques, vue Les ruptures sur un an : produits touchés, jours de rupture cumulés, frise par produit." loading="lazy"></div><figcaption>Données fictives.</figcaption></figure>
+        </div>
       </div>
     </div>
   </section>
 
-  <section class="band" aria-label="Un stock ou plusieurs">
-    <div class="container">
-      <p class="band-line">Un stock ou dix : à vous de voir.</p>
-    </div>
-  </section>
-
-  <section class="section" aria-labelledby="equipe">
-    <div class="container close">
-      <div class="close-text">
-        <h2 id="equipe">L’équipe rejoint par QR code</h2>
-        <p class="lead">Pas de compte à créer : le lien branche le téléphone sur votre base.</p>
-        <div class="actions"><a class="btn btn--primary" href="installer.html">Installer pour mon CAARUD</a></div>
-      </div>
-      <figure class="sheet shot shot--phone" style="--r: 1.8deg"><div data-slot="invitation" data-kind="product" data-alt="L’écran Inviter l’équipe avec son QR code"><img src="img/inv.jpg" width="780" height="1688" alt="Écran Inviter l’équipe : un QR code, le lien, et les boutons Copier le lien, Envoyer par e-mail et Fiche équipe en PDF." loading="lazy"></div></figure>
-    </div>
-  </section>
   <section class="section" id="contact" aria-labelledby="ecrire">
     <div class="container contact">
       <div class="contact-text">
@@ -192,6 +143,26 @@
     </div>
   </div>
 </footer>
+<script>
+(() => {
+  const tabs = [...document.querySelectorAll('[role="tab"]')], panels = [...document.querySelectorAll('[role="tabpanel"]')];
+  const show = (i, focus) => {
+    tabs.forEach((t, k) => { const on = k === i; t.setAttribute('aria-selected', on); t.tabIndex = on ? 0 : -1; });
+    panels.forEach((p, k) => { p.classList.toggle('is-on', k === i); p.inert = k !== i; p.setAttribute('aria-hidden', k !== i); if (k === i) { const im = p.querySelector('img'); if (im) im.loading = 'eager'; } });
+    if (focus) tabs[i].focus();
+  };
+  tabs.forEach((t, i) => {
+    t.addEventListener('click', () => show(i));
+    t.addEventListener('keydown', (e) => { const d = { ArrowDown: 1, ArrowRight: 1, ArrowUp: -1, ArrowLeft: -1 }[e.key]; if (d) { e.preventDefault(); show((i + d + tabs.length) % tabs.length, true); } });
+  });
+  if (tabs.length) show(0);
+  const wall = document.querySelector('[data-wall]');
+  if (wall && 'IntersectionObserver' in window) {
+    const io = new IntersectionObserver((es) => es.forEach((e) => { if (e.isIntersecting) { wall.classList.add('is-in'); io.disconnect(); } }), { rootMargin: '0px 0px -15% 0px' });
+    io.observe(wall);
+  } else if (wall) wall.classList.add('is-in');
+})();
+</script>
 <script>
 document.querySelectorAll('form[data-endpoint]').forEach((form) => {
   const help = form.querySelector('[role="status"]');
