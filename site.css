@@ -362,3 +362,13 @@ html { scroll-behavior: smooth; }
 @media (max-width: 60rem) { .doc-hero-grid { grid-template-columns: minmax(0, 1fr); gap: var(--space-xl) !important; } .need { justify-self: start; } }
 @media (max-width: 40rem) { .steps .step { padding: var(--space-lg); } .done { padding: var(--space-lg); } }
 @media print { .steps { display: block; } .steps .step { background: none; box-shadow: none; padding: 5mm 0 7mm; border-top: 1px solid var(--color-ink); } .steps .step .trio { grid-column: 1 / -1; } .steps .step code { background: none; } .steps .step h2::before { box-shadow: none; } }
+
+/* questions page: each section is a sheet */
+.qsheet { background: var(--color-paper-3); box-shadow: var(--shadow-card); padding: var(--space-xl) var(--space-2xl) var(--space-2xl); margin-bottom: var(--space-xl); }
+.qsheet .doc-h2 { font-size: clamp(2.25rem, 2vw + 1.25rem, 3.5rem); }
+.qflag { background: var(--color-accent); outline: 2px solid var(--color-ink); padding: var(--space-md) var(--space-lg); font-weight: 700; max-width: none; }
+.qsheet .rows--dl { margin-top: var(--space-lg); }
+.qsheet .rows--dl > div, .qsheet .qa { border-bottom-color: var(--color-rule-2); }
+.qsheet .rows--dl > div:last-child, .qsheet .qa:last-child { border-bottom: 0; }
+.need-plain li::before { content: ""; width: 0.7em; height: 0.7em; margin-top: 0.45em; border: 0; background: var(--color-ink); }
+@media (max-width: 40rem) { .qsheet { padding: var(--space-lg); } }

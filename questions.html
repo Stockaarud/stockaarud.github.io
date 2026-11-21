@@ -53,9 +53,19 @@
 
 <main>
   <section class="doc-hero" aria-labelledby="titre">
-    <div class="container">
-      <h1 id="titre" class="h1-wide">Avant de vous lancer</h1>
-      <p class="lead">Qui fait Stockaarud, où vont vos données, et ce que ça coûte.</p>
+    <div class="container doc-hero-grid">
+      <div class="doc-hero-text">
+        <h1 id="titre" class="h1-wide">Avant de vous lancer</h1>
+        <p class="lead">Qui fait Stockaarud, où vont vos données, et ce que ça coûte.</p>
+      </div>
+      <div class="sheet sheet--fluoro need" style="--r: 2deg">
+        <p class="need-t">En bref</p>
+        <ul class="need-plain">
+          <li>Gratuit, sans abonnement</li>
+          <li>Une base par CAARUD</li>
+          <li>Aucune donnée sur les personnes accueillies</li>
+        </ul>
+      </div>
     </div>
   </section>
 
@@ -69,7 +79,7 @@
     </nav>
 
     <div>
-      <section id="qui" aria-labelledby="qui-t">
+      <section id="qui" class="qsheet" aria-labelledby="qui-t">
         <h2 id="qui-t" class="doc-h2">Qui fait Stockaarud</h2>
         <div class="prose">
           <p>Stockaarud est né dans un CAARUD, pour répondre à un problème du quotidien : savoir ce qu’il reste au stock avant d’en manquer.</p>
@@ -78,9 +88,9 @@
         </div>
       </section>
 
-      <section class="section" id="donnees" aria-labelledby="donnees-t">
+      <section class="qsheet" id="donnees" aria-labelledby="donnees-t">
         <h2 id="donnees-t" class="doc-h2">Vos données restent chez vous</h2>
-        <p class="sheet sheet--fluoro warn" style="--r: -0.6deg">Aucune information sur les personnes accueillies : l’appli ne compte que du matériel.</p>
+        <p class="qflag">Aucune information sur les personnes accueillies : l’appli ne compte que du matériel.</p>
         <dl class="rows rows--dl">
           <div><dt>Ce qui est enregistré</dt><dd>Le catalogue, les entrées et sorties de matériel (produit, quantité, activité, date), les commandes, les noms des fournisseurs et des associations partenaires. Les sorties ne portent aucun nom.</dd></div>
           <div><dt>Où</dt><dd>Dans une base Supabase que votre CAARUD crée lui-même, à son nom. Le guide conseille la région Europe (Paris). Il n’y a pas de base commune.</dd></div>
@@ -91,7 +101,7 @@
         </dl>
       </section>
 
-      <section class="section" id="faq" aria-labelledby="faq-t">
+      <section class="qsheet" id="faq" aria-labelledby="faq-t">
         <h2 id="faq-t" class="doc-h2">Questions fréquentes</h2>
         <div class="faq">
           <details class="qa"><summary>Ça marche sur iPhone et sur Android ?</summary><div class="qa-a"><p>Oui. Stockaarud s’ouvre dans le navigateur, sur téléphone comme sur ordinateur. Pour l’avoir comme une appli, ajoutez-le à l’écran d’accueil : dans Safari, Partager puis « Sur l’écran d’accueil » ; dans Chrome, le menu puis « Ajouter à l’écran d’accueil ».</p></div></details>
@@ -103,8 +113,14 @@
           <details class="qa"><summary>Le projet Supabase s’est mis en pause ?</summary><div class="qa-a"><p>Supabase met en pause un projet gratuit resté 7 jours sans activité. Cliquez sur « Restore project » dans Supabase : aucune donnée n’est perdue.</p></div></details>
           <details class="qa"><summary>On peut arrêter et récupérer nos données ?</summary><div class="qa-a"><p>Oui, à tout moment. L’appli exporte les mouvements, le catalogue et une sauvegarde complète. Pour tout effacer, supprimez votre projet Supabase : il n’existe aucune autre copie.</p></div></details>
         </div>
-        <p style="margin-top: var(--space-xl)">Une autre question ? <a href="./#contact">Écrivez-nous</a>.</p>
+
       </section>
+
+      <div class="sheet sheet--wall done">
+        <p class="done-t">Une autre question ?</p>
+        <p>On vous répond, et on peut vous aider à l’installer.</p>
+        <div class="actions"><a class="btn btn--primary" href="./#contact">Écrivez-nous</a><a class="btn btn--secondary" href="demo/">Essayer la démo</a></div>
+      </div>
     </div>
   </div>
 </main>
