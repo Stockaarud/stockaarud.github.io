@@ -245,6 +245,7 @@ details.cat>.grid{margin:0;padding:0 10px 10px}
 .subs{display:flex;flex-direction:column;gap:8px;padding:0 10px 10px}
 .pbtn{float:right;margin:0 0 6px 10px;gap:6px}
 .twx{overflow-x:auto;margin-top:10px}
+.scopebar{display:flex;flex-wrap:wrap;align-items:center;gap:6px 10px;margin:8px 0 4px}.scopebar .lbl{font-size:13px;color:var(--muted);font-weight:600}.scopebar .chips{display:flex;flex-wrap:wrap;gap:6px}.scopebar .chip{min-height:38px;padding:6px 12px;font-size:14px}
 .svnav{display:flex;gap:6px;overflow-x:auto;margin:10px 0 2px;padding:4px 0 6px;scrollbar-width:thin;position:sticky;top:calc(var(--hdrH,64px) + var(--subH,52px));z-index:14;background:var(--bg)}
 .svnav button{flex:none;border:1px solid var(--line);background:var(--surface);color:var(--fg);border-radius:999px;padding:8px 14px;min-height:40px;font:600 13px var(--body);cursor:pointer;white-space:nowrap}
 .svnav button[aria-pressed="true"]{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
@@ -1233,9 +1234,10 @@ const rgbOf=s=>{const m=String(s).match(/\d+(\.\d+)?/g);return m&&m.length>=3?m.
 async function chartPdf(panel){
   const h2=panel.querySelector("h2"),titre=h2?[...h2.childNodes].filter(n=>n.nodeType===3).map(n=>n.textContent).join("").trim():"Graphique";
   const sous=[...panel.querySelectorAll("select")].map(s=>s.options[s.selectedIndex]&&s.options[s.selectedIndex].text).filter(Boolean)
-    .concat([...panel.querySelectorAll('.seg button[aria-pressed="true"],.chips .chip[aria-pressed="true"]')].map(b=>b.textContent.trim())).join(" · ");
+    .concat([...panel.querySelectorAll('.seg button[aria-pressed="true"],.chips .chip[aria-pressed="true"]')].map(b=>b.textContent.trim())).concat(SV_SCOPED.has(S.sv||"conso")?[S.sva?actNom(S.sva):"Tout le CAARUD"]:[]).join(" · ");
   const svgs=[...panel.querySelectorAll(".stwrap svg,.chart svg")].filter(s=>s.getBoundingClientRect().width>100);
   const doc=await newPdf("landscape"),C=PDFC;let y=pdfHead(doc,titre,sous);
+  if(panel.querySelector("#stWrap")&&STAT)y=pdfConsoTable(doc,y,titre);
   const note=panel.querySelector("p.note");if(note){doc.setFont("helvetica","normal");doc.setFontSize(9);doc.setTextColor(...C.M);const L=doc.splitTextToSize(pdfTxt(note.textContent),273);doc.text(L,12,y);y+=L.length*4+3}
   for(const s of svgs){const im=await svgPng(s,2.5),w=Math.min(273,im.w*0.32),h=w*im.h/im.w,hh=Math.min(h,200-y-12),ww=hh<h?hh*im.w/im.h:w;
     if(y+hh>196){doc.addPage();y=pdfHead(doc,titre+" (suite)","")}doc.addImage(im.url,"JPEG",12+(273-ww)/2,y,ww,hh);y+=hh+4}
@@ -1245,6 +1247,25 @@ async function chartPdf(panel){
   if(rk.length){if(y>170){doc.addPage();y=pdfHead(doc,titre+" (suite)","")}doc.setFontSize(9.5);for(const b of rk){const nm=b.querySelector(".nm"),v=b.querySelector(".v");if(y>196){doc.addPage();y=pdfHead(doc,titre+" (suite)","")}doc.setTextColor(...C.K);doc.text(pdfTxt(nm?nm.textContent:""),12,y);doc.text(pdfTxt(v?[...v.childNodes].map(n=>n.textContent.trim()).filter(Boolean).join("  "):""),200,y,{align:"right"});doc.setDrawColor(...C.L);doc.line(12,y+1.6,200,y+1.6);y+=6}}
   if(!svgs.length&&!rk.length){toast("Rien à imprimer dans ce bloc");return}
   await savePdf(doc,"stockaarud-"+slug(titre))}
+/* Tableau de la consommation par mois (ou par semaine sur 3 mois), en tête du PDF */
+function pdfConsoTable(doc,y,titre){const C=PDFC,D=STAT,st=S.stat,B=D.B;
+  const shown=D.keys.slice(0,8),vis=(st.focus?[st.focus]:st.hidden.size?shown.filter(k=>!st.hidden.has(k)):D.keys).filter(k=>sum(D.ser[k])>0);
+  const fv=v=>pdfTxt((st.measure==="e"?Math.round(v).toLocaleString("fr-FR")+" EUR":Math.round(v).toLocaleString("fr-FR")).replace(/[\u202f\u00a0]/g," "));
+  const nameW=58,totW=22,colW=(273-nameW-totW)/B.length,fs=B.length>12?7:8;
+  const head=()=>{doc.setFillColor(...C.G);doc.rect(12,y-4.2,273,6.4,"F");doc.setFont("helvetica","bold");doc.setFontSize(fs);doc.setTextColor(255,255,255);
+    doc.text(st.group==="produit"?"Produit":"Catégorie",14,y);B.forEach((b,i)=>doc.text(pdfTxt(b.lab),12+nameW+colW*(i+.5),y,{align:"center"}));doc.text("Total",283,y,{align:"right"});y+=6.4};
+  doc.setFont("helvetica","normal");doc.setFontSize(9);doc.setTextColor(...C.M);doc.text(pdfTxt((st.period==="3"?"Sorties par semaine":"Sorties par mois")+(st.measure==="e"?", en euros":", en unités")),12,y);y+=6;
+  head();const tot=new Array(B.length).fill(0);
+  vis.forEach((k,r)=>{if(y>192){doc.addPage();y=pdfHead(doc,titre+" (suite)","");head()}
+    if(r%2){doc.setFillColor(...C.BG);doc.rect(12,y-4,273,5.6,"F")}
+    doc.setFont("helvetica","normal");doc.setFontSize(fs);doc.setTextColor(...C.K);
+    const full=pdfTxt(D.name(k));let nm=full;while(doc.getTextWidth(nm)>nameW-6&&nm.length>4)nm=nm.slice(0,-1);if(nm!==full)nm+="...";doc.text(nm,14,y);
+    D.ser[k].forEach((v,i)=>{tot[i]+=v;if(v)doc.text(fv(v),12+nameW+colW*(i+1)-1.5,y,{align:"right"})});
+    doc.setFont("helvetica","bold");doc.text(fv(sum(D.ser[k])),283,y,{align:"right"});y+=5.6});
+  if(y>192){doc.addPage();y=pdfHead(doc,titre+" (suite)","")}
+  doc.setDrawColor(...C.K);doc.setLineWidth(.4);doc.line(12,y-3.6,285,y-3.6);doc.setFont("helvetica","bold");doc.setFontSize(fs);doc.setTextColor(...C.K);
+  doc.text("Total",14,y+.6);tot.forEach((v,i)=>doc.text(fv(v),12+nameW+colW*(i+1)-1.5,y+.6,{align:"right"}));doc.text(fv(sum(tot)),283,y+.6,{align:"right"});
+  doc.addPage();return pdfHead(doc,titre+" (graphique)","")}
 function addPrintButtons(){document.querySelectorAll("#app .panel").forEach(p=>{if(p.querySelector(":scope > .pbtn")||p.classList.contains("bilanp"))return;const has=p.querySelector(".stwrap svg,.chart svg,.rank button");if(!has)return;
   const b=document.createElement("button");b.className="btn small pbtn";b.dataset.act="chartPdf";b.innerHTML='<svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><path d="M7 9V3h10v6M7 17H4v-7h16v7h-3M7 14h10v7H7z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></svg>Imprimer';b.setAttribute("aria-label","Imprimer ce graphique en PDF");p.prepend(b)})}
 const PRINT_ICO='<svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><path d="M7 9V3h10v6M7 17H4v-7h16v7h-3M7 14h10v7H7z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></svg>';
@@ -1254,7 +1275,8 @@ const MOIS=["janv.","févr.","mars","avr.","mai","juin","juil.","août","sept.",
 const JOURS_C=["lun.","mar.","mer.","jeu.","ven.","sam.","dim."];
 const nfr=v=>Math.round(v).toLocaleString("fr-FR");
 const VW=()=>Math.round(Math.max(300,Math.min(640,(window.innerWidth||640)-72)));
-function sortiesEntre(a,b,act){return allMvts().filter(m=>m.type==="sortie"&&m.t>=a&&m.t<b&&(!act||m.activite===act)&&S.produits.has(m.produit))}
+let ACT_SCOPE="";/* activité choisie en haut des statistiques, appliquée pendant le rendu des graphiques concernés */
+function sortiesEntre(a,b,act){if(act===undefined)act=ACT_SCOPE;return allMvts().filter(m=>m.type==="sortie"&&m.t>=a&&m.t<b&&(!act||m.activite===act)&&S.produits.has(m.produit))}
 function moisDebut(y,m){return new Date(y,m,1).getTime()}
 function derniersMois(n,fin){const d=new Date(),out=[];for(let i=n-1+(fin?1:0);i>=(fin?1:0);i--){const y=d.getFullYear(),m=d.getMonth()-i,a=moisDebut(y,m),b=moisDebut(y,m+1),dd=new Date(a);out.push({a,b,l:MOIS[dd.getMonth()]+(dd.getMonth()===0||i===n-1+(fin?1:0)?" "+String(dd.getFullYear()).slice(2):"")})}return out}
 function periodeSV(){const n=num(S.svp||"3",3);return {a:Date.now()-n*30.44*DAY,b:Date.now()+1,n}}
@@ -1296,7 +1318,7 @@ function svRepart(){const gs=[...new Set(prodsActifs().map(p=>p.groupe).filter(B
   if(!S.svg||!gs.includes(S.svg))S.svg=gs.includes("Seringues")?"Seringues":gs[0];
   const {a,b}=periodeSV(),ms=sortiesEntre(a,b,S.sva).filter(m=>(S.produits.get(m.produit)||{}).groupe===S.svg),by=sumBy(ms,m=>m.produit);
   const sl=parts(Object.entries(by).map(([id,v])=>({label:S.produits.get(id).nom,v})),6),tot=ms.reduce((x,m)=>x+num(m.qte,0),0);
-  const corps=chipsSV("svg",S.svg,gs.map(g=>[g,g]))+segP()+actChips()+(tot?'<div class="dn"><div class="chart">'+(S.svbar?barresH(sl,v=>nfr(v)+" u."):donut(sl,nfr(tot)+"|unités"))+'</div>'+legende(sl)+'</div><button class="link" data-act="svbar">'+(S.svbar?"Voir en camembert":"Voir en barres")+'</button>':'<div class="empty">Aucune sortie de ce dossier sur la période.</div>');
+  const corps=chipsSV("svg",S.svg,gs.map(g=>[g,g]))+segP()+(tot?'<div class="dn"><div class="chart">'+(S.svbar?barresH(sl,v=>nfr(v)+" u."):donut(sl,nfr(tot)+"|unités"))+'</div>'+legende(sl)+'</div><button class="link" data-act="svbar">'+(S.svbar?"Voir en camembert":"Voir en barres")+'</button>':'<div class="empty">Aucune sortie de ce dossier sur la période.</div>');
   return pan("Répartition · "+esc(S.svg),"Quels produits les usagers choisissent, dans un même dossier. En nombre d\'unités sorties.",corps)}
 
 // 2. Évolution des pratiques
@@ -1311,7 +1333,7 @@ const KITM=[["Filtres",p=>(p.groupe==="Filtres")||(/filtre/i.test(p.nom)&&p.cate
 const isSer=p=>p.groupe==="Seringues"||/^seringue/i.test(p.nom);
 function svCoherence(){const {a,b}=periodeSV(),ms=sortiesEntre(a,b,S.sva),P=id=>S.produits.get(id)||{nom:""};
   const ser=ms.filter(m=>isSer(P(m.produit))).reduce((x,m)=>x+num(m.qte,0),0),kits=ms.filter(m=>/kit/i.test(P(m.produit).nom)&&P(m.produit).categorie==="injection").reduce((x,m)=>x+num(m.qte,0),0);
-  const corps=segP()+actChips();if(!ser)return pan("Cohérence des kits","",corps+'<div class="empty">Aucune seringue sortie sur cette période.</div>');
+  const corps=segP();if(!ser)return pan("Cohérence des kits","",corps+'<div class="empty">Aucune seringue sortie sur cette période.</div>');
   const rows=KITM.map(([l,f],i)=>{const v=ms.filter(m=>f(P(m.produit))).reduce((x,m)=>x+num(m.qte,0),0);return {label:l,v:Math.round(v/ser*100),col:v/ser>=0.8?"--good":v/ser>=0.5?"--warn":"--crit"}});
   return pan("Cohérence des kits","Pour <b>100 seringues</b> sorties en vrac, combien de filtres, de Stéricup, d\'eau… sont partis avec. Sous 100, certains usagers repartent probablement sans le matériel complet. Les kits tout prêts ("+nfr(kits)+" sur la période) sont comptés à part.",
     corps+'<div class="chart" style="margin-top:10px">'+barresH(rows,v=>v+" pour 100",{ref:100,refLabel:"100 seringues",max:120,titre:"Cohérence des kits"})+'</div><p class="note">'+nfr(ser)+' seringues sorties en vrac sur la période.</p>')}
@@ -1331,7 +1353,7 @@ function svJours(){const W=12,now=new Date();now.setHours(0,0,0,0);const lundi=n
   for(let j=0;j<7;j++){s+='<text x="'+(L-6)+'" y="'+(T+j*ch+17)+'" text-anchor="end" style="font:11px var(--body);fill:var(--muted)">'+JOURS_C[j]+'</text>';
     for(let w=0;w<W;w++){const v=g[j][w],o=v?0.18+0.82*v/mx:0;s+='<rect x="'+(L+w*cw+2)+'" y="'+(T+j*ch+2)+'" width="'+(cw-4)+'" height="'+(ch-4)+'" rx="4" style="fill:'+(v?'var(--c1)':'var(--surface-2)')+';fill-opacity:'+(v?o.toFixed(2):1)+'"><title>'+JOURS_C[j]+" "+new Date(a0+(w*7+j)*DAY).toLocaleDateString("fr-FR")+" : "+v+" saisie"+(v>1?"s":"")+'</title></rect>'}}
   s+='</svg>';const moy=g.map(r=>r.reduce((x,y)=>x+y,0)/W);
-  return pan("Les jours forts","Nombre de saisies de sortie par jour, sur les 12 dernières semaines. Plus c\'est foncé, plus il y a eu de distribution.",actChips()+'<div class="chart" style="margin-top:10px">'+s+'</div><h3 style="margin-top:14px">En moyenne par jour de la semaine</h3><div class="chart">'+barresH(moy.map((v,j)=>({label:JOURS_C[j],v:Math.round(v*10)/10,col:"--c1"})),v=>String(v).replace(".",",")+" saisies",{lw:60})+'</div>')}
+  return pan("Les jours forts","Nombre de saisies de sortie par jour, sur les 12 dernières semaines. Plus c\'est foncé, plus il y a eu de distribution.",'<div class="chart" style="margin-top:10px">'+s+'</div><h3 style="margin-top:14px">En moyenne par jour de la semaine</h3><div class="chart">'+barresH(moy.map((v,j)=>({label:JOURS_C[j],v:Math.round(v*10)/10,col:"--c1"})),v=>String(v).replace(".",",")+" saisies",{lw:60})+'</div>')}
 
 // 6. Budget
 const coutM=m=>{const p=S.produits.get(m.produit);return num(m.qte,0)*num(p&&p.prix,0)};
@@ -1827,7 +1849,7 @@ function statData(){
   const key=m=>{const p=S.produits.get(m.produit);if(!p)return null;return st.group==="produit"?p.id:catOf(p)};
   const val=m=>{if(st.measure==="u")return m.qte;const p=S.produits.get(m.produit);return m.qte*num(p&&p.prix)};
   const ser={},prev={};
-  for(const m of allMvts()){if(m.type!=="sortie"||m.t<p0||m.t>=end)continue;const k=key(m);if(!k)continue;const v=val(m);
+  for(const m of allMvts()){if(m.type!=="sortie"||m.t<p0||m.t>=end||(ACT_SCOPE&&m.activite!==ACT_SCOPE))continue;const k=key(m);if(!k)continue;const v=val(m);
     if(m.t<a0){prev[k]=(prev[k]||0)+v;continue}
     const i=B.findIndex(b=>m.t>=b.a&&m.t<b.b);if(i<0)continue;(ser[k]=ser[k]||new Array(B.length).fill(0))[i]+=v}
   const keys=Object.keys(ser).sort((x,y)=>sum(ser[y])-sum(ser[x]));
@@ -1838,11 +1860,19 @@ function statData(){
 const sum=a=>a.reduce((x,y)=>x+y,0);
 const fmtV=v=>S.stat.measure==="e"?eur(v):Math.round(v).toLocaleString("fr-FR");
 let STAT=null,CW=640;
+const SV_SCOPED=new Set(["conso","repart","prat","coh","jours","annee"]);
+function actScopeBar(){const acts=cfg().activites.filter(a=>!a.archive);if(!acts.length)return "";const v=S.sv||"conso",cur=S.sva||"";
+  return '<div class="scopebar"><span class="lbl">Pour</span><div class="chips">'+[["","Tout le CAARUD"]].concat(acts.map(a=>[a.id,a.nom])).map(([id,l])=>'<button class="chip" data-act="sva" data-v="'+esc(id)+'" aria-pressed="'+(cur===id)+'">'+esc(l)+'</button>').join("")+'</div>'
+   +(cur&&!SV_SCOPED.has(v)?'<p class="note" style="margin:6px 0 0;flex-basis:100%">Ce graphique porte toujours sur tout le CAARUD.</p>':'')+'</div>'}
 function tabStats(){
-  {const alt=svView();if(alt!==null)return svNav()+alt}
+  const v=S.sv||"conso";ACT_SCOPE=SV_SCOPED.has(v)?(S.sva||""):"";
+  try{return tabStatsIn()}finally{ACT_SCOPE=""}
+}
+function tabStatsIn(){
+  {const alt=svView();if(alt!==null)return svNav()+actScopeBar()+alt}
   const st=S.stat,D=statData();STAT=D;
   const seg=(act,cur,opts)=>'<div class="seg" role="group">'+opts.map(([v,l])=>'<button data-act="'+act+'" data-v="'+v+'" aria-pressed="'+(cur===v)+'">'+l+'</button>').join("")+'</div>';
-  let h=svNav()+'<div class="ctrls"><span><span class="lbl">Période</span>'+seg("st-period",st.period,[["3","3 mois"],["6","6 mois"],["12","1 an"]])+'</span>'
+  let h=svNav()+actScopeBar()+'<div class="ctrls"><span><span class="lbl">Période</span>'+seg("st-period",st.period,[["3","3 mois"],["6","6 mois"],["12","1 an"]])+'</span>'
    +'<span><span class="lbl">Par</span>'+seg("st-group",st.group,[["produit","produit"],["categorie","catégorie"]])+'</span>'
    +'<span><span class="lbl">En</span>'+seg("st-measure",st.measure,[["u","unités"],["e","euros"]])+'</span></div>';
   if(!D.keys.length)return h+'<div class="empty">Aucune sortie sur cette période. Les graphiques se remplissent au fil des saisies (ou charge des données d\'exemple dans Réglages).</div>';
@@ -1852,7 +1882,7 @@ function tabStats(){
   const first=Math.min(...allMvts().filter(m=>m.type==="sortie").map(m=>m.t));
   const delta=ptot>0&&first<=statBuckets(st.period,1)[0].a+7*DAY?Math.round((tot-ptot)/ptot*100):null;
   const titre=st.focus?D.name(st.focus):(vis.length===shown.length?(st.group==="produit"?"Tous les produits":"Toutes les catégories"):vis.length+" sélectionné"+(vis.length>1?"s":""));
-  h+='<div class="panel" style="margin-top:12px"><div class="row" style="justify-content:space-between;align-items:baseline"><div><h2>Consommation · '+esc(titre)+'</h2><p class="note">Sorties vers les activités, dépannages exclus, '+(st.period==="3"?"par semaine":"par mois")+(st.measure==="e"?", au prix unitaire du catalogue":"")+'.</p></div>'
+  h+='<div class="panel" style="margin-top:12px"><div class="row" style="justify-content:space-between;align-items:baseline"><div><h2>Consommation · '+esc(titre)+(ACT_SCOPE?' · '+esc(actNom(ACT_SCOPE)):'')+'</h2><p class="note">Sorties vers les activités, dépannages exclus, '+(st.period==="3"?"par semaine":"par mois")+(st.measure==="e"?", au prix unitaire du catalogue":"")+'.</p></div>'
    +'<div style="text-align:right"><div class="kpi" style="border:0;padding:0;background:none"><div class="v">'+fmtV(tot)+'</div><div class="k">sur la période'+(delta!=null?' · <span class="delta '+(delta>0?"up":"down")+'">'+(delta>0?"+":"")+delta+' %</span> vs période précédente':"")+'</div></div></div></div>'
    +'<div class="stwrap" id="stWrap">'+lineChart(D,vis)+'<div class="tip" id="stTip" hidden></div></div>'
    +'<div class="lg">'+shown.map(k=>'<button data-act="st-toggle" data-id="'+esc(k)+'" aria-pressed="'+(st.focus?k===st.focus:!st.hidden.has(k))+'"><i style="background:'+D.color(k,D.keys.indexOf(k))+'"></i>'+esc(D.name(k))+'</button>').join("")
