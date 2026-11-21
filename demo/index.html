@@ -87,6 +87,16 @@ h3{font-size:15px;font-weight:600;font-family:var(--body)}
 .chip{border:1px solid var(--line);background:var(--surface);color:var(--fg);border-radius:999px;padding:10px 16px;font:500 15px var(--body);cursor:pointer;min-height:44px}
 .chip[aria-pressed="true"]{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
 .chip.ghost{border-style:dashed;color:var(--muted)}
+.actbar{display:flex;align-items:center;gap:8px;padding:8px;border-radius:16px;border:2px solid var(--actc,var(--accent));background:color-mix(in srgb,var(--actc,var(--accent)) 12%,var(--surface));touch-action:pan-y;user-select:none}
+.actarr{flex:none;width:48px;height:48px;border-radius:50%;border:1px solid var(--line);background:var(--surface);color:var(--fg);display:grid;place-items:center;cursor:pointer}
+.actarr svg{width:22px;height:22px}
+.actmid{flex:1;min-width:0;display:flex;flex-direction:column;align-items:center;gap:8px;overflow:hidden}
+.actname{display:flex;align-items:center;gap:10px;font:800 22px var(--display);color:var(--fg);max-width:100%}
+.actname span{text-align:center;line-height:1.05;overflow-wrap:anywhere}.actname{font-size:clamp(18px,5.4vw,22px)}
+.actdots{display:flex;gap:6px}.actdots i{width:7px;height:7px;border-radius:50%;background:var(--line)}.actdots i.on{background:var(--actc,var(--accent));transform:scale(1.3)}
+.actmeta{display:flex;justify-content:space-between;align-items:center;margin-top:6px}
+.chips.actlist{margin-top:10px}
+.sheet{border-top:6px solid var(--actc,var(--accent))}
 .chip.ghost[aria-pressed="true"]{color:var(--accent-ink);border-style:solid}
 input,select,textarea{font:inherit;font-size:16px;color:var(--fg);background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:10px 12px;min-height:44px;width:100%}
 input:focus-visible,select:focus-visible,button:focus-visible,textarea:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
@@ -346,6 +356,8 @@ details summary{cursor:pointer;font-weight:600}
  .tile.flash{animation:flash 1.2s ease both}
  .skel{animation:shimmer 1.2s linear infinite}
  .auto details[open] dl{animation:fadeUp .2s ease both}
+ .actname.in-r{animation:inR .28s cubic-bezier(.2,.8,.2,1) both}.actname.in-l{animation:inL .28s cubic-bezier(.2,.8,.2,1) both}
+ .actbar,.actdots i{transition:border-color .3s,background-color .3s,transform .2s}
  #app.swap>*{animation:fadeUp .28s cubic-bezier(.2,.8,.2,1) both}#app.swap>*:nth-child(2){animation-delay:.04s}#app.swap>*:nth-child(3){animation-delay:.08s}#app.swap>*:nth-child(n+4){animation-delay:.12s}
  details.fold[open]>:not(summary){animation:fadeUp .22s ease both}
  details.fold>summary::after{transition:transform .25s cubic-bezier(.2,.8,.2,1)}
@@ -353,6 +365,7 @@ details summary{cursor:pointer;font-weight:600}
  .tapfx{position:fixed;z-index:9999;width:12px;height:12px;margin:-6px 0 0 -6px;border-radius:50%;background:var(--brand-2);opacity:.45;pointer-events:none;animation:ripple .45s ease-out forwards}
  .svnav button,.subnav button{transition:transform .12s ease,background-color .2s,color .2s,box-shadow .25s}
 }
+@keyframes inR{from{opacity:0;transform:translateX(40px)}}@keyframes inL{from{opacity:0;transform:translateX(-40px)}}
 @keyframes pick{0%{transform:scale(.92)}60%{transform:scale(1.04)}100%{transform:none}}
 @keyframes ripple{to{transform:scale(7);opacity:0}}
 @keyframes fadeUp{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
@@ -623,7 +636,7 @@ let rzT=0;window.addEventListener("resize",()=>{clearTimeout(rzT);rzT=setTimeout
 
 /* ---------- Démarrage ---------- */
 async function start(){
-  S.view=ls.get("view","equipe");S.unit=ls.get("unit","unite");S.lieu=ls.get("lieu",null);S.activite=ls.get("activite",null);
+  S.view=ls.get("view","equipe");S.unit=ls.get("unit","unite");S.lieu=ls.get("lieu",null);S.activite=ls.get("activiteJour",null)===today()?ls.get("activite",null):null;
   render();
   const [db,user,dl,assets]=await Promise.all([claude.use("db"),claude.use("user"),claude.use("downloads"),claude.use("assets")]);
   S.db=db;S.user=user;S.dl=dl;S.assets=assets;
@@ -664,6 +677,7 @@ function draw(){
     :(canC?'<button class="hbtn" data-act="goCoordo"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="11" width="14" height="9" rx="2" fill="none" stroke="currentColor" stroke-width="2.2"/><path d="M8 11V8a4 4 0 0 1 8 0v3" fill="none" stroke="currentColor" stroke-width="2.2"/></svg>Gestion</button>':'');
   const st=computeStats();
   const keepX={};document.querySelectorAll(".subnav,.tw").forEach((el,i)=>{keepX[(el.className)+i]=el.scrollLeft});
+  paintAct();
   const key=S.view+"/"+S.ctab;if(key!==draw.last){draw.last=key;const a=$("#app");a.classList.remove("swap");void a.offsetWidth;a.classList.add("swap");clearTimeout(draw.t);draw.t=setTimeout(()=>a.classList.remove("swap"),600)}
   $("#app").innerHTML=(S.view==="equipe"?viewEquipe(st):viewCoordo(st));
   document.querySelectorAll(".subnav,.tw").forEach((el,i)=>{const k=(el.className)+i;if(keepX[k])el.scrollLeft=keepX[k]});
@@ -739,6 +753,18 @@ function matches(p,q){
   const words=[p.nom,...(p.synonymes||[])].map(norm);
   return words.some(w=>w.includes(q)||w.split(/[\s'-]+/).some(t=>t.startsWith(q)||(q.length>=4&&lev(t.slice(0,q.length+1),q)<=1)));
 }
+/* Activité : retenue pour la journée, affichée en grand avec des flèches, et une couleur par activité */
+function actCycle(){return activitesActives().map(a=>a.id).concat(["__dep"],lieux().length>1?["__trans"]:[],["__perte"])}
+function actLabel(id){return id==="__dep"?"Prêt / don à une asso":id==="__trans"?"Vers un autre lieu":id==="__perte"?"Perte / casse":actNom(id)}
+function actColor(id){if(id==="__perte")return "var(--crit)";if(id==="__dep"||id==="__trans")return "var(--muted)";const A=activitesActives(),a=A.find(x=>x.id===id);if(a&&a.couleur)return a.couleur;const i=A.findIndex(x=>x.id===id);return "var("+["--c1","--c2","--c3","--c4","--c5","--c6"][(i<0?0:i)%6]+")"}
+function setActivite(id,dir){S.activite=id;S.actDir=dir||0;ls.set("activite",id);ls.set("activiteJour",today());
+  const a=cfg().activites.find(x=>x.id===id);if(a&&a.lieu&&lieux().some(l=>l.id===a.lieu)){S.lieu=a.lieu;ls.set("lieu",a.lieu)}}
+function paintAct(){document.documentElement.style.setProperty("--actc",S.activite&&actCycle().includes(S.activite)?actColor(S.activite):"var(--accent)")}
+function actBar(){const L=actCycle(),i=L.indexOf(S.activite),a=cfg().activites.find(x=>x.id===S.activite),dir=S.actDir;S.actDir=0;
+  return '<div class="label"><span class="stepn">1</span>Pour quoi ?</div><div class="actbar" data-swipe="act"><button class="actarr" data-act="actStep" data-v="-1" aria-label="Activité précédente"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 5l-7 7 7 7" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></button>'
+   +'<div class="actmid" aria-live="polite"><div class="actname'+(dir>0?" in-r":dir<0?" in-l":"")+'">'+(a?actIcon(a,"aic big"):"")+'<span>'+esc(actLabel(S.activite))+'</span></div><div class="actdots" aria-hidden="true">'+L.map((x,k)=>'<i'+(k===i?' class="on"':'')+'></i>').join("")+'</div></div>'
+   +'<button class="actarr" data-act="actStep" data-v="1" aria-label="Activité suivante"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 5l7 7-7 7" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></button></div>'
+   +'<div class="actmeta"><span class="note">Gardée pour la journée</span><button class="link" data-act="actOpen">'+(S.actOpen?"Fermer la liste":"Voir toutes les activités")+'</button></div>'}
 function viewEquipe(st){
   const acts=activitesActives(),L=lieux();
   if(!S.lieu||!L.find(l=>l.id===S.lieu))S.lieu=(principal()||{}).id;
@@ -746,7 +772,8 @@ function viewEquipe(st){
   if((S.dbState==="loading"||S.dbState==="slow")&&!S.produits.size)return h+'<div class="label" style="color:var(--muted);font-weight:400">Chargement du stock…</div><div class="grid">'+'<div class="skel"></div>'.repeat(6)+'</div>';
   if(!S.config&&S.dbState==="ok")h+='<div class="empty">Stockaarud n\'est pas encore configuré. Le responsable stock ajoute les activités et le matériel dans l\'espace gestion, puis l\'équipe peut saisir ses sorties ici.'+(S.isAdmin?'<button class="btn primary" style="margin-top:10px" data-act="wzStart">Lancer l\'installation guidée</button>':'')+'</div>';
   if(L.length>1)h+='<div class="label">Où es-tu ?</div><div class="chips">'+L.map(l=>'<button class="chip lieuchip" data-act="lieu" data-id="'+l.id+'" aria-pressed="'+(S.lieu===l.id)+'"><span>'+esc(l.nom)+'<small>'+lieuKind(l)+'</small></span></button>').join("")+'</div><p class="note" style="margin-top:6px">Le matériel est pris dans ce stock. Ce téléphone s\'en souvient.</p>';
-  h+='<div class="label"><span class="stepn">1</span>Pour quoi ?</div><div class="chips">'+acts.map(a=>'<button class="chip" data-act="activite" data-id="'+a.id+'" aria-pressed="'+(S.activite===a.id)+'">'+actIcon(a)+esc(a.nom)+'</button>').join("")
+  const has=S.activite&&actCycle().includes(S.activite);if(has)h+=actBar();
+  if(!has||S.actOpen)h+=(has?'':'<div class="label"><span class="stepn">1</span>Pour quoi ?</div>')+'<div class="chips'+(has?' actlist':'')+'">'+acts.map(a=>'<button class="chip" data-act="activite" data-id="'+a.id+'" aria-pressed="'+(S.activite===a.id)+'">'+actIcon(a)+esc(a.nom)+'</button>').join("")
     +'<button class="chip ghost" data-act="activite" data-id="__dep" aria-pressed="'+(S.activite==="__dep")+'">Prêt / don à une asso</button>'
     +(L.length>1?'<button class="chip ghost" data-act="activite" data-id="__trans" aria-pressed="'+(S.activite==="__trans")+'">Vers un autre lieu</button>':"")
     +'<button class="chip ghost" data-act="activite" data-id="__perte" aria-pressed="'+(S.activite==="__perte")+'">Perte / casse</button></div>';
@@ -1766,6 +1793,9 @@ function foldPanels(html){
   const w=document.createElement("div");w.appendChild(t.content);return w.innerHTML;
 }
 document.addEventListener("toggle",e=>{const d=e.target;if(!d||!d.dataset||!d.dataset.fold)return;const o=new Set(ls.get("regOpen",[]));d.open?o.add(d.dataset.fold):o.delete(d.dataset.fold);ls.set("regOpen",[...o])},true);
+/* glisser le doigt sur la barre d'activité */
+(()=>{let x0=null,y0=0;document.addEventListener("pointerdown",e=>{const b=e.target.closest&&e.target.closest("[data-swipe=act]");x0=b&&!e.target.closest("button")?e.clientX:null;y0=e.clientY},{passive:true});
+ document.addEventListener("pointerup",e=>{if(x0==null)return;const dx=e.clientX-x0,dy=Math.abs(e.clientY-y0);x0=null;if(Math.abs(dx)<45||dy>40)return;const L=actCycle(),i=L.indexOf(S.activite);if(i<0)return;const d=dx<0?1:-1;setActivite(L[(i+d+L.length)%L.length],d);render()},{passive:true})})();
 /* petit cercle jaune au toucher des boutons */
 if(!matchMedia("(prefers-reduced-motion: reduce)").matches)document.addEventListener("pointerdown",e=>{const t=e.target.closest&&e.target.closest("button,.chip,.tile,a.btn,summary");if(!t)return;const d=document.createElement("span");d.className="tapfx";d.style.left=e.clientX+"px";d.style.top=e.clientY+"px";document.body.appendChild(d);setTimeout(()=>d.remove(),500)},{passive:true});
 /* hauteur du bandeau du haut et des onglets, pour que les menus restent visibles en faisant défiler */
@@ -2173,7 +2203,9 @@ document.addEventListener("click",async e=>{
   case "lockDevice":try{localStorage.removeItem("stk:coordoKey")}catch(_){}S.unlockKey=null;S.view="equipe";ls.set("view","equipe");toast("Espace gestion verrouillé sur cet appareil");render();break;
   case "ctab":S.ctab=b.dataset.v;render();break;
   case "lieu":S.lieu=id;ls.set("lieu",id);render();break;
-  case "activite":{S.activite=id;ls.set("activite",id);const a=cfg().activites.find(x=>x.id===id);if(a&&a.lieu&&lieux().some(l=>l.id===a.lieu)){S.lieu=a.lieu;ls.set("lieu",a.lieu)}render();break}
+  case "activite":setActivite(id,0);S.actOpen=false;render();break;
+  case "actStep":{const L=actCycle(),i=L.indexOf(S.activite);setActivite(L[(i+(+b.dataset.v)+L.length)%L.length],+b.dataset.v);render();break}
+  case "actOpen":S.actOpen=!S.actOpen;render();break;
   case "vueLieu":S.vueLieu=id||null;render();break;
   case "pick":openPick(id);break;
   case "closeSheet":case "cancelSheet":closeSheet();restoreFocus();break;
