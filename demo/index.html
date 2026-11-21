@@ -89,7 +89,7 @@ h3{font-size:15px;font-weight:600;font-family:var(--body)}
 .chip.ghost{border-style:dashed;color:var(--muted)}
 .quick{display:flex;flex-wrap:wrap;justify-content:center;gap:8px}
 .quick button{min-width:52px;min-height:44px;padding:0 14px;border:1px solid var(--line);border-radius:999px;background:var(--surface-2);color:var(--fg);font:700 16px var(--body);cursor:pointer}
-.quick button[aria-pressed="true"]{background:var(--actc,var(--accent));border-color:var(--actc,var(--accent));color:#fff}
+.quick button:active{background:var(--actc,var(--accent));border-color:var(--actc,var(--accent));color:#fff}
 html[data-tint] body{background:var(--tintbg);background-attachment:fixed}
 html[data-tint] header.top,html[data-tint] body::before,html[data-tint] .subnav,html[data-tint] .svnav{background:color-mix(in srgb,var(--tint) 14%,var(--bg))}
 html[data-tint] header.top{box-shadow:inset 0 -3px 0 var(--tint)}
@@ -857,8 +857,7 @@ function drawSheet(){
   const M=modesOf(p);if(M.length>1)h+='<div class="toggle" role="group">'+M.map(k=>'<button data-act="mode" data-v="'+k+'" aria-pressed="'+(sheet.mode===k)+'">'+PACK_L[k]+(k!=="unite"?' <span class="note">('+factor(p,k)+')</span>':'')+'</button>').join("")+'</div>';
   h+='<div class="stepper"><button data-act="minus" aria-label="Moins">−</button><input id="qty" type="number" inputmode="numeric" min="1" step="1" value="'+(sheet.n||"")+'" aria-label="Quantité"><button data-act="plus" aria-label="Plus">+</button></div>'
    +'<div class="note" id="qtyNote" style="text-align:center">'+esc(qtyNote(p,sheet.mode,sheet.n||0))+'</div>'
-   +'<div class="quick" role="group" aria-label="Quantités rapides">'+[2,5,10,20].map(n=>'<button data-act="qset" data-v="'+n+'" aria-pressed="'+(sheet.n===n)+'">'+n+'</button>').join("")
-   +(sheet.mode==="unite"&&M.includes("boite")?'<button data-act="qpack" data-v="boite">1 boîte <span class="note">('+factor(p,"boite")+')</span></button>':sheet.mode==="unite"&&M.includes("carton")?'<button data-act="qpack" data-v="carton">1 carton <span class="note">('+factor(p,"carton")+')</span></button>':'')+'</div>'
+   +'<div class="quick" role="group" aria-label="Ajouter">'+[5,10,20,50].map(n=>'<button data-act="qadd" data-v="'+n+'" aria-label="Ajouter '+n+'">+'+n+'</button>').join("")+'</div>'
    +(sheet.confirm?'<div class="confirm">Grosse quantité : '+esc(sheet.n+" "+(sheet.mode==="unite"?"unités":plur(sheet.mode,sheet.n))+(sheet.mode!=="unite"?", soit "+(sheet.n*factor(p,sheet.mode)).toLocaleString("fr-FR")+" unités":""))+'. C\'est bien ça ?</div>':'')
    +'<button class="btn primary big" data-act="valider">'+(sheet.confirm?"Oui, valider":"Valider")+'</button><button class="btn big" data-act="cancelSheet" style="min-height:46px">Annuler</button>'
    +(!dep&&!trans&&!perte?'<button class="link" data-act="rupture" style="align-self:center;color:var(--crit)">Il n\'y en a plus'+(lieux().length>1?' au '+esc(lieuNom(S.lieu)):'')+' : signaler une rupture</button>':'')+'</div></div>';
@@ -2229,8 +2228,7 @@ document.addEventListener("click",async e=>{
   case "pick":openPick(id);break;
   case "closeSheet":case "cancelSheet":closeSheet();restoreFocus();break;
   case "closeLayer":$("#layer").innerHTML="";S.editProd=null;break;
-  case "qset":sheet.n=+b.dataset.v;sheet.confirm=false;drawSheet();bumpQty();break;
-  case "qpack":sheet.mode=b.dataset.v;sheet.n=1;sheet.confirm=false;drawSheet();bumpQty();break;
+  case "qadd":{const cur=Math.max(0,Math.round(num(val("qty"),0)));sheet.n=(cur===1&&!sheet.touched?0:cur)+(+b.dataset.v);sheet.touched=true;sheet.confirm=false;drawSheet();bumpQty();break}
   case "mode":sheet.mode=b.dataset.v;sheet.n=1;sheet.confirm=false;drawSheet();break;
   case "plus":sheet.n=Math.max(0,Math.round(num(val("qty"),0)))+1;sheet.confirm=false;drawSheet();bumpQty();break;
   case "minus":sheet.n=Math.max(1,Math.round(num(val("qty"),1))-1);sheet.confirm=false;drawSheet();bumpQty();break;
