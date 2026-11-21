@@ -4,7 +4,7 @@
    à chaque ouverture, pour que l'année de mouvements se termine toujours la veille. */
 (function () {
   "use strict";
-  const KEY = "stockaarud-demo-v2", ROLE_KEY = "stockaarud-demo-role", DAY = 864e5;
+  const KEY = "stockaarud-demo-v3", ROLE_KEY = "stockaarud-demo-role", DAY = 864e5;
   const role = localStorage.getItem(ROLE_KEY) || "coordo";
   const store = new Map();
   const startOfDay = (t) => { const d = new Date(t); d.setHours(0, 0, 0, 0); return d.getTime(); };
