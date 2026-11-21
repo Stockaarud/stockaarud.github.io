@@ -76,7 +76,8 @@ a:hover { text-decoration-thickness: 3px; }
 .actions { display: flex; flex-wrap: wrap; gap: var(--space-md); }
 
 /* hero */
-.hero { display: grid; align-items: center; padding-block: var(--space-2xl) var(--space-3xl); }
+.hero { display: grid; align-items: center; padding-block: var(--space-2xl) var(--space-lg); }
+.hero + .section { padding-top: var(--space-md); }
 .hero .container { display: grid; grid-template-columns: minmax(0, 7fr) minmax(0, 5fr); gap: var(--space-3xl); align-items: center; }
 .hero h1 { font-size: clamp(3.5rem, 8.5vw, 9rem); }
 .hero-text { display: grid; gap: var(--space-lg); }
