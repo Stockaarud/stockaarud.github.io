@@ -337,3 +337,28 @@ html { scroll-behavior: smooth; }
 
 @keyframes panelIn { from { opacity: 0; translate: 36px 6px; rotate: calc(var(--r, 0deg) + 5deg); } to { opacity: 1; translate: 0 0; rotate: var(--r, 0deg); } }
 @media (prefers-reduced-motion: reduce) { .js .stage-area .panel.is-on { animation: none; } }
+
+/* installer page: each step is a sheet with a numbered tab */
+.doc-hero-grid { grid-template-columns: minmax(0, 7fr) minmax(0, 4fr); align-items: center; gap: var(--space-3xl) !important; }
+.doc-hero-text { display: grid; gap: var(--space-lg); }
+.need { padding: var(--space-xl); justify-self: end; max-width: 22rem; }
+.need-t { font-family: var(--font-display); font-stretch: 62%; font-weight: 800; text-transform: uppercase; font-size: 2.5rem; line-height: 1; margin-bottom: var(--space-md); }
+.need ul { list-style: none; margin: 0; padding: 0; display: grid; gap: var(--space-sm); }
+.need li { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: var(--space-sm); font-weight: 700; }
+.need li::before { content: ""; width: 1.1em; height: 1.1em; margin-top: 0.2em; border: 2.5px solid var(--color-ink); background: var(--color-paper-3); }
+.steps { display: grid; gap: var(--space-xl); }
+.steps .step { background: var(--color-paper-3); box-shadow: var(--shadow-card); border-top: 0; padding: var(--space-xl) var(--space-2xl) var(--space-2xl); }
+.steps .step h2 { display: flex; align-items: center; gap: var(--space-md); }
+.steps .step h2::before { content: counter(step); flex: none; display: grid; place-items: center; min-width: 1.5em; height: 1.5em; background: var(--color-accent); box-shadow: 4px 4px 0 var(--color-ink); }
+.steps .step .shot { background: none; box-shadow: none; padding: 0; outline: 1px solid var(--color-rule); }
+.steps .step .shot figcaption { padding: 0 var(--space-xs) var(--space-xs); }
+.steps .step .warn { box-shadow: none; outline: 2px solid var(--color-ink); }
+.steps .step code { background: var(--color-paper); }
+.steps .step .fill { align-self: start; }
+.done { margin-top: var(--space-xl); padding: var(--space-2xl); display: grid; gap: var(--space-md); }
+.done-t { font-family: var(--font-display); font-stretch: 62%; font-weight: 800; text-transform: uppercase; font-size: clamp(2.5rem, 3vw + 1rem, 4rem); line-height: 1; color: var(--color-wall-ink); }
+.done p { color: var(--color-wall-ink); }
+.done .actions { margin-top: var(--space-sm); }
+@media (max-width: 60rem) { .doc-hero-grid { grid-template-columns: minmax(0, 1fr); gap: var(--space-xl) !important; } .need { justify-self: start; } }
+@media (max-width: 40rem) { .steps .step { padding: var(--space-lg); } .done { padding: var(--space-lg); } }
+@media print { .steps { display: block; } .steps .step { background: none; box-shadow: none; padding: 5mm 0 7mm; border-top: 1px solid var(--color-ink); } .steps .step .trio { grid-column: 1 / -1; } .steps .step code { background: none; } .steps .step h2::before { box-shadow: none; } }

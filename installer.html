@@ -52,18 +52,28 @@
 
 <main>
   <section class="doc-hero" aria-labelledby="titre">
-    <div class="container">
+    <div class="container doc-hero-grid">
+      <div class="doc-hero-text">
       <h1 id="titre" class="h1-wide">Installer Stockaarud chez vous</h1>
       <p class="lead">Quinze minutes sur un ordinateur, un compte Supabase gratuit, rien à télécharger, aucun mot de passe à retenir.</p>
       <div class="actions">
         <a class="btn btn--primary" href="#base">Commencer l’installation</a>
         <a class="btn btn--secondary" href="docs/guide-installation-stockaarud.pdf" download>Le guide en PDF</a>
       </div>
+      </div>
+      <div class="sheet sheet--fluoro need screen-only" style="--r: 2deg">
+        <p class="need-t">Il vous faut</p>
+        <ul>
+          <li>Un ordinateur, le temps de l’installation</li>
+          <li>Un compte Supabase gratuit, créé à l’étape 1</li>
+          <li>Quinze minutes</li>
+        </ul>
+      </div>
     </div>
   </section>
 
   <div class="container doc">
-    <nav class="toc" aria-label="Étapes">
+    <nav class="toc sheet" aria-label="Étapes">
       <ol>
         <li><a href="#base">Supabase</a></li>
         <li><a href="#preparer">Les tables</a></li>
@@ -143,6 +153,12 @@
           <figure class="sheet shot shot--setup print-only" style="--r: 1.5deg"><div data-slot="inviter" data-kind="product" data-alt="L’écran Inviter l’équipe, ou la vidéo de cette étape"><img src="img/inv.jpg" width="780" height="1688" alt="Écran Inviter l’équipe avec le QR code et le lien." loading="lazy"></div></figure>
         </li>
       </ol>
+
+      <div class="sheet sheet--wall done screen-only">
+        <p class="done-t">C’est installé.</p>
+        <p>Votre équipe peut noter sa première sortie.</p>
+        <div class="actions"><a class="btn btn--primary" href="https://stockaarud.github.io/stockaarud/">Ouvrir l’appli</a><a class="btn btn--secondary" href="./#contact">Un souci ? Écrivez-nous</a></div>
+      </div>
 
       <section class="section screen-only" id="quotidien" aria-labelledby="auquotidien">
         <h2 id="auquotidien" class="doc-h2">Au quotidien</h2>
