@@ -4,8 +4,13 @@
    à chaque ouverture, pour que l'année de mouvements se termine toujours la veille. */
 (function () {
   "use strict";
-  const KEY = "stockaarud-demo-v3", ROLE_KEY = "stockaarud-demo-role", DAY = 864e5;
+  const ROLE_KEY = "stockaarud-demo-role", BASE_KEY = "stockaarud-demo-base", DAY = 864e5;
   const role = localStorage.getItem(ROLE_KEY) || "coordo";
+  /* Deux CAARUD fictifs, pour essayer le passage de l'un à l'autre */
+  const BASES = [{ ref: "nord", nom: "CAARUD Démo Nord" }, { ref: "sud", nom: "CAARUD Démo Sud" }];
+  const base = BASES.some(b => b.ref === localStorage.getItem(BASE_KEY)) ? localStorage.getItem(BASE_KEY) : "nord";
+  const KEY = base === "nord" ? "stockaarud-demo-v3" : "stockaarud-demo-v3-" + base;
+  window.STK_NS = base === "nord" ? "stk:" : "stk@demo-" + base + ":";
   const store = new Map();
   const startOfDay = (t) => { const d = new Date(t); d.setHours(0, 0, 0, 0); return d.getTime(); };
 
@@ -22,7 +27,9 @@
       if (days > 0) for (const m of (store.get("mouvements") || new Map()).values()) if (typeof m.t === "number") m.t += days * DAY;
     } else {
       const shift = startOfDay(Date.now()) - DAY - startOfDay(seed.anchor);
-      store.set("config", new Map(Object.entries(seed.config)));
+      const cf = JSON.parse(JSON.stringify(seed.config));
+      if (cf.main) cf.main.nomStructure = BASES.find(b => b.ref === base).nom;
+      store.set("config", new Map(Object.entries(cf)));
       store.set("produits", new Map(Object.entries(seed.produits)));
       const mv = new Map();
       seed.mouvements.forEach((m, i) => mv.set("demo-" + i.toString(36), { lieu: "principal", ...m, t: m.t + shift }));
@@ -34,7 +41,12 @@
   const ready = (async () => {
     let saved = null;
     try { saved = JSON.parse(localStorage.getItem(KEY) || "null"); } catch (e) {}
-    if (saved && saved.data) { load(saved); return; }
+    if (saved && saved.data) {
+      load(saved);
+      const m = store.get("config"), c = m && m.get("main");
+      if (c && !c.nomStructure) m.set("main", { ...c, nomStructure: BASES.find(b => b.ref === base).nom });
+      return;
+    }
     const r = await fetch("seed.json", { cache: "no-cache" });
     load(null, await r.json());
   })();
@@ -77,7 +89,7 @@
   window.claude = Object.freeze({ use: (name) => ready.then(() => caps[name] || null) });
 
   function reset() {
-    Object.keys(localStorage).filter((k) => k === KEY || k.startsWith("stk:")).forEach((k) => localStorage.removeItem(k));
+    Object.keys(localStorage).filter((k) => k.startsWith("stockaarud-demo-v3") || k.startsWith("stk:") || k.startsWith("stk@demo-")).forEach((k) => localStorage.removeItem(k));
     location.reload();
   }
   const demoLink = () => "https://stockaarud.github.io/demo/";
@@ -88,7 +100,18 @@
     async disableCodes() {}, async removeTeam() {}, async removeGest() {},
     inviteLink: () => demoLink(),
     qrSvg(text) { if (typeof qrcode !== "function") return ""; const q = qrcode(0, "M"); q.addData(text); q.make(); return q.createSvgTag({ cellSize: 5, margin: 2, scalable: true }); },
-    logout: reset
+    logout: reset,
+    bases() {
+      return BASES.map(b => {
+        const ns = b.ref === "nord" ? "stk:" : "stk@demo-" + b.ref + ":"; let pend = 0;
+        try { const q = JSON.parse(localStorage.getItem(ns + "queue") || "[]"); pend = Array.isArray(q) ? q.length : 0; } catch (e) {}
+        return { ref: b.ref, nom: b.nom, cur: b.ref === base, pend };
+      });
+    },
+    switchBase(r) { if (r !== base) { localStorage.setItem(BASE_KEY, r); location.reload(); } },
+    addLink() { return "Dans la démo, les deux CAARUD fictifs sont déjà là. Avec la vraie appli, collez ici le lien d'invitation de l'autre CAARUD."; },
+    setName() {},
+    forget() { alert("Dans la démo, on garde les deux CAARUD fictifs."); }
   });
 
   /* Bandeau de démo */

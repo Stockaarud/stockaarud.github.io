@@ -59,8 +59,20 @@ body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset
 :root[data-theme="dark"] .brand .wm .b{-webkit-text-stroke:0}
 header.top{box-shadow:inset 0 -3px 0 var(--brand-2)}
 .brand{min-width:0}.brand .bt{display:flex;flex-direction:column;min-width:0;gap:2px}
-.brand small{font-family:var(--body);font-weight:600;font-size:13px;color:var(--muted);letter-spacing:0;line-height:1.1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.brand small:not(:empty)::before{content:"";display:inline-block;width:12px;height:12px;margin-right:5px;vertical-align:-1px;background:currentColor;-webkit-mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M3 10 12 4l9 6v10H3z' fill='none' stroke='black' stroke-width='2.4' stroke-linejoin='round'/%3E%3Crect x='8' y='13' width='8' height='7' fill='black'/%3E%3C/svg%3E") center/contain no-repeat;mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M3 10 12 4l9 6v10H3z' fill='none' stroke='black' stroke-width='2.4' stroke-linejoin='round'/%3E%3Crect x='8' y='13' width='8' height='7' fill='black'/%3E%3C/svg%3E") center/contain no-repeat}
+.brand .caarud{align-self:flex-start;display:inline-flex;align-items:center;gap:4px;max-width:100%;min-width:0;font:700 14px/1.15 var(--body);color:var(--fg);letter-spacing:0;background:var(--surface-2);border:1px solid var(--line);border-radius:999px;padding:3px 8px 3px 9px;cursor:pointer;-webkit-tap-highlight-color:transparent}
+.brand .caarud span{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0}
+.brand .caarud svg{width:16px;height:16px;flex:none}
+.brand .caarud:disabled{cursor:default;opacity:1;background:none;border-color:transparent;padding-left:0;color:var(--muted)}
+.cbar{display:flex;width:100%;align-items:center;gap:10px;justify-content:space-between;border:0;margin:0;cursor:pointer;background:#1f4d3a;color:#fff;font:800 16px/1.2 var(--display);padding:8px max(16px,env(safe-area-inset-right,0px),calc((100% - 1040px)/2 + 16px)) 8px max(16px,env(safe-area-inset-left,0px),calc((100% - 1040px)/2 + 16px));margin-bottom:3px;text-align:left}
+.cbar[hidden]{display:none}.cbar .cb-n{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:17px;letter-spacing:.01em}
+.cbar .cb-c{flex:none;display:inline-flex;align-items:center;gap:2px;font:700 13px var(--body);background:rgb(255 255 255/.16);border-radius:999px;padding:4px 6px 4px 10px}.cbar svg{width:16px;height:16px}
+.cl{display:flex;flex-direction:column;gap:8px}.cl-it{display:flex;gap:8px;align-items:center}
+.cl-go{flex:1;min-width:0;display:flex;flex-direction:column;align-items:flex-start;gap:2px;text-align:left;font:inherit;color:var(--fg);background:var(--surface-2);border:2px solid transparent;border-radius:12px;padding:12px 14px;cursor:pointer;min-height:56px}
+.cl-go b{font-size:17px}.cl-go span{font-size:13px;color:var(--muted)}
+.cl-it.cur .cl-go{border-color:var(--actc,var(--accent));background:var(--surface);cursor:default}
+.cl-add{border-top:1px solid var(--line);padding-top:10px}.cl-add summary{cursor:pointer;font-weight:700;min-height:40px;display:flex;align-items:center}
+.cl-add[open]{display:flex;flex-direction:column;gap:8px}.cl-add input{width:100%;box-sizing:border-box}
+.brand .caarud::before{content:"";display:inline-block;width:12px;height:12px;margin-right:5px;vertical-align:-1px;background:currentColor;-webkit-mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M3 10 12 4l9 6v10H3z' fill='none' stroke='black' stroke-width='2.4' stroke-linejoin='round'/%3E%3Crect x='8' y='13' width='8' height='7' fill='black'/%3E%3C/svg%3E") center/contain no-repeat;mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M3 10 12 4l9 6v10H3z' fill='none' stroke='black' stroke-width='2.4' stroke-linejoin='round'/%3E%3Crect x='8' y='13' width='8' height='7' fill='black'/%3E%3C/svg%3E") center/contain no-repeat}
 .topin{flex-wrap:nowrap}
 .sync{background:var(--surface-2);border-radius:999px;padding:5px 10px;white-space:nowrap;font-weight:600}
 @media (max-width:480px){.topin{gap:8px}.brand .emb{width:30px;height:34px}.brand .wm{font-size:18px}.hbtn{padding:8px 12px}}
@@ -431,11 +443,11 @@ details summary{cursor:pointer;font-weight:600}
 <polygon points="222,236 300,260 270,290 192,264" fill="#5E8C6F" stroke="#14201D" stroke-width="5" stroke-linejoin="round"/>
 <polygon points="378,236 300,260 330,290 408,264" fill="#5E8C6F" stroke="#14201D" stroke-width="5" stroke-linejoin="round"/>
 </g>
-</g></svg><span class="bt"><span class="wm"><span class="a">Stock</span><span class="b">aarud</span></span><small id="stockName"></small></span></div>
+</g></svg><span class="bt"><span class="wm"><span class="a">Stock</span><span class="b">aarud</span></span><button type="button" id="stockName" class="caarud" data-act="caarudSheet" hidden></button></span></div>
   <div class="grow"></div>
   <span class="sync" id="sync" role="status" aria-live="polite"><span class="dot"></span>Connexion…</span>
   <span id="hdrBtn"></span>
-</div></header>
+</div><button type="button" id="caarudBar" class="cbar" data-act="caarudSheet" hidden></button></header>
 
 <main class="wrap" id="app"></main>
 <div id="layer"></div>
@@ -504,13 +516,14 @@ const S={db:null,user:null,dl:null,assets:null,isAdmin:false,canWrite:null,dbSta
   config:null,produits:new Map(),mvts:[],cmds:[],sigs:[],
   view:"equipe",ctab:"bord",lieu:null,activite:null,query:"",chartProd:null,
   queue:[],invIdx:0,importRows:null,editProd:null};
-const DEF_CONFIG={nomStock:"Stock principal",lieux:[{id:"principal",nom:"Stock principal",principal:true}],
+const DEF_CONFIG={nomStructure:"",nomStock:"Stock principal",lieux:[{id:"principal",nom:"Stock principal",principal:true}],
   activites:[],partenaires:[],fournisseurs:[],saisons:[],methode:"jours",z:1.65,fenetre:10,periode:14,budget:0,margeEss:50,zEss:2.33};
 const DAY=864e5;
 const $=s=>document.querySelector(s);
 const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 const uid=()=>Date.now().toString(36)+Math.random().toString(36).slice(2,8);
-const ls={get(k,d){try{const v=localStorage.getItem("stk:"+k);return v==null?d:JSON.parse(v)}catch(e){return d}},set(k,v){try{localStorage.setItem("stk:"+k,JSON.stringify(v))}catch(e){}}};
+const NS=window.STK_NS||"stk:";
+const ls={get(k,d){try{const v=localStorage.getItem(NS+k);return v==null?d:JSON.parse(v)}catch(e){return d}},set(k,v){try{localStorage.setItem(NS+k,JSON.stringify(v))}catch(e){}}};
 const cfg=()=>S.config||DEF_CONFIG;
 const today=()=>new Date().toISOString().slice(0,10);
 const fmtDate=t=>new Date(t).toLocaleDateString("fr-FR",{day:"numeric",month:"short"});
@@ -674,7 +687,12 @@ document.addEventListener("focusout",()=>{if(S.pendingRender)setTimeout(()=>{if(
 function draw(){
   syncCats();
   const keep=document.activeElement&&document.activeElement.id,sel=keep&&document.activeElement.selectionStart;
-  $("#stockName").textContent=cfg().nomStock||"";
+  {const nomAff=(cfg().nomStructure||"").trim()||cfg().nomStock||"",multi=!!(window.SKB&&window.SKB.bases),sn=$("#stockName");
+   const nb=multi?window.SKB.bases().length:0,bar=$("#caarudBar");
+   bar.hidden=nb<2;if(nb>=2)bar.innerHTML='<span class="cb-n">'+esc(nomAff||"CAARUD sans nom")+'</span><span class="cb-c">Changer<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 10l5 5 5-5" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>';
+   sn.hidden=nb>=2||(!nomAff&&!multi);sn.disabled=!multi;sn.innerHTML='<span>'+esc(nomAff||"Mon CAARUD")+'</span>'+(multi?'<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 10l5 5 5-5" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg>':'');
+   sn.setAttribute("aria-label",(nomAff||"Mon CAARUD")+(multi?", changer de CAARUD":""));
+   if(multi&&S.dbState==="ok"&&nomAff)window.SKB.setName(nomAff)}
   const sy=$("#sync");const pend=S.queue.length;
   let cls="",txt="";
   if(!navigator.onLine){cls="warn";txt="Hors ligne"+(pend?" · "+pend+" en attente":"")}
@@ -901,13 +919,18 @@ const LSOK=(()=>{try{localStorage.setItem("stk:_t","1");localStorage.removeItem(
 let MES_MEM=[];
 function mesGet(){if(!LSOK)return MES_MEM.filter(e=>new Date(e.t).toISOString().slice(0,10)===today());const v=ls.get(mesKey(),[]);return Array.isArray(v)?v:[]}
 function mesSet(a){if(LSOK)ls.set(mesKey(),a);else MES_MEM=a}
-function mesAdd(e){const a=mesGet();a.push(e);mesSet(a);try{for(let i=localStorage.length-1;i>=0;i--){const k=localStorage.key(i);if(k&&k.startsWith("stk:mes:")&&k!=="stk:"+mesKey())localStorage.removeItem(k)}}catch(_){}}
+function mesAdd(e){const a=mesGet();a.push(e);mesSet(a);try{for(let i=localStorage.length-1;i>=0;i--){const k=localStorage.key(i);if(k&&k.startsWith(NS+"mes:")&&k!==NS+mesKey())localStorage.removeItem(k)}}catch(_){}}
 function mesDel(id){mesSet(mesGet().filter(e=>e.id!==id))}
 function livraisonsEquipe(){const enc=S.cmds.filter(enAttente);if(!enc.length)return "";
   return '<details class="recap livr"'+dk("livr",false)+'><summary><b>Une livraison est arrivée ?</b><span class="note">'+enc.length+' commande'+(enc.length>1?"s":"")+' en attente</span></summary><p class="note" style="margin:6px 0 4px">Touche le produit livré et indique ce qui est arrivé. Le stock est mis à jour tout de suite.</p>'
    +enc.map(c=>{const p=S.produits.get(c.produit)||{nom:"?"},rest=Math.max(0,c.qte-recuOf(c));return '<div class="ri">'+(p.id?badge(p):'')+'<span class="rn"><b>'+esc(p.nom)+'</b><small>commandé le '+fmtDate(c.t)+' · attendu '+esc(fmtQ(p,rest))+'</small></span><button class="btn small primary" data-act="recevoir" data-id="'+c.id+'">Arrivé</button></div>'}).join("")+'</details>'}
 /* Retour de matériel : on réduit la sortie d'origine, le stock et les statistiques restent justes */
 let retS=null;
+function drawCaarud(){const B=window.SKB&&window.SKB.bases?window.SKB.bases():[];
+  $("#layer").innerHTML='<div class="sheet-back enter" data-act="closeLayer"><div class="sheet" role="dialog" aria-modal="true" aria-label="Mes CAARUD"><h2>Mes CAARUD</h2><p class="note" style="margin:0">Touchez un CAARUD pour passer dessus, sans retaper de code. Les sorties notées hors connexion restent rattachées à leur CAARUD.</p><div class="cl">'
+   +B.map(x=>'<div class="cl-it'+(x.cur?' cur':'')+'"><button type="button" class="cl-go" data-act="caarudGo" data-id="'+esc(x.ref)+'"'+(x.cur?' aria-current="true"':'')+'><b>'+esc(x.nom||"CAARUD sans nom")+'</b><span>'+(x.cur?"Vous êtes ici":"Passer sur ce CAARUD")+(x.pend?" · "+x.pend+" en attente d\'envoi":"")+'</span></button>'+(x.cur?'':'<button type="button" class="btn small" data-act="caarudDel" data-id="'+esc(x.ref)+'">Retirer</button>')+'</div>').join("")
+   +'</div><details class="cl-add"'+(B.length<2?' open':'')+'><summary>Ajouter un autre CAARUD</summary><p class="note" style="margin:0">Scannez son QR code avec l\'appareil photo du téléphone, ou collez ici le lien d\'invitation envoyé par son responsable stock.</p><input id="clLink" type="url" inputmode="url" autocomplete="off" placeholder="Lien d\'invitation" aria-label="Lien d\'invitation"><div class="err" id="clE" role="alert"></div><button type="button" class="btn primary" data-act="caarudAdd">Ajouter ce CAARUD</button></details><button type="button" class="btn" data-act="closeLayer">Fermer</button></div></div>';
+  focusDialog()}
 function drawRet(){const e=retS&&mesGet().find(x=>x.id===retS.id);if(!e){$("#layer").innerHTML="";retS=null;return}
   $("#layer").innerHTML='<div class="sheet-back enter" data-act="closeLayer"><div class="sheet" role="dialog" aria-modal="true" aria-label="Retour au stock"><h2>J\'en ramène combien ?</h2><p class="note" style="margin:0">'+esc(e.nom)+' · sorti : '+e.qte+' '+(e.qte>1?"unités":"unité")+' pour '+esc(e.dest)+'</p>'
    +'<div class="stepper"><button data-act="retMinus" aria-label="Moins">−</button><input id="retQ" type="number" inputmode="numeric" min="1" max="'+e.qte+'" step="1" value="'+retS.n+'" aria-label="Quantité ramenée"><button data-act="retPlus" aria-label="Plus">+</button></div>'
@@ -1199,7 +1222,7 @@ function viewWizard(st){
   const s=S.wiz||1,c=cfg(),steps=["Votre structure","Vos activités","Votre matériel","Inventaire de départ","Inviter l'équipe"];
   let h='<div class="wiz"><p class="lab-s">Première installation · étape '+s+' sur 5</p><div class="wizbar">'+steps.map((t,i)=>'<span class="'+(i+1<s?"done":i+1===s?"cur":"")+'"></span>').join("")+'</div><h1 class="wizh">'+steps[s-1]+'</h1>';
   if(s===1){const L=c.lieux.filter(l=>!l.archive);
-    h+='<p>Comment s\'appelle l\'endroit où vous rangez le matériel ? Un garage, une réserve, un local…</p><label class="wizl">Nom du stock principal<input id="wzN" value="'+esc(c.nomStock&&c.nomStock!=="Stock principal"?c.nomStock:"")+'" placeholder="Ex. Garage"></label>'
+    h+='<label class="wizl" style="margin-bottom:14px">Nom de votre structure<input id="wzS" value="'+esc(c.nomStructure||"")+'" placeholder="Ex. CAARUD Centre-ville"></label><p>Comment s\'appelle l\'endroit où vous rangez le matériel ? Un garage, une réserve, un local…</p><label class="wizl">Nom du stock principal<input id="wzN" value="'+esc(c.nomStock&&c.nomStock!=="Stock principal"?c.nomStock:"")+'" placeholder="Ex. Garage"></label>'
      +'<p class="note" style="margin-top:14px">Vous stockez aussi ailleurs, dans un local ou une antenne qui se réapprovisionne au stock principal ? Ajoutez ces stocks intermédiaires. Sinon, laissez vide : un seul stock suffit dans la plupart des CAARUD.</p>'
      +L.filter(l=>!l.principal).map(l=>'<div class="row" style="margin-top:8px"><input id="wzL-'+l.id+'" value="'+esc(l.nom)+'" style="flex:1" aria-label="Stock intermédiaire"><button class="btn small danger" data-act="wzDelLieu" data-id="'+l.id+'">Retirer</button></div>').join("")
      +'<button class="btn small" style="margin-top:8px" data-act="wzAddLieu">Ajouter un stock intermédiaire</button>'}
@@ -1796,7 +1819,7 @@ function tabInvGuide(st,ps,L){
 /* Réglages */
 function tabReg(st){
   const c=cfg();
-  let h='<div class="row" style="margin-top:12px;justify-content:flex-end"><button class="btn small" data-act="wzStart">Relancer l\'installation guidée</button></div>'+equipePanel(false)+aCompleter()+accesPanel()+(S.db?codePanel():'')+'<div class="panel" style="margin-top:14px"><button class="btn small pbtn" data-act="schemaPdf">'+PRINT_ICO+'Imprimer le schéma</button><h2>Stocks et organisation</h2><p class="note">Le stock central reçoit les commandes des fournisseurs. Si vous stockez aussi ailleurs (un local, une antenne), ajoutez un stock intermédiaire : il est réapprovisionné depuis le stock central, et l\'équipe peut y prendre le matériel. Un seul stock suffit dans la plupart des CAARUD.</p>'+schemaStocks(false)+'<div class="list" style="margin-top:8px">'
+  let h='<div class="row" style="margin-top:12px;justify-content:flex-end"><button class="btn small" data-act="wzStart">Relancer l\'installation guidée</button></div>'+equipePanel(false)+aCompleter()+accesPanel()+(S.db?codePanel():'')+'<div class="panel" style="margin-top:14px"><button class="btn small pbtn" data-act="schemaPdf">'+PRINT_ICO+'Imprimer le schéma</button><h2>Stocks et organisation</h2><p class="note">Le stock central reçoit les commandes des fournisseurs. Si vous stockez aussi ailleurs (un local, une antenne), ajoutez un stock intermédiaire : il est réapprovisionné depuis le stock central, et l\'équipe peut y prendre le matériel. Un seul stock suffit dans la plupart des CAARUD.</p><label class="wizl" style="margin:0 0 12px">Nom de la structure, affiché en haut de l\'appli<input id="nomStruct" value="'+esc(c.nomStructure||"")+'" placeholder="Ex. CAARUD Centre-ville"></label>'+schemaStocks(false)+'<div class="list" style="margin-top:8px">'
    +c.lieux.map(l=>'<div class="it"><input id="ln-'+l.id+'" value="'+esc(l.nom)+'" style="flex:1;min-width:160px" aria-label="Nom du stock">'+(l.principal?'<span class="pill good">stock central</span>':'<span class="pill mute">stock intermédiaire</span>'+'<button class="btn small" data-act="lieuArch" data-id="'+l.id+'">'+(l.archive?"Réactiver":"Archiver")+'</button>')+'</div>').join("")
    +'</div><div class="row" style="margin-top:10px"><button class="btn primary" data-act="saveLieux">Enregistrer les noms</button><button class="btn" data-act="addLieu">Ajouter un stock intermédiaire</button></div></div>';
   h+='<div class="panel" style="margin-top:14px"><h2>Points de distribution</h2><p class="note">Ce que l\'équipe choisit à l\'étape « Pour quoi ? ». Les dates rendent un point temporaire (festival). Un point archivé reste dans les stats.</p><div class="list" style="margin-top:8px">'
@@ -2176,7 +2199,7 @@ document.addEventListener("change",async e=>{
   if(t.id==="pvPct"){S.prev.pct=+t.value;render()}
   if(t.id==="aRendre"&&sheet)sheet.aRendre=t.checked;
   if(t.id==="impCfg"&&t.files[0]){try{const j=JSON.parse(await t.files[0].text());if(!j.stockaarud)throw 0;
-    if(j.config){const c0=cfg(),{nomStock:_n,lieux:_l,fournisseurs:_f,lienAppli:_a,assistant:_s,...rest}=j.config;await saveConfig({...rest,activites:c0.activites.length?c0.activites:(rest.activites||[]),categories:rest.categories||c0.categories,fournisseurs:c0.fournisseurs||[]})}
+    if(j.config){const c0=cfg(),{nomStructure:_ns,nomStock:_n,lieux:_l,fournisseurs:_f,lienAppli:_a,assistant:_s,...rest}=j.config;await saveConfig({...rest,activites:c0.activites.length?c0.activites:(rest.activites||[]),categories:rest.categories||c0.categories,fournisseurs:c0.fournisseurs||[]})}
     for(const p of j.produits||[]){const id=slug(p.nom);if(!S.produits.has(id)){const {id:_i,photo:_p,photoId:_q,...rest}=p;await write("set","produits/"+id,rest)}}
     toast("Configuration importée")}catch(err){toast("Ce fichier n'est pas une configuration Stockaarud")}t.value=""}
   if((t.id==="fpI"||t.id==="fpCam")&&t.files[0]&&S.editProd){
@@ -2240,7 +2263,7 @@ document.addEventListener("click",async e=>{
   case "setCode":{const a=val("ncode").trim(),c=val("ncode2").trim();if(!/^\d{4,8}$/.test(a)){toast("Le code doit faire 4 à 8 chiffres");break}if(a!==c){toast("Les deux codes ne correspondent pas");break}
     const salt=uid()+uid(),hash=await sha(salt+a);await write("set","secret/coordo",{salt,hash,t:Date.now()});ls.set("coordoKey",hash);S.unlockKey=hash;S.secret={salt,hash};toast("Code de l\'espace gestion enregistré");render();break}
   case "delCode":if(b.dataset.sure!=="1"){b.dataset.sure="1";b.textContent="Confirmer la suppression";break}await write("delete","secret/coordo");S.secret=null;toast("Code supprimé");render();break;
-  case "lockDevice":try{localStorage.removeItem("stk:coordoKey")}catch(_){}S.unlockKey=null;S.view="equipe";ls.set("view","equipe");toast("Espace gestion verrouillé sur cet appareil");render();break;
+  case "lockDevice":try{localStorage.removeItem(NS+"coordoKey")}catch(_){}S.unlockKey=null;S.view="equipe";ls.set("view","equipe");toast("Espace gestion verrouillé sur cet appareil");render();break;
   case "ctab":S.ctab=b.dataset.v;S.tabMore=false;render();break;
   case "tabMore":S.tabMore=!S.tabMore;render();break;
   case "lieu":S.lieu=id;ls.set("lieu",id);render();break;
@@ -2255,6 +2278,11 @@ document.addEventListener("click",async e=>{
   case "retOk":await retOk();break;
   case "theme":ls.set("theme",b.dataset.v);applyTheme();render();break;
   case "closeLayer":retS=null;$("#layer").innerHTML="";S.editProd=null;break;
+  case "caarudSheet":if(window.SKB&&window.SKB.bases)drawCaarud();break;
+  case "caarudGo":{const cur=window.SKB.bases().find(x=>x.cur);if(cur&&cur.ref===id){$("#layer").innerHTML="";break}
+    if(S.queue.length&&navigator.onLine)await flush();window.SKB.switchBase(id);break}
+  case "caarudDel":if(b.dataset.sure!=="1"){b.dataset.sure="1";b.textContent="Confirmer";break}window.SKB.forget(id);drawCaarud();toast("CAARUD retiré de cet appareil");break;
+  case "caarudAdd":{const m=window.SKB.addLink(val("clLink"));if(m){const e=document.getElementById("clE");if(e)e.textContent=m}break}
   case "qadd":{const cur=Math.max(0,Math.round(num(val("qty"),0)));sheet.n=(cur===1&&!sheet.touched?0:cur)+(+b.dataset.v);sheet.touched=true;sheet.confirm=false;drawSheet();bumpQty();break}
   case "mode":sheet.mode=b.dataset.v;sheet.n=1;sheet.confirm=false;drawSheet();break;
   case "plus":sheet.n=Math.max(0,Math.round(num(val("qty"),0)))+1;sheet.confirm=false;drawSheet();bumpQty();break;
@@ -2296,7 +2324,7 @@ document.addEventListener("click",async e=>{
   case "wzSkip":S.wiz=null;S.wizSkip=true;render();break;
   case "wzPrev":S.wiz=Math.max(1,(S.wiz||1)-1);window.scrollTo(0,0);render();break;
   case "wzAddLieu":case "wzDelLieu":{const c=cfg(),L=c.lieux.map(l=>{const e=document.getElementById("wzL-"+l.id);return e?{...l,nom:e.value.trim()||l.nom}:l});const nom=val("wzN").trim();
-    await saveConfig({nomStock:nom||c.nomStock,lieux:a==="wzAddLieu"?[...L,{id:uid(),nom:"Stock intermédiaire"}]:L.filter(l=>l.id!==id)});break}
+    await saveConfig({nomStructure:val("wzS").trim()||c.nomStructure||"",nomStock:nom||c.nomStock,lieux:a==="wzAddLieu"?[...L,{id:uid(),nom:"Stock intermédiaire"}]:L.filter(l=>l.id!==id)});break}
   case "wzAct":{const c=cfg(),n=b.dataset.v,ex=c.activites.find(x=>!x.archive&&norm(x.nom)===norm(n));
     await saveConfig({activites:ex?c.activites.filter(x=>x!==ex):[...c.activites,{id:uid(),nom:n,icone:b.dataset.ic}]});break}
   case "wzActDel":await saveConfig({activites:cfg().activites.filter(x=>x.id!==id)});break;
@@ -2306,7 +2334,7 @@ document.addEventListener("click",async e=>{
   case "wzNext":{const s=S.wiz||1,c=cfg();
     if(s===1){const nom=val("wzN").trim();if(!nom){toast("Donne un nom au stock principal");break}
       const L=(c.lieux&&c.lieux.length?c.lieux:[{id:"principal",nom,principal:true}]).map(l=>{const e=document.getElementById("wzL-"+l.id);return l.principal?{...l,nom}:e?{...l,nom:e.value.trim()||l.nom}:l});
-      await saveConfig({nomStock:nom,lieux:L})}
+      await saveConfig({nomStructure:val("wzS").trim(),nomStock:nom,lieux:L})}
     if(s===2&&!c.activites.filter(x=>!x.archive).length){toast("Choisis au moins une activité");break}
     if(s===3){const have=new Set([...S.produits.values()].map(p=>norm(p.nom)));let n=0;for(const x of STARTER){if(S.wizOff&&S.wizOff.has(x[0])||have.has(norm(x[0])))continue;await write("set","produits/"+slug(x[0]),starterDoc(x));n++}
       if(!S.produits.size&&!n){toast("Garde au moins un produit");break}if(n)toast(n+" produits ajoutés")}
@@ -2341,7 +2369,7 @@ document.addEventListener("click",async e=>{
   case "invRestart":S.invIdx=0;S.guideSess=null;render();break;
   case "invOk":{const p=S.produits.get(id),st=computeStats(),theo=st[id].byLieu[S.invLieu]||0;const cc=val("invC"),bb=val("invB"),uu=val("invU");if(cc===""&&bb===""&&uu===""){toast("Indique ce que tu as compté");break}
     const qte=Math.round(num(cc)*(p.parCarton>1?p.parCarton:0)+num(bb)*(p.parBoite>1?p.parBoite:0)+num(uu));if(!S.guideSess)S.guideSess="inv"+uid();await write("set","mouvements/"+uid(),{t:Date.now(),type:"inventaire",produit:id,qte,theorique:theo,lieu:S.invLieu,session:S.guideSess});S.invIdx++;render();break}
-  case "saveLieux":await saveConfig({lieux:cfg().lieux.map(l=>({...l,nom:val("ln-"+l.id)||l.nom})),nomStock:val("ln-"+principal().id)||cfg().nomStock});toast("Enregistré");break;
+  case "saveLieux":await saveConfig({nomStructure:val("nomStruct").trim(),lieux:cfg().lieux.map(l=>({...l,nom:val("ln-"+l.id)||l.nom})),nomStock:val("ln-"+principal().id)||cfg().nomStock});toast("Enregistré");break;
   case "addLieu":await saveConfig({lieux:[...cfg().lieux,{id:uid(),nom:"Nouveau stock"}]});break;
   case "lieuArch":await saveConfig({lieux:cfg().lieux.map(l=>l.id===id?{...l,archive:!l.archive}:l)});break;
   case "saveActs":await saveConfig({activites:cfg().activites.map(x=>({...x,nom:val("an-"+x.id)||x.nom,debut:val("ad-"+x.id),fin:val("af-"+x.id),lieu:document.getElementById("al-"+x.id)?val("al-"+x.id):(x.lieu||"")}))});toast("Enregistré");break;
