@@ -87,6 +87,9 @@ h3{font-size:15px;font-weight:600;font-family:var(--body)}
 .chip{border:1px solid var(--line);background:var(--surface);color:var(--fg);border-radius:999px;padding:10px 16px;font:500 15px var(--body);cursor:pointer;min-height:44px}
 .chip[aria-pressed="true"]{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
 .chip.ghost{border-style:dashed;color:var(--muted)}
+.quick{display:flex;flex-wrap:wrap;justify-content:center;gap:8px}
+.quick button{min-width:52px;min-height:44px;padding:0 14px;border:1px solid var(--line);border-radius:999px;background:var(--surface-2);color:var(--fg);font:700 16px var(--body);cursor:pointer}
+.quick button[aria-pressed="true"]{background:var(--actc,var(--accent));border-color:var(--actc,var(--accent));color:#fff}
 html[data-tint] body{background:var(--tintbg);background-attachment:fixed}
 html[data-tint] header.top,html[data-tint] body::before,html[data-tint] .subnav,html[data-tint] .svnav{background:color-mix(in srgb,var(--tint) 14%,var(--bg))}
 html[data-tint] header.top{box-shadow:inset 0 -3px 0 var(--tint)}
@@ -109,11 +112,11 @@ input:focus-visible,select:focus-visible,button:focus-visible,textarea:focus-vis
 .search input{padding-left:40px;font-size:16px}
 .search svg{position:absolute;left:12px;top:50%;transform:translateY(-50%);width:18px;height:18px;color:var(--muted)}
 .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px;margin-top:12px}
-.tile{position:relative;border:1px solid var(--line);background:var(--surface);border-radius:6px;clip-path:polygon(0 0,calc(100% - 18px) 0,100% 18px,100% 100%,0 100%);padding:12px;text-align:left;cursor:pointer;display:flex;flex-direction:column;gap:8px;min-height:104px;color:var(--fg);font:inherit;min-width:0}
+.tile{position:relative;border:1px solid var(--line);background:var(--surface);border-radius:12px;padding:12px;text-align:left;cursor:pointer;display:flex;flex-direction:column;gap:8px;min-height:104px;color:var(--fg);font:inherit;min-width:0}
 @media (hover:hover){.tile:hover{border-color:var(--accent)}}
 .tile .nm{overflow-wrap:anywhere}
 .tile .st{font-size:14px;color:var(--muted);display:flex;align-items:center;gap:6px;margin-top:auto;font-variant-numeric:tabular-nums;border-top:1.5px dashed var(--line);padding-top:8px;margin-left:-12px;margin-right:-12px;padding-left:12px;padding-right:12px}
-.tile::after{content:"";position:absolute;top:0;right:0;width:18px;height:18px;background:var(--cat,var(--line));clip-path:polygon(0 0,0 100%,100% 100%);opacity:.85}
+.tile::after{content:none}
 .tile .nm{font:700 16px/1.2 var(--body)}
 .badge{width:46px;height:46px;border-radius:10px;display:grid;place-items:center;flex:none;overflow:hidden;background:#F4F7F5;border:2px solid var(--cat,var(--line))}
 .badge svg{width:84%;height:84%}
@@ -147,7 +150,8 @@ input:focus-visible,select:focus-visible,button:focus-visible,textarea:focus-vis
 .toggle button{flex:1;border:0;background:none;padding:10px;min-height:44px;border-radius:8px;font:600 15px var(--body);color:var(--muted);cursor:pointer}
 .toggle button[aria-pressed="true"]{background:var(--surface);color:var(--fg);box-shadow:0 1px 2px rgb(0 0 0/.12)}
 .toast{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(16px + env(safe-area-inset-bottom,0px));background:var(--fg);color:var(--bg);border-radius:12px;padding:10px 12px 10px 16px;display:flex;gap:12px;align-items:center;z-index:50;max-width:calc(100% - 32px);font-size:14px;box-shadow:0 6px 20px rgb(0 0 0/.25)}
-.toast button{background:none;border:1px solid currentColor;color:inherit;border-radius:8px;padding:6px 10px;font:600 13px var(--body);cursor:pointer}
+.toast button{background:none;border:1.5px solid currentColor;color:inherit;border-radius:10px;padding:0 14px;min-height:44px;font:700 14px var(--body);cursor:pointer;flex:none}
+.toast{width:min(440px,calc(100% - 32px));justify-content:space-between}
 .subnav{display:flex;gap:6px;overflow-x:auto;margin:6px 0 4px;padding:4px 0;position:sticky;top:var(--hdrH,64px);z-index:15;background:var(--bg)}
 .subnav button{border:0;background:none;padding:8px 12px;min-height:44px;border-radius:8px;font:600 14px var(--body);color:var(--muted);cursor:pointer;white-space:nowrap}
 .subnav button[aria-pressed="true"]{background:var(--accent-soft);color:var(--fg);box-shadow:inset 0 -3px 0 var(--brand-2)}
@@ -683,7 +687,8 @@ function draw(){
   const st=computeStats();
   const keepX={};document.querySelectorAll(".subnav,.tw").forEach((el,i)=>{keepX[(el.className)+i]=el.scrollLeft});
   paintAct();
-  const key=S.view+"/"+S.ctab;if(key!==draw.last){draw.last=key;const a=$("#app");a.classList.remove("swap");void a.offsetWidth;a.classList.add("swap");clearTimeout(draw.t);draw.t=setTimeout(()=>a.classList.remove("swap"),600)}
+  const key=S.view+"/"+S.ctab;if(key!==draw.last&&draw.last){const t=$(".toast");if(t)t.remove()}
+  if(key!==draw.last){draw.last=key;const a=$("#app");a.classList.remove("swap");void a.offsetWidth;a.classList.add("swap");clearTimeout(draw.t);draw.t=setTimeout(()=>a.classList.remove("swap"),600)}
   $("#app").innerHTML=(S.view==="equipe"?viewEquipe(st):viewCoordo(st));
   document.querySelectorAll(".subnav,.tw").forEach((el,i)=>{const k=(el.className)+i;if(keepX[k])el.scrollLeft=keepX[k]});
   if(S.view==="coordo")addPrintButtons();
@@ -792,13 +797,13 @@ function viewEquipe(st){
   const freq={};for(const m of S.mvts)if(m.type==="sortie"&&m.activite===S.activite)freq[m.produit]=(freq[m.produit]||0)+1;
   let ps=prodsActifs().filter(p=>matches(p,S.query));
   ps.sort((a,b)=>(freq[b.id]||0)-(freq[a.id]||0)||a.nom.localeCompare(b.nom,"fr"));
-  h+='<div class="row" style="justify-content:space-between;margin:18px 0 8px"><div class="label" style="margin:0"><span class="stepn">2</span>Quel matos ?</div>'+unitToggle()+'</div><div class="search"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg><input id="q" type="search" inputmode="search" autocomplete="off" placeholder="Chercher : paille, capotes, nalox…" value="'+esc(S.query)+'" aria-label="Chercher un produit"></div>';
+  h+='<div class="row" style="justify-content:space-between;margin:18px 0 8px"><div class="label" style="margin:0"><span class="stepn">2</span>Quel matos ?</div></div><div class="search"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg><input id="q" type="search" inputmode="search" autocomplete="off" placeholder="Chercher : paille, capotes, nalox…" value="'+esc(S.query)+'" aria-label="Chercher un produit"></div>';
   if(!S.activite)h+='<p class="note">Choisis d\'abord l\'activité, puis touche un produit.</p>';
-  const tile=p=>{const s=st[p.id],sl=s.byLieu[S.lieu]||0;return '<button class="tile'+(S.flash&&S.flash.id===p.id&&Date.now()<S.flash.until?' flash':'')+'" style="--cat:var('+(CATCOL[catOf(p)]||"--muted")+')" data-act="pick" data-id="'+p.id+'">'+badge(p)+'<span class="nm">'+esc(p.nom)+'</span><span class="st"><span class="dot '+(sl<=0?"crit":s.etat==="mute"?"":s.etat==="good"?"ok":s.etat)+'"></span>'+(sl<=0?'<b style="color:var(--crit)">Stock épuisé</b>':(s.etat==="crit"?'<b style="color:var(--crit)">bas</b> · ':s.etat==="warn"?'<b style="color:var(--warn)">à surveiller</b> · ':"")+'reste '+esc(fmtQ(p,sl)))+'</span></button>'};
+  const tile=p=>{const s=st[p.id],sl=s.byLieu[S.lieu]||0;return '<button class="tile'+(S.flash&&S.flash.id===p.id&&Date.now()<S.flash.until?' flash':'')+'" style="--cat:var('+(CATCOL[catOf(p)]||"--muted")+')" data-act="pick" data-id="'+p.id+'">'+badge(p)+'<span class="nm">'+esc(p.nom)+'</span><span class="st"><span class="dot '+(sl<=0?"crit":s.etat==="mute"?"":s.etat==="good"?"ok":s.etat)+'"></span>'+(sl<=0?'<b style="color:var(--crit)">Stock épuisé</b>':(s.etat==="crit"?'<b style="color:var(--crit)">stock bas</b>, ':s.etat==="warn"?'<b style="color:var(--warn)">à surveiller</b>, ':"")+'reste '+esc(fmtQ(p,sl)))+'</span></button>'};
   const grid=a=>'<div class="grid">'+a.map(tile).join("")+'</div>';
   const catBody=(k,a)=>{const gs=[...new Set(a.map(p=>p.groupe).filter(Boolean))].sort((x,y)=>x.localeCompare(y,"fr"));if(!gs.length)return grid(a);
     let o='<div class="subs">';for(const g of gs){const b=a.filter(p=>p.groupe===g),lw=b.filter(p=>(st[p.id].byLieu[S.lieu]||0)<=0||st[p.id].etat==="crit").length;
-      o+='<details class="sub"'+dk("sub-"+k+"-"+g,a.length<=8)+'><summary><span class="ct">'+esc(g)+'</span>'+(lw?'<span class="pill crit">'+lw+' bas</span>':'')+'<span class="cn">'+b.length+'</span></summary>'+grid(b)+'</details>'}
+      o+='<details class="sub"'+dk("sub-"+k+"-"+g,a.length<=8)+'><summary><span class="ct">'+esc(g)+'</span>'+(lw?'<span class="pill crit">'+lw+' stock bas</span>':'')+'<span class="cn">'+b.length+'</span></summary>'+grid(b)+'</details>'}
     const r=a.filter(p=>!p.groupe);return o+'</div>'+(r.length?grid(r):'')};
   if(S.query.trim().length>=2||!ps.length)h+=grid(ps);
   else{
@@ -806,7 +811,7 @@ function viewEquipe(st){
     if(top.length&&ps.length>8)h+='<details class="cat"'+dk("cat-top",true)+'><summary><span class="ct">Les plus utilisés'+(S.activite&&!S.activite.startsWith("__")?" pour « "+esc(actNom(S.activite))+" »":"")+'</span><span class="cn">'+top.length+'</span></summary>'+grid(top)+'</details>';
     for(const k of Object.keys(CATS)){const a=ps.filter(p=>catOf(p)===k).sort((x,y)=>x.nom.localeCompare(y.nom,"fr"));if(!a.length)continue;
       const low=a.filter(p=>(st[p.id].byLieu[S.lieu]||0)<=0||st[p.id].etat==="crit").length;
-      h+='<details class="cat"'+dk("cat-"+k,ps.length<=12)+' style="--cat:var('+(CATCOL[k]||"--muted")+')"><summary><span class="cic">'+iconSvg(catIcon(k))+'</span><span class="ct">'+CATS[k]+'</span>'+(low?'<span class="pill crit">'+low+' bas</span>':'')+'<span class="cn">'+a.length+'</span></summary>'+catBody(k,a)+'</details>'}
+      h+='<details class="cat"'+dk("cat-"+k,ps.length<=12)+' style="--cat:var('+(CATCOL[k]||"--muted")+')"><summary><span class="cic">'+iconSvg(catIcon(k))+'</span><span class="ct">'+CATS[k]+'</span>'+(low?'<span class="pill crit">'+low+' stock bas</span>':'')+'<span class="cn">'+a.length+'</span></summary>'+catBody(k,a)+'</details>'}
   }
   h+=livraisonsEquipe();
   h+=mesRecap();
@@ -824,7 +829,7 @@ function openPick(id){
   if(!S.activite){toast("Choisis d'abord l'activité");return}
   const p=S.produits.get(id);if(!p)return;
   const M=modesOf(p),last=ls.get("mode:"+p.id,null);
-  sheet={p,n:1,mode:S.unit&&M.includes(S.unit)?S.unit:M.includes(last)?last:M[0],part:ls.get("part",null),aRendre:true,autre:"",vers:null};
+  sheet={p,n:1,mode:M.includes(last)?last:M.includes("unite")?"unite":M[0],part:ls.get("part",null),aRendre:true,autre:"",vers:null};
   lastFocus=document.activeElement;drawSheet();focusDialog();
 }
 function closeSheet(){const b=document.querySelector("#layer .sheet-back");sheet=null;if(!b){drawSheet();return}
@@ -849,9 +854,11 @@ function drawSheet(){
   if(perte)h+='<div><div class="label" style="margin-top:0">Que s\'est-il passé ?</div><div class="chips">'+MOTIFS.map(([k,l])=>'<button class="chip" data-act="motif" data-id="'+k+'" aria-pressed="'+(sheet.motif===k)+'">'+l+'</button>').join("")+'</div></div>';
   if(trans)h+='<div><div class="label" style="margin-top:0">Vers</div><div class="chips">'+lieux().filter(l=>l.id!==S.lieu).map(l=>'<button class="chip" data-act="vers" data-id="'+l.id+'" aria-pressed="'+(sheet.vers===l.id)+'">'+esc(l.nom)+'</button>').join("")+'</div></div>';
   h+='<div class="label" style="margin:0"><span class="stepn">3</span>Combien ?</div>';
-  const M=modesOf(p);if(S.unit&&S.unit!=="unite"&&!M.includes(S.unit))h+='<div class="note">'+(S.unit==="carton"?"Pas de carton enregistré":"Pas de boîte enregistrée")+' pour ce produit : la saisie se fait '+(sheet.mode==="unite"?"à l\'unité":"en "+PACK_L[sheet.mode].toLowerCase()+"s")+'.</div>';if(M.length>1)h+='<div class="toggle" role="group">'+M.map(k=>'<button data-act="mode" data-v="'+k+'" aria-pressed="'+(sheet.mode===k)+'">'+PACK_L[k]+(k!=="unite"?' <span class="note">('+factor(p,k)+')</span>':'')+'</button>').join("")+'</div>';
+  const M=modesOf(p);if(M.length>1)h+='<div class="toggle" role="group">'+M.map(k=>'<button data-act="mode" data-v="'+k+'" aria-pressed="'+(sheet.mode===k)+'">'+PACK_L[k]+(k!=="unite"?' <span class="note">('+factor(p,k)+')</span>':'')+'</button>').join("")+'</div>';
   h+='<div class="stepper"><button data-act="minus" aria-label="Moins">−</button><input id="qty" type="number" inputmode="numeric" min="1" step="1" value="'+(sheet.n||"")+'" aria-label="Quantité"><button data-act="plus" aria-label="Plus">+</button></div>'
    +'<div class="note" id="qtyNote" style="text-align:center">'+esc(qtyNote(p,sheet.mode,sheet.n||0))+'</div>'
+   +'<div class="quick" role="group" aria-label="Quantités rapides">'+[2,5,10,20].map(n=>'<button data-act="qset" data-v="'+n+'" aria-pressed="'+(sheet.n===n)+'">'+n+'</button>').join("")
+   +(sheet.mode==="unite"&&M.includes("boite")?'<button data-act="qpack" data-v="boite">1 boîte <span class="note">('+factor(p,"boite")+')</span></button>':sheet.mode==="unite"&&M.includes("carton")?'<button data-act="qpack" data-v="carton">1 carton <span class="note">('+factor(p,"carton")+')</span></button>':'')+'</div>'
    +(sheet.confirm?'<div class="confirm">Grosse quantité : '+esc(sheet.n+" "+(sheet.mode==="unite"?"unités":plur(sheet.mode,sheet.n))+(sheet.mode!=="unite"?", soit "+(sheet.n*factor(p,sheet.mode)).toLocaleString("fr-FR")+" unités":""))+'. C\'est bien ça ?</div>':'')
    +'<button class="btn primary big" data-act="valider">'+(sheet.confirm?"Oui, valider":"Valider")+'</button><button class="btn big" data-act="cancelSheet" style="min-height:46px">Annuler</button>'
    +(!dep&&!trans&&!perte?'<button class="link" data-act="rupture" style="align-self:center;color:var(--crit)">Il n\'y en a plus'+(lieux().length>1?' au '+esc(lieuNom(S.lieu)):'')+' : signaler une rupture</button>':'')+'</div></div>';
@@ -1026,7 +1033,7 @@ function toast(msg,undo){
   el.innerHTML='<span>'+esc(msg)+'</span>'+(undo?'<button>Annuler</button>':"");
   document.body.appendChild(el);
   if(undo)el.querySelector("button").onclick=()=>{el.remove();undo();toast("Annulé")};
-  toastT=setTimeout(()=>{el.classList.add("out");setTimeout(()=>el.remove(),200)},undo?10000:3500);
+  toastT=setTimeout(()=>{el.classList.add("out");setTimeout(()=>el.remove(),200)},undo?6000:3000);
 }
 
 /* ----- Coordo ----- */
@@ -1648,7 +1655,7 @@ function tabCmd(st){
   const prop=prodsActifs().filter(p=>st[p.id].suggere>0&&st[p.id].moy>0).sort((a,b)=>(st[a.id].nextOrder??0)-(st[b.id].nextOrder??0)||fournNom(a).localeCompare(fournNom(b),"fr"));
   const quand=p=>{const d=st[p.id].nextOrder;return d==null||d===0?"maintenant":fmtDay(d)};
   let h='<div class="panel" style="margin-top:12px"><h2>Commande proposée</h2><p class="note">Selon le rythme de chaque fournisseur : au besoin (dès le point de commande) ou à date fixe. Quantité pour tenir jusqu\'à la livraison suivante, arrondie au carton. Ajuste puis enregistre ce que tu as commandé.</p>';
-  h+=prop.length?'<div class="props">'+prop.map(p=>{const s=st[p.id];return '<div class="prop"><div class="ph">'+badge(p)+'<span class="an"><b>'+esc(p.nom)+(s.ess?' <span class="pill ess">essentiel</span>':'')+'</b><small>'+esc(fournNom(p)||"Sans fournisseur")+', pour '+(quand(p)==="maintenant"?"maintenant":"le "+quand(p))+'</small></span><span class="sq">'+esc(fmtQ(p,s.suggere))+'</span></div>'
+  h+=prop.length?'<div class="props">'+prop.map(p=>{const s=st[p.id];return '<div class="prop"><div class="ph">'+badge(p)+'<span class="an"><b>'+esc(p.nom)+(s.ess?' <span class="pill ess">essentiel</span>':'')+'</b><small>'+esc(fournNom(p)||"Aucun fournisseur renseigné")+', à commander '+(quand(p)==="maintenant"?"maintenant":"le "+quand(p))+'</small></span><span class="sq">'+esc(fmtQ(p,s.suggere))+'</span></div>'
     +'<div class="row" style="gap:8px;margin-top:8px"><label class="row note" style="gap:6px;flex-wrap:nowrap">Commandé<input id="cq-'+p.id+'" type="number" min="0" inputmode="numeric" value="'+s.suggere+'" style="width:110px"> unités</label><button class="btn small primary" data-act="commander" data-id="'+p.id+'">Enregistrer la commande</button></div>'
     +'<details class="why"'+dk("why-"+p.id)+'><summary>Comment ce chiffre est calculé</summary>'+calcExplain(p,s)+'</details>'
     +'<details class="why"'+dk("fc-"+p.id)+'><summary>Voir la prévision sur 3 mois</summary>'+(S.openD["fc-"+p.id]?fcBlock(p,st):'')+'</details></div>'}).join("")+'</div>':'<div class="empty">Rien à commander pour l\'instant.</div>';
@@ -2222,6 +2229,8 @@ document.addEventListener("click",async e=>{
   case "pick":openPick(id);break;
   case "closeSheet":case "cancelSheet":closeSheet();restoreFocus();break;
   case "closeLayer":$("#layer").innerHTML="";S.editProd=null;break;
+  case "qset":sheet.n=+b.dataset.v;sheet.confirm=false;drawSheet();bumpQty();break;
+  case "qpack":sheet.mode=b.dataset.v;sheet.n=1;sheet.confirm=false;drawSheet();bumpQty();break;
   case "mode":sheet.mode=b.dataset.v;sheet.n=1;sheet.confirm=false;drawSheet();break;
   case "plus":sheet.n=Math.max(0,Math.round(num(val("qty"),0)))+1;sheet.confirm=false;drawSheet();bumpQty();break;
   case "minus":sheet.n=Math.max(1,Math.round(num(val("qty"),1))-1);sheet.confirm=false;drawSheet();bumpQty();break;
