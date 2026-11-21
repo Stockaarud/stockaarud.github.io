@@ -372,3 +372,10 @@ html { scroll-behavior: smooth; }
 .qsheet .rows--dl > div:last-child, .qsheet .qa:last-child { border-bottom: 0; }
 .need-plain li::before { content: ""; width: 0.7em; height: 0.7em; margin-top: 0.45em; border: 0; background: var(--color-ink); }
 @media (max-width: 40rem) { .qsheet { padding: var(--space-lg); } }
+
+.qsheet--top { margin-top: var(--section-gap-s); }
+.qsheet .rows { border-top-color: var(--color-ink); }
+.qsheet .rows li { border-bottom-color: var(--color-rule-2); }
+.qsheet .rows li:last-child { border-bottom: 0; padding-bottom: 0; }
+.qsheet code { background: var(--color-paper); }
+@media print { .qsheet { background: none; box-shadow: none; padding: 0; margin-top: 6mm; } }
