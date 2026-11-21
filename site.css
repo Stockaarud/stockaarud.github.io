@@ -384,3 +384,11 @@ html { scroll-behavior: smooth; }
 .qsheet .shot { background: none; box-shadow: none; padding: 0; outline: 1px solid var(--color-rule); }
 .qsheet .shot figcaption { padding: 0 var(--space-xs) var(--space-xs); }
 #quotidien + .section { padding-top: var(--space-2xl); }
+
+/* Cadres tracés au stylo autour des parties de l'accueil */
+.penbox { position: relative; padding: var(--space-2xl); }
+.penbox .pen { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; pointer-events: none; fill: none; stroke: var(--color-ink); stroke-width: 2.5px; stroke-linecap: round; stroke-linejoin: round; }
+.penbox .pen path { vector-effect: non-scaling-stroke; }
+.section:has(.penbox) + .section:has(.penbox) { padding-top: var(--space-xl); }
+@media (max-width: 40rem) { .penbox { padding: var(--space-lg) var(--space-md); } }
+@media print { .penbox .pen { display: none; } .penbox { padding: 0; } }
