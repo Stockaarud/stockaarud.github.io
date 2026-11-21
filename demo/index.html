@@ -58,7 +58,12 @@ body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset
 @media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .brand .wm .b{-webkit-text-stroke:0}}
 :root[data-theme="dark"] .brand .wm .b{-webkit-text-stroke:0}
 header.top{box-shadow:inset 0 -3px 0 var(--brand-2)}
-.brand small{font-family:var(--body);font-weight:400;font-size:14px;color:var(--muted);letter-spacing:0;padding-left:10px;border-left:1px solid var(--line);margin-left:2px}
+.brand{min-width:0}.brand .bt{display:flex;flex-direction:column;min-width:0;gap:2px}
+.brand small{font-family:var(--body);font-weight:600;font-size:13px;color:var(--muted);letter-spacing:0;line-height:1.1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.brand small:not(:empty)::before{content:"";display:inline-block;width:12px;height:12px;margin-right:5px;vertical-align:-1px;background:currentColor;-webkit-mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M3 10 12 4l9 6v10H3z' fill='none' stroke='black' stroke-width='2.4' stroke-linejoin='round'/%3E%3Crect x='8' y='13' width='8' height='7' fill='black'/%3E%3C/svg%3E") center/contain no-repeat;mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M3 10 12 4l9 6v10H3z' fill='none' stroke='black' stroke-width='2.4' stroke-linejoin='round'/%3E%3Crect x='8' y='13' width='8' height='7' fill='black'/%3E%3C/svg%3E") center/contain no-repeat}
+.topin{flex-wrap:nowrap}
+.sync{background:var(--surface-2);border-radius:999px;padding:5px 10px;white-space:nowrap;font-weight:600}
+@media (max-width:480px){.topin{gap:8px}.brand .emb{width:30px;height:34px}.brand .wm{font-size:18px}.hbtn{padding:8px 12px}}
 .grow{flex:1}
 .hbtn{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--line);background:var(--surface);color:var(--fg);border-radius:999px;padding:8px 14px;font:600 14px var(--body);cursor:pointer;min-height:44px}
 .hbtn svg{width:16px;height:16px}
@@ -340,7 +345,15 @@ details summary{cursor:pointer;font-weight:600}
  .tile.flash{animation:flash 1.2s ease both}
  .skel{animation:shimmer 1.2s linear infinite}
  .auto details[open] dl{animation:fadeUp .2s ease both}
+ #app.swap>*{animation:fadeUp .28s cubic-bezier(.2,.8,.2,1) both}#app.swap>*:nth-child(2){animation-delay:.04s}#app.swap>*:nth-child(3){animation-delay:.08s}#app.swap>*:nth-child(n+4){animation-delay:.12s}
+ details.fold[open]>:not(summary){animation:fadeUp .22s ease both}
+ details.fold>summary::after{transition:transform .25s cubic-bezier(.2,.8,.2,1)}
+ .chip[aria-pressed="true"],.toggle button[aria-pressed="true"],.seg button[aria-pressed="true"]{animation:pick .26s cubic-bezier(.2,.8,.2,1)}
+ .tapfx{position:fixed;z-index:9999;width:12px;height:12px;margin:-6px 0 0 -6px;border-radius:50%;background:var(--brand-2);opacity:.45;pointer-events:none;animation:ripple .45s ease-out forwards}
+ .svnav button,.subnav button{transition:transform .12s ease,background-color .2s,color .2s,box-shadow .25s}
 }
+@keyframes pick{0%{transform:scale(.92)}60%{transform:scale(1.04)}100%{transform:none}}
+@keyframes ripple{to{transform:scale(7);opacity:0}}
 @keyframes fadeUp{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
 @keyframes fadeIn{from{opacity:0}to{opacity:1}}@keyframes fadeOut{to{opacity:0}}
 @keyframes sheetUp{from{transform:translateY(40px);opacity:.4}to{transform:none;opacity:1}}
@@ -391,7 +404,7 @@ details summary{cursor:pointer;font-weight:600}
 <polygon points="222,236 300,260 270,290 192,264" fill="#5E8C6F" stroke="#14201D" stroke-width="5" stroke-linejoin="round"/>
 <polygon points="378,236 300,260 330,290 408,264" fill="#5E8C6F" stroke="#14201D" stroke-width="5" stroke-linejoin="round"/>
 </g>
-</g></svg><span class="wm"><span class="a">Stock</span><span class="b">aarud</span></span> <small id="stockName"></small></div>
+</g></svg><span class="bt"><span class="wm"><span class="a">Stock</span><span class="b">aarud</span></span><small id="stockName"></small></span></div>
   <div class="grow"></div>
   <span class="sync" id="sync" role="status" aria-live="polite"><span class="dot"></span>Connexion…</span>
   <span id="hdrBtn"></span>
@@ -1731,6 +1744,8 @@ function foldPanels(html){
   const w=document.createElement("div");w.appendChild(t.content);return w.innerHTML;
 }
 document.addEventListener("toggle",e=>{const d=e.target;if(!d||!d.dataset||!d.dataset.fold)return;const o=new Set(ls.get("regOpen",[]));d.open?o.add(d.dataset.fold):o.delete(d.dataset.fold);ls.set("regOpen",[...o])},true);
+/* petit cercle jaune au toucher des boutons */
+if(!matchMedia("(prefers-reduced-motion: reduce)").matches)document.addEventListener("pointerdown",e=>{const t=e.target.closest&&e.target.closest("button,.chip,.tile,a.btn,summary");if(!t)return;const d=document.createElement("span");d.className="tapfx";d.style.left=e.clientX+"px";d.style.top=e.clientY+"px";document.body.appendChild(d);setTimeout(()=>d.remove(),500)},{passive:true});
 /* hauteur du bandeau du haut et des onglets, pour que les menus restent visibles en faisant défiler */
 (()=>{const set=()=>{const t=document.querySelector(".top"),n=document.querySelector(".subnav");document.documentElement.style.setProperty("--hdrH",(t?t.getBoundingClientRect().height:64)+"px");document.documentElement.style.setProperty("--subH",(n?n.getBoundingClientRect().height+4:52)+"px")};
  const go=()=>{set();if(window.ResizeObserver){const ro=new ResizeObserver(set);const t=document.querySelector(".top");if(t)ro.observe(t);new MutationObserver(set).observe(document.getElementById("app")||document.body,{childList:true})}};

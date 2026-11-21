@@ -81,7 +81,7 @@ a:hover { text-decoration-thickness: 3px; }
 .flyer b { font-family: var(--font-display); font-stretch: 62%; font-weight: 800; text-transform: uppercase; font-size: clamp(2.5rem, 3vw + 1rem, 4.5rem); line-height: 1; }
 .flyer span { font-size: var(--text-md); max-width: 26ch; }
 .flyer--big { grid-row: span 2; }
-.flyer--big b { font-size: clamp(10rem, 14vw, 15rem); line-height: 1; }
+.flyer--big b { font-size: clamp(5.5rem, 8vw, 9rem); line-height: 1; }
 .flyer--wide { grid-column: span 2; }
 
 /* workflow stages */
