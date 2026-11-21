@@ -28,7 +28,7 @@
   <section class="doc-hero" aria-labelledby="titre">
     <div class="container">
       <h1 id="titre" class="h1-wide">Installer Stockaarud chez vous</h1>
-      <p class="lead">Dix minutes, un compte Supabase gratuit, rien à télécharger.</p>
+      <p class="lead">Quinze minutes sur un ordinateur, un compte Supabase gratuit, rien à télécharger, aucun mot de passe à retenir.</p>
       <div class="actions">
         <a class="btn btn--primary" href="#base">Commencer l’installation</a>
         <a class="btn btn--secondary" href="https://stockaarud.github.io/stockaarud/">Ouvrir l’appli</a>
@@ -40,9 +40,9 @@
     <nav class="toc" aria-label="Étapes">
       <ol>
         <li><a href="#base">Supabase</a></li>
-        <li><a href="#preparer">La base</a></li>
+        <li><a href="#preparer">Les tables</a></li>
+        <li><a href="#compte">Les connexions</a></li>
         <li><a href="#brancher">L’appli</a></li>
-        <li><a href="#compte">Le compte</a></li>
         <li><a href="#guidee">Installation guidée</a></li>
         <li><a href="#inviter">L’équipe</a></li>
         <li><a href="#savoir">Bon à savoir</a></li>
@@ -63,33 +63,34 @@
         </li>
 
         <li class="step" id="preparer">
-          <h2>La base</h2>
+          <h2>Installer les tables</h2>
           <div class="step-body">
+            <p>Ouvrez <a href="https://stockaarud.github.io/stockaarud/">l’appli</a> sur l’ordinateur : l’écran <strong>Installer Stockaarud pour mon CAARUD</strong> a un bouton pour chaque étape.</p>
             <ol>
-              <li><strong>SQL Editor</strong> : collez <a href="https://github.com/Stockaarud/stockaarud/blob/main/supabase/setup.sql">setup.sql</a>, puis <strong>Run</strong>.</li>
-              <li><strong>Authentication</strong> : activez <strong>Allow anonymous sign-ins</strong>, coupez <strong>Confirm email</strong>.</li>
-              <li><strong>Project Settings › API</strong> : notez l’adresse et la clé <strong>anon</strong>.</li>
+              <li><strong>Copier le script</strong>, puis <strong>Ouvrir l’éditeur SQL</strong>.</li>
+              <li>Collez, cliquez sur <strong>Run</strong>.</li>
+              <li>Notez le <strong>code d’installation</strong> affiché en bas : il vous fait entrer dans l’appli.</li>
             </ol>
-            <p class="sheet sheet--fluoro warn" style="--r: -0.8deg">Jamais la clé <code>service_role</code> : elle donne tous les droits.</p>
+          </div>
+          <figure class="sheet shot shot--setup" style="--r: 1.2deg"><div data-slot="brancher" data-kind="product" data-alt="L’écran d’installation de l’appli"><img src="img/setup1.jpg" width="780" height="1688" alt="Écran Installer Stockaarud pour mon CAARUD : quatre étapes, chacune avec son bouton vers Supabase." loading="lazy"></div></figure>
+        </li>
+
+        <li class="step" id="compte">
+          <h2>Autoriser les connexions par code</h2>
+          <div class="step-body">
+            <p><strong>Ouvrir le réglage</strong>, activez <strong>Allow anonymous sign-ins</strong>, puis <strong>Save</strong>.</p>
+            <p>C’est ce qui permet à l’équipe d’entrer avec un QR code, sans compte. C’est le seul réglage à faire à la main.</p>
           </div>
         </li>
 
         <li class="step" id="brancher">
           <h2>Brancher l’appli sur votre base</h2>
           <div class="step-body">
-            <p>Sur l’ordinateur, ouvrez <a href="https://stockaarud.github.io/stockaarud/">l’appli</a>.</p>
-            <p>Dans <strong>Installer Stockaarud pour mon CAARUD</strong>, collez l’adresse du projet et la clé anon, puis <strong>Enregistrer</strong>.</p>
+            <p><strong>Ouvrir la page des clés</strong>, copiez la clé <strong>anon public</strong> (onglet « Legacy API keys »).</p>
+            <p>Collez-la dans l’appli avec le code d’installation, puis <strong>Installer</strong>.</p>
+            <p class="sheet sheet--fluoro warn" style="--r: -0.8deg">Jamais la clé <code>service_role</code> : elle donne tous les droits.</p>
           </div>
-          <figure class="sheet shot shot--setup" style="--r: 1.2deg"><div data-slot="brancher" data-kind="product" data-alt="L’écran de connexion à la base, ou la vidéo de cette étape"><img src="img/setup1.jpg" width="780" height="1688" alt="Écran Installer Stockaarud pour mon CAARUD, avec l’adresse du projet et la clé publique remplies." loading="lazy"></div></figure>
-        </li>
-
-        <li class="step" id="compte">
-          <h2>Créer le compte responsable stock</h2>
-          <div class="step-body">
-            <p>Touchez <strong>Première installation : créer le compte responsable stock</strong>, puis entrez un e-mail et un mot de passe.</p>
-            <p>Ce compte gère le stock et sert de compte de secours : gardez bien le mot de passe.</p>
-          </div>
-          <figure class="sheet shot shot--setup" style="--r: -1deg"><div data-slot="compte" data-kind="product" data-alt="L’écran de connexion, ou la vidéo de cette étape"><img src="img/setup2.jpg" width="780" height="1688" alt="Écran de connexion : rejoindre l’équipe avec un code, ou se connecter comme responsable stock." loading="lazy"></div></figure>
+          <figure class="sheet shot shot--setup" style="--r: -1deg"><div data-slot="compte" data-kind="product" data-alt="La clé et le code d’installation remplis"><img src="img/setup2.jpg" width="780" height="1688" alt="La clé anon public et le code d’installation remplis, prêts pour le bouton Installer." loading="lazy"></div></figure>
         </li>
 
         <li class="step step--full" id="guidee">
@@ -133,7 +134,8 @@
         <ul class="rows">
           <li><h3>Hors connexion</h3><p>Les saisies restent sur le téléphone et partent dès le retour du réseau.</p></li>
           <li><h3>Pause du projet</h3><p>Supabase met en pause un projet gratuit resté 7 jours sans activité. Cliquez sur <strong>Restore project</strong> : rien n’est perdu.</p></li>
-          <li><h3>Sauvegardes</h3><p>Dans <strong>Réglages › Sauvegarde et remise à zéro</strong>, exportez le fichier une fois par mois.</p></li>
+          <li><h3>Sauvegardes</h3><p>Supabase gratuit ne garde pas de copie. Téléchargez la sauvegarde après chaque inventaire : l’appli vous le rappelle.</p></li>
+          <li><h3>Accès perdu</h3><p>Dans Supabase, <strong>SQL Editor</strong>, tapez <code>select public.code_secours();</code> puis <strong>Run</strong> : vous obtenez un nouveau code de responsable stock.</p></li>
           <li><h3>Mises à jour</h3><p>Elles arrivent seules : les téléphones prennent la nouvelle version à la prochaine ouverture.</p></li>
         </ul>
       </section>
