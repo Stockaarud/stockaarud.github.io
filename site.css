@@ -172,7 +172,7 @@ code { font-family: var(--font-body); font-weight: 700; background: var(--color-
 .warn code { background: transparent; text-decoration: underline; }
 .doc-h2 { margin-bottom: var(--space-xl); }
 .rows { list-style: none; margin: 0; padding: 0; border-top: 1px solid var(--color-ink); }
-.rows li { display: grid; grid-template-columns: minmax(0, 4fr) minmax(0, 8fr); gap: var(--gap-columns); padding-block: var(--space-lg); border-bottom: 1px solid var(--color-rule); align-items: baseline; }
+.rows li { display: grid; grid-template-columns: minmax(0, 4fr) minmax(0, 8fr); gap: var(--gap-columns); padding-block: var(--space-lg); border-bottom: 1px solid var(--color-rule); align-items: start; }
 
 @media (max-width: 60rem) {
   .hero .container, .stage, .stage--wide .stage-text, .section-head, .close, .doc, .step, .footer-grid { grid-template-columns: minmax(0, 1fr); }
@@ -200,7 +200,7 @@ code { font-family: var(--font-body); font-weight: 700; background: var(--color-
   .compare td, .compare td:first-child { border: 0; padding: var(--space-2xs) 0; width: auto; }
   .compare td:nth-child(2)::before { content: "Avant : "; color: var(--color-muted); }
   .compare td:nth-child(3)::before { content: "Avec Stockaarud : "; color: var(--color-muted); }
-  .wordmark img.wm { height: 17px; }
+  .wordmark img.wm { height: clamp(12px, 4vw, 17px); }
   .wordmark img { width: 34px; height: 34px; }
 }
 
@@ -260,6 +260,25 @@ code { font-family: var(--font-body); font-weight: 700; background: var(--color-
   .stage-area .shot--phone { width: min(62%, 240px); }
   .stage-area .shot--phone [data-slot] { aspect-ratio: 390 / 700; }
 }
+
+/* questions page */
+.rows--dl { margin: var(--space-xl) 0 0; }
+.rows--dl > div { display: grid; grid-template-columns: minmax(0, 4fr) minmax(0, 8fr); gap: var(--gap-columns); padding-block: var(--space-lg); border-bottom: 1px solid var(--color-rule); }
+.rows--dl dt { font-weight: 700; font-size: var(--text-title); line-height: 1.2; }
+.rows--dl dd { margin: 0; }
+@media (max-width: 60rem) { .rows--dl > div { grid-template-columns: minmax(0, 1fr); gap: var(--space-xs); } }
+.prose { display: grid; gap: var(--space-md); }
+.prose p { font-size: var(--text-lead); line-height: 1.45; }
+.faq { border-top: 1px solid var(--color-ink); }
+.qa { border-bottom: 1px solid var(--color-rule); }
+.qa > summary { list-style: none; display: flex; justify-content: space-between; align-items: center; gap: var(--space-lg); padding: var(--space-md) 0; min-height: 56px; cursor: pointer; font-weight: 700; font-size: var(--text-lead); }
+.qa > summary::-webkit-details-marker { display: none; }
+.qa > summary::after { content: "+"; flex: none; display: grid; place-items: center; width: 32px; height: 32px; background: var(--color-accent); font-family: var(--font-display); font-weight: 800; font-size: 1.5rem; line-height: 1; transition: rotate var(--dur-short) var(--ease-out); }
+.qa[open] > summary::after { rotate: 45deg; }
+.qa > summary:focus-visible { outline: 2px solid var(--color-focus); outline-offset: 2px; }
+.qa-a { padding: 0 var(--space-2xl) var(--space-lg) 0; }
+.qa[open] .qa-a { animation: drop var(--dur-short) var(--ease-out); }
+@media (prefers-reduced-motion: reduce) { .qa[open] .qa-a { animation: none; } }
 
 /* tutorial videos (installer page) */
 .shot--vid { justify-self: center; width: min(100%, 300px); }

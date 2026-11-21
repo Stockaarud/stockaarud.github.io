@@ -1,0 +1,132 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Stockaarud : qui, vos données, vos questions</title>
+<meta name="description" content="Qui fait Stockaarud, ce que l’appli enregistre, où vont les données de votre CAARUD, ce que ça coûte, et les réponses aux questions courantes.">
+<meta name="theme-color" content="#1f4d3a">
+<meta property="og:type" content="article">
+<meta property="og:locale" content="fr_FR">
+<meta property="og:site_name" content="Stockaarud">
+<meta property="og:url" content="https://stockaarud.github.io/questions.html">
+<meta property="og:title" content="Stockaarud : qui, vos données, vos questions">
+<meta property="og:description" content="Qui fait Stockaarud, ce que l’appli enregistre, où vont vos données, ce que ça coûte.">
+<meta property="og:image" content="https://stockaarud.github.io/img/og-stockaarud.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="627">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="img/icon.png">
+<link rel="stylesheet" href="site.css">
+</head>
+<body class="fibre">
+<script>document.documentElement.classList.add('js');</script>
+
+<header class="nav-wrap">
+  <div class="container">
+    <nav class="nav sheet" aria-label="Principale">
+      <a class="wordmark" href="./" aria-label="Stockaarud, accueil"><img src="img/icon.png" width="40" height="40" alt=""><img class="wm" src="img/wordmark.png" width="1133" height="115" alt=""></a>
+      <ul class="nav-links">
+        <li class="nav-link"><a href="installer.html">Installer</a></li>
+        <li class="nav-link"><a href="demo/">Démo</a></li>
+        <li class="nav-link"><a href="questions.html" aria-current="page">Questions</a></li>
+        <li class="nav-link"><a href="./#contact">Contact</a></li>
+        <li><a class="btn btn--primary btn--nav" href="https://stockaarud.github.io/stockaarud/">Ouvrir l’appli</a></li>
+      </ul>
+      <details class="nav-menu">
+        <summary aria-label="Menu"><span class="burger" aria-hidden="true"><i></i><i></i><i></i></span>Menu</summary>
+        <div class="nav-drop sheet">
+          <ul>
+            <li><a href="installer.html">Installer</a></li>
+            <li><a href="demo/">Démo</a></li>
+            <li><a href="questions.html" aria-current="page">Questions</a></li>
+            <li><a href="docs/guide-installation-stockaarud.pdf">Guide PDF</a></li>
+            <li><a href="./#contact">Contact</a></li>
+            <li><a href="https://github.com/Stockaarud/stockaarud">Code source</a></li>
+          </ul>
+          <a class="btn btn--primary" href="https://stockaarud.github.io/stockaarud/">Ouvrir l’appli</a>
+        </div>
+      </details>
+    </nav>
+  </div>
+</header>
+
+<main>
+  <section class="doc-hero" aria-labelledby="titre">
+    <div class="container">
+      <h1 id="titre" class="h1-wide">Avant de vous lancer</h1>
+      <p class="lead">Qui fait Stockaarud, où vont vos données, et ce que ça coûte.</p>
+    </div>
+  </section>
+
+  <div class="container doc">
+    <nav class="toc sheet" aria-label="Sur cette page">
+      <ol>
+        <li><a href="#qui">Qui fait Stockaarud</a></li>
+        <li><a href="#donnees">Vos données</a></li>
+        <li><a href="#faq">Questions fréquentes</a></li>
+      </ol>
+    </nav>
+
+    <div>
+      <section id="qui" aria-labelledby="qui-t">
+        <h2 id="qui-t" class="doc-h2">Qui fait Stockaarud</h2>
+        <div class="prose">
+          <p>Stockaarud est né dans un CAARUD, pour répondre à un problème du quotidien : savoir ce qu’il reste au stock avant d’en manquer.</p>
+          <p><span class="fill" data-fill="qui">Votre nom, votre fonction et votre structure, à compléter</span></p>
+          <p>L’appli est gratuite et son code est public : chacun peut le lire sur <a href="https://github.com/Stockaarud/stockaarud">GitHub</a>. Pour nous joindre : <a href="mailto:stockaarud@proton.me">stockaarud@proton.me</a>.</p>
+        </div>
+      </section>
+
+      <section class="section" id="donnees" aria-labelledby="donnees-t">
+        <h2 id="donnees-t" class="doc-h2">Vos données restent chez vous</h2>
+        <p class="sheet sheet--fluoro warn" style="--r: -0.6deg">Aucune information sur les personnes accueillies : l’appli ne compte que du matériel.</p>
+        <dl class="rows rows--dl">
+          <div><dt>Ce qui est enregistré</dt><dd>Le catalogue, les entrées et sorties de matériel (produit, quantité, activité, date), les commandes, les noms des fournisseurs et des associations partenaires. Les sorties ne portent aucun nom.</dd></div>
+          <div><dt>Où</dt><dd>Dans une base Supabase que votre CAARUD crée lui-même, à son nom. Le guide conseille la région Europe (Paris). Il n’y a pas de base commune.</dd></div>
+          <div><dt>Qui y a accès</dt><dd>Votre équipe, par le code ou le QR code que vous lui donnez, et vos responsables stock. Les règles sont appliquées par la base elle-même. Nous n’avons pas accès à vos données.</dd></div>
+          <div><dt>Donnée personnelle</dt><dd>Une seule : l’adresse e-mail du compte responsable stock, conservée dans votre projet Supabase.</dd></div>
+          <div><dt>Sauvegardes</dt><dd>Supabase gratuit ne garde pas de copie. L’appli télécharge une sauvegarde complète en un geste, et vous le rappelle.</dd></div>
+          <div><dt>Ce site</dt><dd>Il est hébergé par GitHub et ne reçoit aucune donnée de stock. Le formulaire de contact transmet votre message par le service Formspree.</dd></div>
+        </dl>
+      </section>
+
+      <section class="section" id="faq" aria-labelledby="faq-t">
+        <h2 id="faq-t" class="doc-h2">Questions fréquentes</h2>
+        <div class="faq">
+          <details class="qa"><summary>Ça marche sur iPhone et sur Android ?</summary><div class="qa-a"><p>Oui. Stockaarud s’ouvre dans le navigateur, sur téléphone comme sur ordinateur. Pour l’avoir comme une appli, ajoutez-le à l’écran d’accueil : dans Safari, Partager puis « Sur l’écran d’accueil » ; dans Chrome, le menu puis « Ajouter à l’écran d’accueil ».</p></div></details>
+          <details class="qa"><summary>Combien ça coûte ?</summary><div class="qa-a"><p>Rien. L’appli est gratuite, sans abonnement. La base de données est un projet Supabase gratuit, limité à 500 Mo de données et 1 Go de photos : c’est très au-delà de ce qu’un CAARUD utilise.</p></div></details>
+          <details class="qa"><summary>Et quand il n’y a pas de réseau ?</summary><div class="qa-a"><p>L’équipe continue de noter. Les saisies restent sur le téléphone et partent dès le retour de la connexion.</p></div></details>
+          <details class="qa"><summary>Faut-il créer des comptes pour l’équipe ?</summary><div class="qa-a"><p>Non. L’équipe entre avec un QR code ou un lien. Seul le responsable stock a un compte, avec un e-mail et un mot de passe.</p></div></details>
+          <details class="qa"><summary>Quelqu’un perd son téléphone ou quitte l’équipe ?</summary><div class="qa-a"><p>Dans Réglages, « Retirer l’accès de toute l’équipe » déconnecte tous les téléphones. Vous redonnez ensuite un nouveau code aux personnes qui restent.</p></div></details>
+          <details class="qa"><summary>On a plusieurs lieux de stockage ?</summary><div class="qa-a"><p>C’est prévu : un stock principal et, si besoin, des stocks intermédiaires (un local, une antenne) qui s’y réapprovisionnent.</p></div></details>
+          <details class="qa"><summary>Le projet Supabase s’est mis en pause ?</summary><div class="qa-a"><p>Supabase met en pause un projet gratuit resté 7 jours sans activité. Cliquez sur « Restore project » dans Supabase : aucune donnée n’est perdue.</p></div></details>
+          <details class="qa"><summary>On peut arrêter et récupérer nos données ?</summary><div class="qa-a"><p>Oui, à tout moment. L’appli exporte les mouvements, le catalogue et une sauvegarde complète. Pour tout effacer, supprimez votre projet Supabase : il n’existe aucune autre copie.</p></div></details>
+        </div>
+        <p style="margin-top: var(--space-xl)">Une autre question ? <a href="./#contact">Écrivez-nous</a>.</p>
+      </section>
+    </div>
+  </div>
+</main>
+
+<footer class="footer">
+  <div class="container">
+    <p class="footer-line">Conçu sur le terrain, dans un CAARUD.</p>
+    <div class="footer-grid">
+      <ul>
+        <li><a href="./">Accueil</a></li>
+        <li><a href="installer.html">Installer Stockaarud</a></li>
+        <li><a href="demo/">Essayer la démo</a></li>
+        <li><a href="https://stockaarud.github.io/stockaarud/">Ouvrir l’appli</a></li>
+        <li><a href="./#contact">Nous écrire</a></li>
+      </ul>
+      <p><small>Contact : <a href="mailto:stockaarud@proton.me">stockaarud@proton.me</a>.</small></p>
+    </div>
+  </div>
+</footer>
+<script>window.hallmarkSlots = (m) => { for (const [k, v] of Object.entries(m)) { const s = document.querySelector(`[data-slot="${k}"]`); if (!s) continue; const im = new Image(); im.src = typeof v === 'string' ? v : v.src; im.alt = (typeof v === 'object' && v.alt) || s.dataset.alt || ''; s.querySelectorAll(':scope > img').forEach((o) => o.remove()); s.prepend(im); } };
+document.querySelectorAll('[data-slot] img').forEach((i) => { if (i.complete && !i.naturalWidth) i.remove(); else i.addEventListener('error', () => i.remove(), { once: true }); });</script>
+<script>if(!matchMedia('(prefers-reduced-motion: reduce)').matches)document.addEventListener('pointerdown',(e)=>{const t=e.target.closest&&e.target.closest('a,button,summary,.tab');if(!t)return;const d=document.createElement('span');d.className='tapfx';d.style.left=e.clientX+'px';d.style.top=e.clientY+'px';document.body.appendChild(d);setTimeout(()=>d.remove(),500)},{passive:true});
+document.addEventListener('click',(e)=>{const m=document.querySelector('.nav-menu[open]');if(m&&(!m.contains(e.target)||e.target.closest('.nav-drop a')))m.open=false});</script>
+</body>
+</html>
