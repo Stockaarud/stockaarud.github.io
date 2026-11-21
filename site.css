@@ -234,7 +234,11 @@ code { font-family: var(--font-body); font-weight: 700; background: var(--color-
   .tab-n { min-width: 2rem; font-size: 1.5rem; }
   .tab-t { font-size: 0; gap: 0; }
   .tab-t b { font-size: 1.25rem; line-height: 1.05; }
-  .stage-area { min-height: 0; }
+  .stage-area { min-height: 0; display: block; }
+  .stage-area .panel { margin-inline: auto; }
+  .js .stage-area .panel:not(.is-on) { display: none; }
+  .stage-area .shot--phone { width: min(62%, 240px); }
+  .stage-area .shot--phone [data-slot] { aspect-ratio: 390 / 700; }
 }
 
 /* tutorial videos (installer page) */
