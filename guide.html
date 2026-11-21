@@ -18,6 +18,7 @@
 <meta name="twitter:card" content="summary_large_image">
 <link rel="icon" href="img/icon.png">
 <link rel="stylesheet" href="site.css">
+<script>document.documentElement.classList.add('js');</script>
 </head>
 <body class="fibre">
 
@@ -76,28 +77,15 @@
     </div>
   </section>
 
-  <div class="container doc">
-    <nav class="toc sheet" aria-label="Sommaire">
-      <ol>
-        <li><a href="#quotidien">Au quotidien</a></li>
-        <li><a href="#equipe">L’équipe</a></li>
-        <li><a href="#gestion">Le responsable stock</a></li>
-        <li><a href="#roles">Qui peut faire quoi</a></li>
-      </ol>
-    </nav>
-
-    <div>
+  <div class="container guide">
       <div id="print-install" hidden></div>
 
-      <section class="qsheet qsheet--top screen-only" id="quotidien" aria-labelledby="auquotidien">
-        <h2 id="auquotidien" class="doc-h2">Au quotidien</h2>
-        <div class="vids">
-          <div class="vid-item"><h3>Noter une sortie en 3 clics</h3><p>Ce que fait l’équipe, en maraude ou à l’accueil.</p><figure class="sheet shot shot--vid" style="--r: -1deg"><video controls muted playsinline preload="none" poster="video/tuto-sortie.jpg" width="600" height="1300" aria-label="Vidéo, 15 s : noter une sortie"><source src="video/tuto-sortie.mp4" type="video/mp4"></video><figcaption>Vidéo, 15 s : noter une sortie</figcaption></figure></div>
-          <div class="vid-item"><h3>Le tableau de bord et les statistiques</h3><p>Ce que voit le responsable stock.</p><figure class="sheet shot shot--vid" style="--r: 1.2deg"><video controls muted playsinline preload="none" poster="video/tuto-stats.jpg" width="600" height="1300" aria-label="Vidéo, 24 s : alertes, autonomie, statistiques et ruptures"><source src="video/tuto-stats.mp4" type="video/mp4"></video><figcaption>Vidéo, 24 s : alertes, autonomie, statistiques et ruptures</figcaption></figure></div>
-        </div>
-      </section>
+      <div class="who" role="tablist" aria-label="Le guide pour">
+        <button class="tab who-btn" type="button" role="tab" id="tab-equipe" aria-controls="equipe" aria-selected="true" tabindex="0"><span class="tab-t"><b>L’équipe</b>Noter les sorties, depuis son téléphone.</span></button>
+        <button class="tab who-btn" type="button" role="tab" id="tab-gestion" aria-controls="gestion" aria-selected="false" tabindex="-1"><span class="tab-t"><b>Le responsable stock</b>Commander, suivre, faire l’inventaire.</span></button>
+      </div>
 
-      <section class="guide-part" id="equipe" aria-labelledby="t-equipe">
+      <section class="guide-part who-pane" id="equipe" role="tabpanel" aria-labelledby="tab-equipe">
         <h2 id="t-equipe" class="doc-h2 part-h">L’équipe</h2>
         <p class="part-lead">Ce que fait chaque personne qui distribue du matériel, depuis son téléphone.</p>
       <ol class="steps">
@@ -132,7 +120,7 @@
               <div><dt>Une erreur</dt><dd>Dans <strong>Mes saisies d’aujourd’hui</strong>, touchez <strong>Annuler</strong>.</dd></div>
               <div><dt>Une livraison arrive</dt><dd><strong>Une livraison est arrivée ?</strong> en bas de l’écran : touchez le produit et indiquez ce qui est arrivé.</dd></div>
               <div><dt>Il n’y en a plus</dt><dd>Dans l’écran Combien, <strong>Il n’y en a plus</strong> prévient le responsable stock.</dd></div>
-              <div><dt>Un produit manque</dt><dd>Cherchez-le, puis <strong>Signaler au responsable stock</strong>.</dd></div>
+              <div><dt>Une référence manque dans la liste</dt><dd>Le produit n’existe pas encore dans l’appli : tapez son nom dans la recherche, puis touchez <strong>Signaler au responsable stock</strong>. Il pourra l’ajouter au catalogue.</dd></div>
               <div><dt>Pas de réseau</dt><dd>Notez quand même : tout part dès que le réseau revient.</dd></div>
             </dl>
           </div>
@@ -143,14 +131,14 @@
           <div class="step-body">
             <p>Scannez une fois le QR code de chaque CAARUD. Le nom du CAARUD où vous êtes s’affiche dans la bande verte en haut ; <strong>Changer</strong> passe de l’un à l’autre sans retaper de code.</p>
             <p>Les sorties notées hors connexion restent rattachées à leur CAARUD.</p>
-            <p>Sur iPhone, si l’appli est sur l’écran d’accueil, scanner un QR code ouvre Safari : collez plutôt le lien d’invitation dans <strong>Ajouter un autre CAARUD</strong>.</p>
+            <p>Pour ajouter un CAARUD : <strong>Changer</strong>, puis <strong>Ajouter un autre CAARUD</strong>.</p>
           </div>
           <figure class="sheet shot shot--setup" style="--r: -1.2deg"><div data-slot="g-caarud" data-kind="product" data-alt="La liste Mes CAARUD : le CAARUD actuel, un deuxième CAARUD, et Ajouter un autre CAARUD."><img src="img/guide/caarud.jpg" width="780" height="1688" alt="La liste Mes CAARUD : le CAARUD actuel, un deuxième CAARUD, et Ajouter un autre CAARUD." loading="lazy"></div></figure>
         </li>
       </ol>
       </section>
 
-      <section class="guide-part" id="gestion" aria-labelledby="t-gestion">
+      <section class="guide-part who-pane" id="gestion" role="tabpanel" aria-labelledby="tab-gestion">
         <h2 id="t-gestion" class="doc-h2 part-h">Le responsable stock</h2>
         <p class="part-lead">Le bouton <strong>Gestion</strong>, en haut de l’appli, ouvre l’espace du responsable stock.</p>
       <ol class="steps">
@@ -243,7 +231,6 @@
         <p>La démo a un an de données fictives : rien à installer, rien n’est envoyé.</p>
         <div class="actions"><a class="btn btn--primary" href="demo/" target="_blank" rel="noopener">Ouvrir la démo</a><a class="btn btn--secondary" href="installer.html">Installer pour mon CAARUD</a></div>
       </div>
-    </div>
   </div>
 </main>
 
@@ -270,5 +257,26 @@
 document.querySelectorAll('[data-slot] img').forEach((i) => { if (i.complete && !i.naturalWidth) i.remove(); else i.addEventListener('error', () => i.remove(), { once: true }); });</script>
 <script>if(!matchMedia('(prefers-reduced-motion: reduce)').matches)document.addEventListener('pointerdown',(e)=>{const t=e.target.closest&&e.target.closest('a,button,summary,.tab');if(!t)return;const d=document.createElement('span');d.className='tapfx';d.style.left=e.clientX+'px';d.style.top=e.clientY+'px';document.body.appendChild(d);setTimeout(()=>d.remove(),500)},{passive:true});
 document.addEventListener('click',(e)=>{const m=document.querySelector('.nav-menu[open]');if(m&&(!m.contains(e.target)||e.target.closest('.nav-drop a')))m.open=false});</script>
+<script>
+(() => {
+  const tabs = [...document.querySelectorAll('.who [role="tab"]')], panes = tabs.map((t) => document.getElementById(t.getAttribute('aria-controls')));
+  const pick = (i, focus) => {
+    tabs.forEach((t, k) => { const on = k === i; t.setAttribute('aria-selected', on); t.tabIndex = on ? 0 : -1; panes[k].classList.toggle('is-on', on); });
+    if (focus) tabs[i].focus();
+  };
+  tabs.forEach((t, i) => {
+    t.addEventListener('click', () => {
+      const bar = t.parentElement, stuck = bar.getBoundingClientRect().top < 40, y = t.getBoundingClientRect().top;
+      pick(i);
+      if (stuck) scrollTo({ top: panes[i].getBoundingClientRect().top + scrollY - bar.offsetHeight - 32, behavior: 'instant' });
+      else scrollBy({ top: t.getBoundingClientRect().top - y, behavior: 'instant' });
+      history.replaceState(null, '', '#' + panes[i].id);
+    });
+    t.addEventListener('keydown', (e) => { const d = { ArrowRight: 1, ArrowLeft: -1, ArrowDown: 1, ArrowUp: -1 }[e.key]; if (d) { e.preventDefault(); pick((i + d + tabs.length) % tabs.length, true); } });
+  });
+  const fromHash = () => { const k = panes.findIndex((p) => p.id === location.hash.slice(1) || p.contains(document.getElementById(location.hash.slice(1)))); pick(k < 0 ? 0 : k); };
+  fromHash(); addEventListener('hashchange', fromHash);
+})();
+</script>
 </body>
 </html>

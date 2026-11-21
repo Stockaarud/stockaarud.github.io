@@ -424,3 +424,19 @@ html { scroll-padding-top: calc(var(--space-3xl) + var(--space-lg)); }
   .rows li, .rows--dl > div { break-inside: avoid; }
 }
 .done a:not(.btn) { color: inherit; }
+
+/* Guide : l'équipe ou le responsable stock */
+.guide .who { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: var(--space-md); margin-bottom: var(--space-lg); }
+.guide .who-btn { border: 2px solid var(--color-ink); background: var(--color-paper-3); }
+.guide .who-btn[aria-selected="true"] { background: var(--color-ink); color: var(--color-paper-3); box-shadow: 6px 6px 0 var(--color-accent); }
+.guide .who-btn[aria-selected="true"] .tab-t b { color: inherit; }
+.guide .who { position: sticky; top: var(--space-sm); z-index: 5; }
+.guide .guide-part.who-pane { margin-top: 0; }
+.js .who-pane:not(.is-on) { display: none; }
+.js .who-pane.is-on { animation: whoIn 0.45s var(--ease-out) both; }
+@keyframes whoIn { from { opacity: 0; translate: 0 18px; } to { opacity: 1; translate: 0 0; } }
+@media (prefers-reduced-motion: reduce) { .js .who-pane.is-on { animation: none; } }
+@media print { .who { display: none !important; } .js .who-pane:not(.is-on) { display: block; } }
+@media screen { .js .who-pane .part-h { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); } }
+
+.done :focus-visible { outline-color: var(--color-accent); }

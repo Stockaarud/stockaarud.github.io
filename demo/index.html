@@ -71,6 +71,7 @@ header.top{box-shadow:inset 0 -3px 0 var(--brand-2)}
 .cl-go b{font-size:17px}.cl-go span{font-size:13px;color:var(--muted)}
 .cl-it.cur .cl-go{border-color:var(--actc,var(--accent));background:var(--surface);cursor:default}
 .cl-add{border-top:1px solid var(--line);padding-top:10px}.cl-add summary{cursor:pointer;font-weight:700;min-height:40px;display:flex;align-items:center}
+.cl-scan{display:flex;flex-direction:column;gap:8px}.cl-scan[hidden]{display:none}.cl-scan video{width:100%;aspect-ratio:1;object-fit:cover;border-radius:12px;background:#000}
 .cl-add[open]{display:flex;flex-direction:column;gap:8px}.cl-add input{width:100%;box-sizing:border-box}
 .brand .caarud::before{content:"";display:inline-block;width:12px;height:12px;margin-right:5px;vertical-align:-1px;background:currentColor;-webkit-mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M3 10 12 4l9 6v10H3z' fill='none' stroke='black' stroke-width='2.4' stroke-linejoin='round'/%3E%3Crect x='8' y='13' width='8' height='7' fill='black'/%3E%3C/svg%3E") center/contain no-repeat;mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M3 10 12 4l9 6v10H3z' fill='none' stroke='black' stroke-width='2.4' stroke-linejoin='round'/%3E%3Crect x='8' y='13' width='8' height='7' fill='black'/%3E%3C/svg%3E") center/contain no-repeat}
 .topin{flex-wrap:nowrap}
@@ -864,7 +865,7 @@ let lastFocus=null;
 function focusDialog(){const d=document.querySelector("#layer [role=dialog]");if(!d)return;d.setAttribute("tabindex","-1");const h=d.querySelector("h2");if(h){h.setAttribute("tabindex","-1");h.focus({preventScroll:true})}else d.focus({preventScroll:true})}
 function restoreFocus(){if(lastFocus&&lastFocus.isConnected)try{lastFocus.focus({preventScroll:true})}catch(e){}lastFocus=null}
 new MutationObserver(()=>{const has=!!document.querySelector("#layer [role=dialog]");document.body.style.overflow=has?"hidden":"";$("#app").inert=has;const hd=document.querySelector("header.top");if(hd)hd.inert=has}).observe(document.getElementById("layer"),{childList:true});
-document.addEventListener("keydown",e=>{if(e.key!=="Escape")return;if(sheet){closeSheet();restoreFocus()}else if(document.querySelector("#layer [role=dialog]")){$("#layer").innerHTML="";S.editProd=null;restoreFocus()}});
+document.addEventListener("keydown",e=>{if(e.key!=="Escape")return;if(sheet){closeSheet();restoreFocus()}else if(document.querySelector("#layer [role=dialog]")){stopScan();$("#layer").innerHTML="";S.editProd=null;restoreFocus()}});
 function drawSheet(){
   const L=$("#layer");if(!sheet){L.innerHTML="";return}
   const first=!sheet._shown;sheet._shown=true;
@@ -926,10 +927,31 @@ function livraisonsEquipe(){const enc=S.cmds.filter(enAttente);if(!enc.length)re
    +enc.map(c=>{const p=S.produits.get(c.produit)||{nom:"?"},rest=Math.max(0,c.qte-recuOf(c));return '<div class="ri">'+(p.id?badge(p):'')+'<span class="rn"><b>'+esc(p.nom)+'</b><small>commandé le '+fmtDate(c.t)+' · attendu '+esc(fmtQ(p,rest))+'</small></span><button class="btn small primary" data-act="recevoir" data-id="'+c.id+'">Arrivé</button></div>'}).join("")+'</details>'}
 /* Retour de matériel : on réduit la sortie d'origine, le stock et les statistiques restent justes */
 let retS=null;
+let scanStream=null,scanRaf=0;
+function stopScan(){if(scanRaf)cancelAnimationFrame(scanRaf);scanRaf=0;if(scanStream){scanStream.getTracks().forEach(t=>t.stop());scanStream=null}}
+function loadJsQR(){return window.jsQR?Promise.resolve():new Promise((ok,ko)=>{const s=document.createElement("script");s.src="vendor/jsQR.js";s.onload=ok;s.onerror=ko;document.head.appendChild(s)})}
+async function startScan(){
+  const box=document.getElementById("clScan"),err=document.getElementById("clE");if(!box)return;err.textContent="";stopScan();
+  try{
+    if(!navigator.mediaDevices||!navigator.mediaDevices.getUserMedia)throw new Error("nocam");
+    let det=null;try{if("BarcodeDetector" in window&&(await BarcodeDetector.getSupportedFormats()).includes("qr_code"))det=new BarcodeDetector({formats:["qr_code"]})}catch(_){}
+    if(!det)await loadJsQR();
+    scanStream=await navigator.mediaDevices.getUserMedia({video:{facingMode:"environment"},audio:false});
+    box.hidden=false;const v=box.querySelector("video");v.srcObject=scanStream;await v.play();
+    const c=document.createElement("canvas"),x=c.getContext("2d",{willReadFrequently:true});
+    const tick=async()=>{if(!scanStream)return;
+      if(v.readyState>=2&&v.videoWidth){let txt="";
+        if(det){try{const r=await det.detect(v);if(r[0])txt=r[0].rawValue}catch(_){}}
+        else{const k=Math.min(1,640/Math.max(v.videoWidth,v.videoHeight));c.width=v.videoWidth*k|0;c.height=v.videoHeight*k|0;x.drawImage(v,0,0,c.width,c.height);const r=window.jsQR(x.getImageData(0,0,c.width,c.height).data,c.width,c.height,{inversionAttempts:"dontInvert"});if(r)txt=r.data}
+        if(txt){stopScan();box.hidden=true;const m=window.SKB.addLink(txt);if(m)err.textContent=m;return}}
+      scanRaf=requestAnimationFrame(tick)};
+    tick();
+  }catch(e){stopScan();box.hidden=true;err.textContent=e&&e.name==="NotAllowedError"?"L'appareil photo est refusé : autorisez-le pour Stockaarud dans les réglages du téléphone, ou utilisez le lien.":"Impossible d'ouvrir l'appareil photo ici : utilisez plutôt le lien."}
+}
 function drawCaarud(){const B=window.SKB&&window.SKB.bases?window.SKB.bases():[];
   $("#layer").innerHTML='<div class="sheet-back enter" data-act="closeLayer"><div class="sheet" role="dialog" aria-modal="true" aria-label="Mes CAARUD"><h2>Mes CAARUD</h2><p class="note" style="margin:0">Touchez un CAARUD pour passer dessus, sans retaper de code. Les sorties notées hors connexion restent rattachées à leur CAARUD.</p><div class="cl">'
    +B.map(x=>'<div class="cl-it'+(x.cur?' cur':'')+'"><button type="button" class="cl-go" data-act="caarudGo" data-id="'+esc(x.ref)+'"'+(x.cur?' aria-current="true"':'')+'><b>'+esc(x.nom||"CAARUD sans nom")+'</b><span>'+(x.cur?"Vous êtes ici":"Passer sur ce CAARUD")+(x.pend?" · "+x.pend+" en attente d\'envoi":"")+'</span></button>'+(x.cur?'':'<button type="button" class="btn small" data-act="caarudDel" data-id="'+esc(x.ref)+'">Retirer</button>')+'</div>').join("")
-   +'</div><details class="cl-add"'+(B.length<2?' open':'')+'><summary>Ajouter un autre CAARUD</summary><p class="note" style="margin:0">Scannez son QR code avec l\'appareil photo du téléphone, ou collez ici le lien d\'invitation envoyé par son responsable stock.</p><input id="clLink" type="url" inputmode="url" autocomplete="off" placeholder="Lien d\'invitation" aria-label="Lien d\'invitation"><div class="err" id="clE" role="alert"></div><button type="button" class="btn primary" data-act="caarudAdd">Ajouter ce CAARUD</button></details><button type="button" class="btn" data-act="closeLayer">Fermer</button></div></div>';
+   +'</div><details class="cl-add"'+(B.length<2?' open':'')+'><summary>Ajouter un autre CAARUD</summary><p class="note" style="margin:0">Demandez au responsable stock de l\'autre CAARUD d\'afficher le QR code de l\'équipe (Réglages, Inviter l\'équipe), puis scannez-le ici.</p><button type="button" class="btn primary" data-act="caarudScan">Scanner son QR code</button><div id="clScan" class="cl-scan" hidden><video muted playsinline aria-label="Appareil photo"></video><p class="note" style="margin:0">Visez le QR code : il est lu tout seul.</p><button type="button" class="btn" data-act="caarudScanStop">Arrêter</button></div><div class="err" id="clE" role="alert"></div><p class="note" style="margin:0">On vous a plutôt envoyé le lien d\'invitation, par WhatsApp ou par e-mail ? Appuyez longuement dessus, choisissez Copier, puis collez-le ici.</p><input id="clLink" type="url" inputmode="url" autocomplete="off" placeholder="Lien d\'invitation" aria-label="Lien d\'invitation"><button type="button" class="btn" data-act="caarudAdd">Ajouter avec ce lien</button></details><button type="button" class="btn" data-act="closeLayer">Fermer</button></div></div>';
   focusDialog()}
 function drawRet(){const e=retS&&mesGet().find(x=>x.id===retS.id);if(!e){$("#layer").innerHTML="";retS=null;return}
   $("#layer").innerHTML='<div class="sheet-back enter" data-act="closeLayer"><div class="sheet" role="dialog" aria-modal="true" aria-label="Retour au stock"><h2>J\'en ramène combien ?</h2><p class="note" style="margin:0">'+esc(e.nom)+' · sorti : '+e.qte+' '+(e.qte>1?"unités":"unité")+' pour '+esc(e.dest)+'</p>'
@@ -2277,11 +2299,13 @@ document.addEventListener("click",async e=>{
   case "retPlus":case "retMinus":case "retAll":{const e=retS&&mesGet().find(x=>x.id===retS.id);if(!e)break;const c=Math.round(num(val("retQ"),retS.n));retS.n=a==="retAll"?e.qte:Math.min(e.qte,Math.max(1,c+(a==="retPlus"?1:-1)));drawRet();break}
   case "retOk":await retOk();break;
   case "theme":ls.set("theme",b.dataset.v);applyTheme();render();break;
-  case "closeLayer":retS=null;$("#layer").innerHTML="";S.editProd=null;break;
+  case "closeLayer":stopScan();retS=null;$("#layer").innerHTML="";S.editProd=null;break;
   case "caarudSheet":if(window.SKB&&window.SKB.bases)drawCaarud();break;
   case "caarudGo":{const cur=window.SKB.bases().find(x=>x.cur);if(cur&&cur.ref===id){$("#layer").innerHTML="";break}
     if(S.queue.length&&navigator.onLine)await flush();window.SKB.switchBase(id);break}
   case "caarudDel":if(b.dataset.sure!=="1"){b.dataset.sure="1";b.textContent="Confirmer";break}window.SKB.forget(id);drawCaarud();toast("CAARUD retiré de cet appareil");break;
+  case "caarudScan":startScan();break;
+  case "caarudScanStop":stopScan();{const e=document.getElementById("clScan");if(e)e.hidden=true}break;
   case "caarudAdd":{const m=window.SKB.addLink(val("clLink"));if(m){const e=document.getElementById("clE");if(e)e.textContent=m}break}
   case "qadd":{const cur=Math.max(0,Math.round(num(val("qty"),0)));sheet.n=(cur===1&&!sheet.touched?0:cur)+(+b.dataset.v);sheet.touched=true;sheet.confirm=false;drawSheet();bumpQty();break}
   case "mode":sheet.mode=b.dataset.v;sheet.n=1;sheet.confirm=false;drawSheet();break;

@@ -109,7 +109,7 @@
       });
     },
     switchBase(r) { if (r !== base) { localStorage.setItem(BASE_KEY, r); location.reload(); } },
-    addLink() { return "Dans la démo, les deux CAARUD fictifs sont déjà là. Avec la vraie appli, collez ici le lien d'invitation de l'autre CAARUD."; },
+    addLink() { return "Dans la démo, les deux CAARUD fictifs sont déjà là. Dans la vraie appli, ce QR code ou ce lien ajouterait l'autre CAARUD."; },
     setName() {},
     forget() { alert("Dans la démo, on garde les deux CAARUD fictifs."); }
   });
