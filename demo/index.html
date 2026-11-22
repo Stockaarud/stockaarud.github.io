@@ -76,7 +76,7 @@ svg[data-ck]{touch-action:pan-y}
 @media (min-width:1100px){.wrap,.topin{max-width:1240px}.cbar{padding-left:max(16px,calc((100% - 1240px)/2 + 16px));padding-right:max(16px,calc((100% - 1240px)/2 + 16px))}
   .bgrid{display:grid;grid-template-columns:minmax(0,1.3fr) minmax(0,1fr);gap:0 16px;align-items:start}.bcol{min-width:0}}
 .xctl{display:flex;flex-wrap:wrap;gap:8px 14px;align-items:flex-end;margin-top:8px}.xctl label{display:flex;flex-direction:column;gap:4px;font-size:13px;color:var(--muted);font-weight:600}
-.xt table td,.xt table th{white-space:nowrap}.xt tr.xtot td{border-top:2px solid var(--fg)}
+.xt table{width:auto;min-width:min(100%,520px)}.xt table td{white-space:nowrap}.xt table th{white-space:normal;max-width:6.5em;vertical-align:bottom;line-height:1.2}.xt table td:first-child,.xt table th:first-child{max-width:none;white-space:normal;min-width:12em}.xt tr.xtot td{border-top:2px solid var(--fg)}
 .lotp>summary{cursor:pointer;list-style:none}.lotp>summary::-webkit-details-marker{display:none}.lotp>summary::after{content:" ▾";color:var(--muted)}.lotp[open]>summary::after{content:" ▴"}
 .lotg{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:6px 14px;margin-top:12px}.loti{display:flex;align-items:center;gap:8px;padding:4px 0;border-bottom:1px solid var(--line)}.loti span{flex:1;min-width:0;font-size:14px}.loti input{width:90px;text-align:right}
 .mt table input,.mt table select{min-height:36px;padding:4px 8px;font-size:14px}.mt td{vertical-align:middle}
@@ -1520,7 +1520,7 @@ function svExplo(){const xr=S.xr||"categorie",xc=S.xc||"mois",xm=S.xm||"u",{a,b}
   if(cols.length>24&&!XTIME.has(xc))cols=cols.slice(0,24);
   const rowsShown=rows.slice(0,maxR),cellMax=Math.max(1,...[...M.values()]);
   const cell=(v,strong)=>'<td class="n"'+(v&&!strong?' style="background:color-mix(in srgb,var(--c1) '+Math.round(8+50*v/cellMax)+'%,transparent)"':'')+'>'+(v?(strong?'<b>'+fmt(v)+'</b>':fmt(v)):'')+'</td>';
-  let t='<div class="tw xt"><table class="resp"><thead><tr><th>'+esc(XDIM.find(d=>d[0]===xr)[1])+'</th>'+cols.map(([k,c])=>'<th class="n">'+esc(c.l)+'</th>').join("")+'<th class="n">Total</th></tr></thead><tbody>'
+  let t='<div class="tw xt"><table><thead><tr><th>'+esc(XDIM.find(d=>d[0]===xr)[1])+'</th>'+cols.map(([k,c])=>'<th class="n">'+esc(c.l)+'</th>').join("")+'<th class="n">Total</th></tr></thead><tbody>'
    +rowsShown.map(([rk,r])=>'<tr><td>'+esc(r.l)+'</td>'+cols.map(([ck3])=>cell(M.get(rk+"|"+ck3)||0)).join("")+cell(r.t,true)+'</tr>').join("")
    +'<tr class="xtot"><td><b>Total</b></td>'+cols.map(([,c])=>cell(c.t,true)).join("")+cell(tot,true)+'</tr></tbody></table></div>';
   if(rows.length>maxR)t+='<p class="note">'+maxR+' premières lignes sur '+rows.length+' : le total les compte toutes.</p>';
