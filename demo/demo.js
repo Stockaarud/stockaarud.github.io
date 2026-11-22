@@ -14,6 +14,7 @@
   const store = new Map();
   const startOfDay = (t) => { const d = new Date(t); d.setHours(0, 0, 0, 0); return d.getTime(); };
 
+  const shiftIso = (d, ms) => new Date(Date.parse(d) + ms).toISOString().slice(0, 10);
   function persist() {
     const o = {}; for (const [c, m] of store) o[c] = Object.fromEntries(m);
     try { localStorage.setItem(KEY, JSON.stringify({ anchorDay: startOfDay(Date.now()), data: o })); } catch (e) { console.warn("Démo : stockage local plein", e); }
@@ -24,7 +25,7 @@
     if (saved) {
       for (const c in saved.data) store.set(c, new Map(Object.entries(saved.data[c])));
       const days = Math.round((startOfDay(Date.now()) - saved.anchorDay) / DAY);
-      if (days > 0) for (const m of (store.get("mouvements") || new Map()).values()) if (typeof m.t === "number") m.t += days * DAY;
+      if (days > 0) for (const m of (store.get("mouvements") || new Map()).values()) { if (typeof m.t === "number") m.t += days * DAY; if (m.peremption) m.peremption = shiftIso(m.peremption, days * DAY); }
     } else {
       const shift = startOfDay(Date.now()) - DAY - startOfDay(seed.anchor);
       const cf = JSON.parse(JSON.stringify(seed.config));
@@ -32,7 +33,7 @@
       store.set("config", new Map(Object.entries(cf)));
       store.set("produits", new Map(Object.entries(seed.produits)));
       const mv = new Map();
-      seed.mouvements.forEach((m, i) => mv.set("demo-" + i.toString(36), { lieu: "principal", ...m, t: m.t + shift }));
+      seed.mouvements.forEach((m, i) => mv.set("demo-" + i.toString(36), { lieu: "principal", ...m, t: m.t + shift, ...(m.peremption ? { peremption: shiftIso(m.peremption, shift) } : {}) }));
       store.set("mouvements", mv);
     }
     persist();

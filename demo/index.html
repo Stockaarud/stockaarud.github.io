@@ -85,6 +85,8 @@ body.en-ecran header.top,body.en-ecran #demoBar{display:none}
 .eg{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:16px;margin-top:18px}.ec{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:16px 18px;border-top:8px solid var(--line)}.ec.crit{border-top-color:var(--crit)}.ec.warn{border-top-color:var(--warn)}
 .ec h2{font:800 clamp(18px,1.8vw,26px) var(--display);margin:0 0 10px}.ec ul{list-style:none;margin:0;padding:0}.ec li{display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid var(--line);font-size:clamp(16px,1.5vw,22px)}
 .ec .en{flex:1;min-width:0}.ec .ej{font-weight:800;white-space:nowrap}.ec .ej.crit{color:var(--crit)}.ec .ej.warn{color:var(--warn)}.eok{color:var(--muted);font-size:18px}.ef{margin-top:16px;color:var(--muted);font-size:13px;text-align:center}
+.chg{list-style:none;margin:6px 0 0;padding:0}.chg li{padding:8px 0 8px 22px;border-bottom:1px solid var(--line);position:relative;line-height:1.4}.chg li::before{position:absolute;left:0;top:8px;font-weight:800}
+.chg li.up::before{content:"↗";color:var(--fg)}.chg li.down::before{content:"↘";color:var(--muted)}.chg li.new::before{content:"＋";color:var(--warn)}.chg li.stop::before{content:"×";color:var(--muted)}
 .cl{display:flex;flex-direction:column;gap:8px}.cl-it{display:flex;gap:8px;align-items:center}
 .cl-go{flex:1;min-width:0;display:flex;flex-direction:column;align-items:flex-start;gap:2px;text-align:left;font:inherit;color:var(--fg);background:var(--surface-2);border:2px solid transparent;border-radius:12px;padding:12px 14px;cursor:pointer;min-height:56px}
 .cl-go b{font-size:17px}.cl-go span{font-size:13px;color:var(--muted)}
@@ -1529,6 +1531,64 @@ function svExplo(){const xr=S.xr||"categorie",xc=S.xc||"mois",xm=S.xm||"u",{a,b}
   else g=barresH(rows.slice(0,15).map(([,r],i)=>({label:r.l,v:Math.round(r.t*100)/100,col:"--c1"})),fmt,{titre:"Tableau croisé"})+legende([{label:({u:"Unités sorties",e:"Coût en euros",n:"Nombre de sorties"})[xm]+(rows.length>15?" (15 premiers)":""),col:"--c1"}]);
   return pan("Tableau croisé","Choisissez ce qui va en lignes et en colonnes : par exemple les produits par activité, ou les catégories mois par mois. Plus la case est foncée, plus le chiffre est élevé. Le bouton Exporter sort le tableau en CSV pour un tableur.",ctl+t+'<div class="chart" style="margin-top:12px">'+g+'</div>')}
 
+// Analyses : budget prévisionnel, évolutions, péremptions
+/* Unités sorties par produit et par mois, sur les 24 derniers mois complets (index 0 = le plus ancien) */
+function moisHist(n){const now=new Date(),y=now.getFullYear(),m=now.getMonth(),M=Array.from({length:n},(_,i)=>{const d=new Date(y,m-n+i,1);return {a:d.getTime(),b:new Date(y,m-n+i+1,1).getTime(),y:d.getFullYear(),m:d.getMonth()}});
+  const by={};for(const x of allMvts()){if(x.type!=="sortie"||x.t<M[0].a||x.t>=M[n-1].b)continue;let i=(new Date(x.t).getFullYear()-M[0].y)*12+new Date(x.t).getMonth()-M[0].m;if(i<0||i>=n)continue;(by[x.produit]=by[x.produit]||new Array(n).fill(0))[i]+=num(x.qte,0)}return {M,by}}
+function premiereSortie(){let f=Infinity;for(const x of allMvts())if(x.type==="sortie"&&x.t<f)f=x.t;return f}
+function prevAnnee(){const Y=new Date().getFullYear()+1,H=moisHist(24),f=premiereSortie(),moisHisto=Math.max(0,Math.floor((H.M[23].b-f)/(30.44*DAY))),bp=S.bp||(S.bp={pct:0,trend:true,cat:{}});
+  const rows=[];for(const p of prodsActifs()){const h=H.by[p.id]||new Array(24).fill(0),last12=h.slice(12),prev12=h.slice(0,12),n=Math.min(12,moisHisto);
+    let base;if(moisHisto>=12)base=last12.slice();else if(n>0){const avg=sum(last12.slice(12-n))/n;base=Array.from({length:12},(_,i)=>avg*coefAt(new Date(Y,i,15).getTime(),p))}else continue;
+    let tr=1;if(bp.trend&&moisHisto>=18){const a=sum(h.slice(18)),b=sum(h.slice(6,12));if(b>0)tr=Math.max(0.7,Math.min(1.3,a/b))}
+    const k=tr*(1+num(bp.pct,0)/100)*(1+num((bp.cat||{})[catOf(p)],0)/100),mens=base.map(v=>v*k),u=sum(mens),pu=num(p.prix,0),pc=p.parCarton>1?p.parCarton:1;
+    rows.push({p,mens,u,tr,cartons:Math.ceil(u/pc),pc,eur:u*pu,pu,actuel:sum(last12)})}
+  return {Y,rows,moisHisto}}
+function svBprev(){const P=prevAnnee(),bp=S.bp,rows=P.rows.filter(r=>r.u>0).sort((a,b)=>b.eur-a.eur||b.u-a.u);
+  if(!rows.length)return pan("Budget prévisionnel","","<div class=\"empty\">Pas encore assez de sorties pour prévoir l\'année prochaine.</div>");
+  const tot=sum(rows.map(r=>r.eur)),act=sum(rows.map(r=>r.actuel*r.pu)),sansPrix=rows.filter(r=>!r.pu).length,cats={},fours={},mois=new Array(12).fill(0);
+  for(const r of rows){const c=catOf(r.p);cats[c]=cats[c]||{u:0,e:0};cats[c].u+=r.u;cats[c].e+=r.eur;const f=fournNom(r.p)||"Sans fournisseur";fours[f]=(fours[f]||0)+r.eur;r.mens.forEach((v,i)=>mois[i]+=v*r.pu)}
+  const ctl='<div class="xctl"><label>Activité globale (%)<input id="bpPct" type="number" step="5" value="'+esc(bp.pct||0)+'" style="width:110px" title="Par exemple +15 pour 15 % de passages en plus"></label><label class="row" style="flex-direction:row;align-items:center;gap:8px;color:var(--fg)"><input id="bpTr" type="checkbox"'+(bp.trend?" checked":"")+' style="width:20px;min-height:20px"> Prolonger la tendance de l\'année</label></div>'
+   +'<details style="margin-top:8px"><summary>Ajuster une catégorie</summary><div class="xctl">'+Object.keys(cats).map(k=>'<label>'+esc(CATS[k])+' (%)<input id="bpC-'+k+'" type="number" step="5" value="'+esc((bp.cat||{})[k]||0)+'" style="width:100px"></label>').join("")+'</div></details>';
+  const kp='<div class="kpis"><div class="kpi"><div class="v">'+eur(tot)+'</div><div class="k">budget matériel '+P.Y+' estimé TTC</div></div><div class="kpi"><div class="v">'+(act>0?(tot>=act?"+":"")+Math.round((tot-act)/act*100)+" %":"—")+'</div><div class="k">par rapport aux 12 derniers mois ('+eur(act)+')</div></div><div class="kpi"><div class="v">'+nfr(sum(rows.map(r=>r.u)))+'</div><div class="k">unités à prévoir</div></div></div>';
+  const note="Prévision pour "+P.Y+" à partir des sorties des "+Math.min(24,P.moisHisto)+" derniers mois"+(P.moisHisto>=12?", mois par mois (les saisons sont reprises)":" ; les saisons réglées dans Réglages sont appliquées")+(bp.trend&&P.moisHisto>=18?". La tendance compare les 6 derniers mois aux mêmes mois un an plus tôt (plafonnée à ±30 %)":"")+". Prix unitaires TTC de Matériel"+(sansPrix?" ; "+sansPrix+" produit"+(sansPrix>1?"s":"")+" sans prix ne sont pas chiffrés":"")+". Dépannages et pertes non compris.";
+  const tc='<h3 style="margin-top:14px">Par catégorie</h3><div class="tw"><table><thead><tr><th>Catégorie</th><th class="n">Unités</th><th class="n">Budget</th></tr></thead><tbody>'+Object.entries(cats).sort((a,b)=>b[1].e-a[1].e).map(([k,v])=>'<tr><td>'+esc(CATS[k])+'</td><td class="n">'+nfr(v.u)+'</td><td class="n">'+eur(v.e)+'</td></tr>').join("")+'</tbody></table></div>';
+  const tf='<h3 style="margin-top:14px">Par fournisseur</h3><div class="tw"><table><thead><tr><th>Fournisseur</th><th class="n">Budget</th></tr></thead><tbody>'+Object.entries(fours).sort((a,b)=>b[1]-a[1]).map(([f,v])=>'<tr><td>'+esc(f)+'</td><td class="n">'+eur(v)+'</td></tr>').join("")+'</tbody></table></div>';
+  const tp='<h3 style="margin-top:14px">Par produit</h3><div class="tw"><table><thead><tr><th>Produit</th><th class="n">12 derniers mois</th><th class="n">Prévu '+P.Y+'</th><th class="n">Cartons</th><th class="n">Prix u.</th><th class="n">Budget</th></tr></thead><tbody>'+rows.map(r=>'<tr><td>'+esc(r.p.nom)+'</td><td class="n">'+nfr(r.actuel)+'</td><td class="n">'+nfr(r.u)+'</td><td class="n">'+(r.pc>1?nfr(r.cartons)+" × "+r.pc:"")+'</td><td class="n">'+(r.pu?eur(r.pu).replace(/,00/,""):"—")+'</td><td class="n"><b>'+(r.pu?eur(r.eur):"—")+'</b></td></tr>').join("")+'</tbody></table></div>';
+  return pan("Budget prévisionnel "+P.Y,note,ctl+kp+'<h3 style="margin-top:14px">Dépense prévue chaque mois</h3><div class="chart">'+batons(mois.map(v=>Math.round(v)),MOIS,"--c1",v=>nfr(v)+" €")+'</div>'+legende([{label:"Budget matériel prévu dans le mois",col:"--c1"}])+tc+tf+tp)}
+
+/* Ce qui a changé : 3 derniers mois contre les 3 mois d'avant, et contre l'an dernier */
+function changements(){const now=Date.now(),D3=91*DAY,a=sortiesEntre(now-D3,now+1,null),b=sortiesEntre(now-2*D3,now-D3,null),c=sortiesEntre(now-365*DAY-D3,now-365*DAY,null),f=premiereSortie();
+  const tot=(ms,key)=>{const o={};for(const m of ms){const k=key(m);if(k==null)continue;o[k]=(o[k]||0)+num(m.qte,0)}return o};
+  const out=[],cmp=(nom,key,lab,min)=>{const A=tot(a,key),B=tot(b,key),C=tot(c,key);for(const k of new Set([...Object.keys(A),...Object.keys(B)])){const x=A[k]||0,y=B[k]||0,z=C[k]||0;
+      if(Math.max(x,y)<min)continue;if(y<min/3&&x>0){out.push({kind:"new",nom,lab:lab(k),x,y,ev:Infinity});continue}if(x===0&&y>0){out.push({kind:"stop",nom,lab:lab(k),x,y,ev:-100});continue}
+      const ev=Math.round((x-y)/y*100),evA=z>0&&f<now-365*DAY-D3?Math.round((x-z)/z*100):null;if(Math.abs(ev)>=20||(evA!=null&&Math.abs(evA)>=30))out.push({kind:ev>=0?"up":"down",nom,lab:lab(k),x,y,z,ev,evA})}};
+  cmp("Catégorie",m=>catOf(S.produits.get(m.produit)),k=>CATS[k]||k,60);
+  cmp("Produit",m=>m.produit,k=>(S.produits.get(k)||{}).nom||k,40);
+  cmp("Activité",m=>m.activite||null,k=>actNom(k)||k,60);
+  {const A={},B={};for(const m of a){const k=m.activite+"|"+catOf(S.produits.get(m.produit));A[k]=(A[k]||0)+num(m.qte,0)}for(const m of b){const k=m.activite+"|"+catOf(S.produits.get(m.produit));B[k]=(B[k]||0)+num(m.qte,0)}
+    for(const k of Object.keys(A)){const x=A[k],y=B[k]||0;if(x<80||y<30)continue;const ev=Math.round((x-y)/y*100);if(Math.abs(ev)>=50){const [ac,ca]=k.split("|");out.push({kind:ev>=0?"up":"down",nom:"Activité et catégorie",lab:(actNom(ac)||"?")+" : "+(CATS[ca]||ca),x,y,ev})}}}
+  out.sort((p,q)=>(q.kind==="new")-(p.kind==="new")||Math.abs(q.ev===Infinity?999:q.ev)*Math.sqrt(q.x+q.y)-Math.abs(p.ev===Infinity?999:p.ev)*Math.sqrt(p.x+p.y));
+  return {out,assez:f<now-2*D3}}
+function phraseChg(r){return r.kind==="new"?r.lab+(r.y?" : presque absent avant, "+nfr(r.y)+" → "+nfr(r.x)+" u. ce trimestre":" : nouveau ce trimestre ("+nfr(r.x)+" u.)"):r.kind==="stop"?r.lab+" : plus aucune sortie ce trimestre (contre "+nfr(r.y)+" u.)":r.lab+" : "+(r.ev>0?"+":"")+r.ev+" % par rapport aux 3 mois précédents ("+nfr(r.y)+" → "+nfr(r.x)+" u.)"+(r.evA!=null?", "+(r.evA>0?"+":"")+r.evA+" % sur un an":"")}
+function svChg(){const C=changements();if(!C.assez)return pan("Ce qui a changé","","<div class=\"empty\">Il faut au moins six mois de sorties pour comparer deux trimestres.</div>");
+  const grp=(t,f)=>{const L=C.out.filter(f).slice(0,12);return L.length?'<h3 style="margin-top:14px">'+t+'</h3><ul class="chg">'+L.map(r=>'<li class="'+r.kind+'"><b>'+esc(r.nom)+'</b> '+esc(phraseChg(r))+'</li>').join("")+'</ul>':""};
+  const body=grp("En hausse",r=>r.kind==="up")+grp("En baisse",r=>r.kind==="down")+grp("Nouveau ou arrêté",r=>r.kind==="new"||r.kind==="stop");
+  return pan("Ce qui a changé","Les 3 derniers mois comparés aux 3 mois d\'avant, et aux mêmes mois l\'an dernier quand c\'est possible. Seuls les écarts nets sont gardés : 20 % ou plus, sur des volumes qui comptent. À discuter en équipe : un changement de pratiques, de public, ou simplement une rupture ou un oubli de saisie ?",body||'<div class="empty">Rien de marquant : la distribution est stable d\'un trimestre à l\'autre.</div>')}
+
+/* Péremptions : les lots en stock, sortis du plus ancien au plus récent, au rythme actuel */
+function perimRisques(st){const out=[],now=Date.now();
+  for(const p of prodsActifs()){const s=st[p.id];if(!s||!s.receptions.length||s.stock<=0)continue;let reste=s.stock;const lots=[];
+    for(const r of [...s.receptions].reverse()){if(reste<=0)break;const q=Math.min(r.qte,reste);lots.unshift({r,q});reste-=q}
+    let avant=0;for(const l of lots){if(l.r.peremption){const E=Date.parse(l.r.peremption),j=(E-now)/DAY,conso=Math.max(0,j)*Math.max(0,s.moy),risque=Math.round(Math.max(0,Math.min(l.q,avant+l.q-conso)));
+        if(j<=365)out.push({p,E,j,q:Math.round(l.q),risque,eur:risque*num(p.prix,0)})}avant+=l.q}}
+  return out.sort((a,b)=>a.E-b.E)}
+function perimPanel(st){const L=perimRisques(st);const dated=prodsActifs().some(p=>st[p.id]&&st[p.id].receptions.some(r=>r.peremption));
+  if(!dated)return '<div class="panel" style="margin-top:14px"><h2>Péremptions</h2><p class="note">Aucune date de péremption enregistrée. Notez-la à la réception d\'une livraison : l\'appli préviendra si un lot risque de périmer avant d\'être distribué.</p></div>';
+  if(!L.length)return '<div class="panel" style="margin-top:14px"><h2>Péremptions</h2><p class="note">Aucun lot en stock ne périme dans l\'année.</p></div>';
+  const tr=L.reduce((a,x)=>a+x.eur,0);
+  return '<div class="panel" style="margin-top:14px"><h2>Péremptions à venir</h2><p class="note">Les lots en stock qui périment dans l\'année. L\'appli suppose que les plus anciens sortent d\'abord, au rythme actuel. « À risque » : ce qui sera encore là à la date de péremption.'+(tr>0?' Valeur à risque : <b>'+eur(tr)+'</b>.':'')+' Un lot à risque peut être proposé à un partenaire à temps.</p><div class="tw"><table><thead><tr><th>Produit</th><th>Périme le</th><th class="n">Dans le lot</th><th class="n">À risque</th></tr></thead><tbody>'
+   +L.map(x=>'<tr><td>'+esc(x.p.nom)+'</td><td>'+fmtDate(x.E)+(x.j<0?' <span class="pill crit">périmé</span>':x.j<60?' <span class="pill warn">'+Math.ceil(x.j)+' j</span>':'')+'</td><td class="n">'+esc(fmtQ(x.p,x.q))+'</td><td class="n">'+(x.risque?'<b style="color:var(--crit)">'+esc(fmtQ(x.p,x.risque))+'</b>':'<span class="pill good">sortira à temps</span>')+'</td></tr>').join("")+'</tbody></table></div></div>'}
+
 // 1. Répartition dans un dossier
 function svRepart(){const gs=[...new Set(prodsActifs().map(p=>p.groupe).filter(Boolean))].sort((a,b)=>a.localeCompare(b,"fr"));
   if(!gs.length)return pan("Répartition dans un dossier","","<div class=\"empty\">Range d\'abord le matériel en dossiers (Réglages › Matériel) pour comparer les produits d\'un même dossier.</div>");
@@ -1678,7 +1738,13 @@ function svRuptures(){const {a,b}=periodeSV(),R=ruptures(a,b),ids=Object.keys(R.
   const intro="Les jours où un produit a manqué. <b>Rouge</b> : rupture constatée par l\'équipe (bouton « Il n\'y en a plus »), jusqu\'à la livraison suivante. <b>Orange</b> : rupture probable d\'après les calculs, les jours où le stock calculé est à zéro et où rien n\'est sorti ; comme les saisies sont estimées, c\'est à confirmer.";
   if(!ids.length)return pan("Les ruptures",intro,segP()+'<div class="empty">Aucune rupture sur la période.</div>');
   const totD=ids.reduce((x,k)=>x+R.P[k].nD+R.P[k].nC,0),lg=ids.map(k=>[k,plusLongue(R.P[k])]).sort((x,y)=>y[1]-x[1])[0];
-  let h=segP()+'<div class="kpis"><div class="kpi"><div class="v">'+ids.length+'</div><div class="k">produit'+(ids.length>1?"s":"")+' en rupture</div></div><div class="kpi"><div class="v">'+nfr(totD)+'</div><div class="k">jours de rupture cumulés</div></div><div class="kpi"><div class="v">'+lg[1]+' j</div><div class="k">plus longue : '+esc(S.produits.get(lg[0]).nom)+'</div></div></div>';
+  /* Ce qui n'a pas pu sortir : la demande d'un jour normal (hors rupture) multipliée par les jours de rupture */
+  const allS=sortiesEntre(a,b,null),manque={};let mU=0,mP=0,mE=0;
+  for(const k of ids){const r=R.P[k],jr=r.nD+r.nC,ms=allS.filter(m=>m.produit===k),u=ms.reduce((x,m)=>x+num(m.qte,0),0),jn=Math.max(1,R.nd-jr),parJ=u/jn,parS=ms.length?u/ms.length:1,p=S.produits.get(k);
+    const mu=Math.round(parJ*jr),mp=Math.round(mu/Math.max(1,parS));manque[k]={u:mu,p:mp,e:mu*num(p&&p.prix,0)};mU+=mu;mP+=mp;mE+=manque[k].e}
+  let h=segP()+'<div class="kpis"><div class="kpi"><div class="v">'+ids.length+'</div><div class="k">produit'+(ids.length>1?"s":"")+' en rupture</div></div><div class="kpi"><div class="v">'+nfr(totD)+'</div><div class="k">jours de rupture cumulés</div></div><div class="kpi"><div class="v">'+lg[1]+' j</div><div class="k">plus longue : '+esc(S.produits.get(lg[0]).nom)+'</div></div>'
+    +(mU>0?'<div class="kpi"><div class="v">'+nfr(mP)+'</div><div class="k">passages probablement sans ce matériel</div></div><div class="kpi"><div class="v">'+nfr(mU)+' u.</div><div class="k">non distribuées'+(mE>0?' ('+eur(mE)+')':'')+'</div></div>':'')+'</div>'
+    +(mU>0?'<p class="note">Estimation : pour chaque produit, la quantité qui sort un jour normal, multipliée par les jours de rupture ; les passages, en divisant par la quantité moyenne d\'une sortie. Un ordre de grandeur pour défendre un budget ou de la place de stockage, pas un compte exact.</p>':'');
   const W=VW(),Lw=Math.min(170,Math.round(W*0.34)),rh=22,top=20,H=top+ids.length*rh+6,cw=(W-Lw-6)/R.nd;let g='<svg viewBox="0 0 '+W+' '+H+'" role="img" aria-label="Calendrier des ruptures">';
   let lastM=-1;for(let k=0;k<R.nd;k++){const dt=new Date((R.d0+k)*DAY);if(dt.getMonth()!==lastM&&dt.getDate()<=7){lastM=dt.getMonth();const x=Lw+k*cw;g+='<line x1="'+x.toFixed(1)+'" x2="'+x.toFixed(1)+'" y1="'+(top-4)+'" y2="'+H+'" style="stroke:var(--line)"/><text x="'+(x+2).toFixed(1)+'" y="12" style="font:11px var(--body);fill:var(--muted)">'+MOIS[dt.getMonth()]+'</text>'}}
   ids.forEach((pid,i)=>{const r=R.P[pid],y=top+i*rh,nm=S.produits.get(pid).nom;g+='<text x="'+(Lw-8)+'" y="'+(y+15)+'" text-anchor="end" style="font:12px var(--body);fill:var(--fg)">'+esc(nm.length>(W<450?16:24)?nm.slice(0,W<450?15:23)+"…":nm)+'</text><rect x="'+Lw+'" y="'+(y+4)+'" width="'+(W-Lw-6)+'" height="'+(rh-8)+'" rx="3" style="fill:var(--surface-2)"/>';
@@ -1686,14 +1752,14 @@ function svRuptures(){const {a,b}=periodeSV(),R=ruptures(a,b),ids=Object.keys(R.
       g+='<rect x="'+(Lw+k*cw).toFixed(2)+'" y="'+(y+4)+'" width="'+Math.max(2,(e-k+1)*cw).toFixed(2)+'" height="'+(rh-8)+'" rx="2" style="fill:var('+col+')"><title>'+esc(nm+" : rupture "+lab+" du "+d1.toLocaleDateString("fr-FR")+" au "+d2.toLocaleDateString("fr-FR")+" ("+(e-k+1)+" j)")+'</title></rect>';k=e+1}else k++}}});
   g+='</svg>';
   h+='<div class="chart" style="margin-top:12px">'+g+'</div>'+legende([{label:"Constatée par l\'équipe",col:"--crit"},{label:"Probable (calculée)",col:"--warn"}])
-   +'<div class="tw"><table class="resp"><thead><tr><th>Produit</th><th class="n">Jours constatés</th><th class="n">Jours probables</th><th>Dernière rupture</th></tr></thead><tbody>'+ids.map(k=>{const r=R.P[k];return '<tr><td>'+esc(S.produits.get(k).nom)+'</td><td class="n">'+(r.nD||"")+'</td><td class="n">'+(r.nC||"")+'</td><td>'+(r.last?fmtDate(r.last):"")+'</td></tr>'}).join("")+'</tbody></table></div>';
+   +'<div class="tw"><table class="resp"><thead><tr><th>Produit</th><th class="n">Jours constatés</th><th class="n">Jours probables</th><th class="n">Non distribué (estim.)</th><th class="n">Passages (estim.)</th><th>Dernière rupture</th></tr></thead><tbody>'+ids.map(k=>{const r=R.P[k],p=S.produits.get(k);return '<tr><td>'+esc(p.nom)+'</td><td class="n">'+(r.nD||"")+'</td><td class="n">'+(r.nC||"")+'</td><td class="n">'+(manque[k].u?esc(fmtQ(p,manque[k].u)):"")+'</td><td class="n">'+(manque[k].p||"")+'</td><td>'+(r.last?fmtDate(r.last):"")+'</td></tr>'}).join("")+'</tbody></table></div>';
   return pan("Les ruptures",intro,h)}
 function rupturesOuvertes(){const out=[];const byP={};for(const m of allMvts())(byP[m.produit]=byP[m.produit]||[]).push(m);
   for(const pid in byP){let open=null;for(const m of byP[pid]){if(m.type==="rupture")open=open||m;else if(open&&m.t>open.t&&(m.type==="reception"||m.type==="entree"||(m.type==="inventaire"&&m.qte>0)))open=null}if(open&&S.produits.has(pid))out.push(open)}return out}
 
-const SV_VUES=[["conso","Consommation"],["explo","Tableau croisé"],["repart","Camemberts par dossier"],["prat","Évolution des pratiques"],["coh","Cohérence des kits"],["act","Par activité"],["jours","Jours forts"],["budget","Budget"],["annee","Année / an dernier"],["meteo","Météo du stock"],["rupt","Ruptures"],["dorm","Produits dormants"],["bilan","Chiffres de l\'année"]];
+const SV_VUES=[["conso","Consommation"],["explo","Tableau croisé"],["repart","Camemberts par dossier"],["prat","Évolution des pratiques"],["coh","Cohérence des kits"],["act","Par activité"],["jours","Jours forts"],["budget","Budget"],["bprev","Budget prévisionnel"],["chg","Ce qui a changé"],["annee","Année / an dernier"],["meteo","Météo du stock"],["rupt","Ruptures"],["dorm","Produits dormants"],["bilan","Chiffres de l\'année"]];
 function svNav(){return '<div class="svnav" role="tablist" aria-label="Graphiques">'+SV_VUES.map(([k,l])=>'<button data-act="sv" data-v="'+k+'" aria-pressed="'+((S.sv||"conso")===k)+'">'+l+'</button>').join("")+'</div>'}
-function svView(){const v=S.sv||"conso";return v==="explo"?svExplo():v==="repart"?svRepart():v==="prat"?svPratiques():v==="coh"?svCoherence():v==="act"?svActivites():v==="jours"?svJours():v==="budget"?svBudget():v==="annee"?svAnnee():v==="meteo"?svMeteo():v==="rupt"?svRuptures():v==="dorm"?svDormants():v==="bilan"?svBilan():null}
+function svView(){const v=S.sv||"conso";return v==="bprev"?svBprev():v==="chg"?svChg():v==="explo"?svExplo():v==="repart"?svRepart():v==="prat"?svPratiques():v==="coh"?svCoherence():v==="act"?svActivites():v==="jours"?svJours():v==="budget"?svBudget():v==="annee"?svAnnee():v==="meteo"?svMeteo():v==="rupt"?svRuptures():v==="dorm"?svDormants():v==="bilan"?svBilan():null}
 
 function viewCoordo(st){
   const tabs=[["bord","Tableau de bord"],["cmd","Commandes"],["stats","Statistiques"],["prev","Prévisions"],["mvt","Mouvements"],["inv","Inventaire"],["reg","Réglages"]];
@@ -1719,7 +1785,9 @@ function alertsList(st){
     else if(s.moy>0&&s.position<=s.pc)out.push([s.autonomie<d?"crit":"warn",'<b>'+esc(p.nom)+'</b> : '+(isFinite(s.autonomie)?Math.floor(s.autonomie)+" jours d'autonomie":"")+', '+(s.sub?'réassort en '+s.delai+' j. À prendre au stock central : ':'livraison en '+d+' j. À commander : ')+esc(fmtQ(p,s.suggere).replace(/\.$/,''))+'.']);
     else if(!s.sub&&s.moy===0&&s.stock<=0&&S.mvts.some(m=>m.produit===p.id))out.push(["crit",'<b>'+esc(p.nom)+'</b> : stock vide.']);
     const wk=s.moy*14;if(s.moy>0&&s.s14>1.8*wk&&s.s14>=2*(p.parCarton||1))out.push(["warn",'<b>'+esc(p.nom)+'</b> : sorties ×'+(s.s14/wk).toFixed(1)+' sur 2 semaines par rapport à la moyenne.']);
-    if(s.perime&&s.perime<now+60*DAY)out.push([s.perime<now?"crit":"warn",'<b>'+esc(p.nom)+'</b> : un lot périme le '+fmtDate(s.perime)+'.']);
+    if(s.perime&&s.perime<now+120*DAY){const rk=perimRisques({[p.id]:s}).filter(x=>x.p.id===p.id&&x.risque>0);const q=rk.reduce((a,x)=>a+x.risque,0);
+      if(q>0)out.push([s.perime<now+30*DAY?"crit":"warn",'<b>'+esc(p.nom)+'</b> : '+esc(fmtQ(p,q))+' risque'+(q>1?"nt":"")+' de périmer le '+fmtDate(rk[0].E)+' avant d\'être distribué'+(q>1?"s":"")+'. À proposer à un partenaire ?']);
+      else if(s.perime<now+60*DAY)out.push([s.perime<now?"crit":"info",'<b>'+esc(p.nom)+'</b> : un lot périme le '+fmtDate(s.perime)+(s.perime<now?".":", il devrait être distribué à temps.")])}
     if(s.stock>0&&s.lastOut&&s.lastOut<now-60*DAY)out.push(["info",'<b>'+esc(p.nom)+'</b> : plus aucune sortie depuis le '+fmtDate(s.lastOut)+'.']);
     if(s.ecart&&s.ecart.t>now-30*DAY&&s.ecart.theo>0&&Math.abs(s.ecart.qte-s.ecart.theo)/s.ecart.theo>0.1)out.push(["info",'<b>'+esc(p.nom)+'</b> : écart d\'inventaire de '+Math.round(s.ecart.qte-s.ecart.theo)+' u. le '+fmtDate(s.ecart.t)+'.']);
   }
@@ -1794,6 +1862,7 @@ function tabBord(st0){
    +'</div></div>';
   h+='</div><div class="bcol">';
   h+='<div class="panel" style="margin-top:14px">'+repartition()+'<button class="link" data-act="ctab" data-v="stats">Voir les statistiques détaillées</button></div>';
+  if(!used){h+=perimPanel(st);const C=changements();if(C.assez&&C.out.length)h+='<div class="panel" style="margin-top:14px"><h2>Ce qui a changé ce trimestre</h2><ul class="chg">'+C.out.slice(0,4).map(r=>'<li class="'+r.kind+'">'+esc(phraseChg(r))+'</li>').join("")+'</ul><button class="link" data-act="goChg">Voir tout</button></div>'}
   h+='<div class="panel" style="margin-top:14px"><h2>Écran du stock</h2><p class="note">À afficher en grand sur une tablette ou un écran au local : ce qui manque, ce qui est à prévoir, les commandes attendues. Il se met à jour tout seul.</p><button class="btn" style="margin-top:8px" data-act="ecranGo">Ouvrir l\'écran du stock</button></div>';
   h+='<div class="panel" style="margin-top:14px"><h2>Exports</h2><p class="note">Pour le rapport d\'activité ou pour récupérer vos données.</p><div class="row" style="margin-top:10px"><button class="btn" data-act="exportMvts">Mouvements (CSV)</button><button class="btn" data-act="exportAnnuel">Totaux de l\'année (CSV)</button><button class="btn" data-act="exportConfig">Modèle pour un autre CAARUD</button></div></div>';
   h+='</div></div>';
@@ -2400,6 +2469,7 @@ document.addEventListener("change",async e=>{
   const t=e.target;
   if(t.id==="chartProd"){S.chartProd=t.value;render()}
   if(t.id==="svY"){S.svy=t.value;render()}
+  if(t.id==="bpPct"){S.bp.pct=num(t.value,0);render()}if(t.id==="bpTr"){S.bp.trend=t.checked;render()}if(/^bpC-/.test(t.id)){S.bp.cat=S.bp.cat||{};S.bp.cat[t.id.slice(4)]=num(t.value,0);render()}
   if(t.id==="xR"){S.xr=t.value;if(S.xc===t.value)S.xc="aucune";render()}if(t.id==="xC"){S.xc=t.value;render()}if(t.id==="xM"){S.xm=t.value;render()}
   if(t.id==="pvProd"){S.prev.prod=t.value;S.prev.ov=null;render()}
   if(t.id&&t.id.startsWith("fr-")){const fid=t.id.slice(3);const F=(cfg().fournisseurs||[]).map(f=>f.id===fid?{...f,nom:val("fn-"+f.id)||f.nom,delai:num(val("fd-"+f.id),7),rythme:t.value,n:f.n||2,ancre:f.ancre||today(),jour:f.jour||1}:f);await saveConfig({fournisseurs:F})}
@@ -2491,6 +2561,7 @@ document.addEventListener("click",async e=>{
     if(b.dataset.sure!=="1"){b.dataset.sure="1";b.textContent="Confirmer : "+L.length+" sortie"+(L.length>1?"s":"")+" le "+new Date(t0).toLocaleDateString("fr-FR")+" pour "+actNom(act);break}
     let k=0;for(const [p,q] of L){await write("set","mouvements/"+uid(),{t:t0+(k++)*1000,type:"sortie",produit:p.id,qte:q,lieu,activite:act,lot:true})}
     S.lotDraft={date:ds,act,lieu};toast(L.length+" sortie"+(L.length>1?"s":"")+" enregistrée"+(L.length>1?"s":"")+" au "+new Date(t0).toLocaleDateString("fr-FR"));render();break}
+  case "goChg":S.ctab="stats";S.sv="chg";render();window.scrollTo(0,0);break;
   case "xSwap":if((S.xc||"mois")!=="aucune"){const r0=S.xr||"categorie";S.xr=S.xc||"mois";S.xc=r0;render()}break;
   case "tabMore":S.tabMore=!S.tabMore;render();break;
   case "lieu":S.lieu=id;ls.set("lieu",id);render();break;
