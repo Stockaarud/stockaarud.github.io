@@ -446,3 +446,7 @@ html { scroll-padding-top: calc(var(--space-3xl) + var(--space-lg)); }
 .js [data-wall] > .flyer:nth-child(5) { transition-delay: 360ms; }
 @media (max-width: 60rem) { .flyer.flyer--full { grid-column: 1 / -1; grid-template-columns: minmax(0, 1fr); } }
 #essai { margin-bottom: var(--space-xl); } #essai p { margin: var(--space-md) 0 0; max-width: 70ch; }
+/* Page Documents */
+.logos { display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-lg) var(--space-2xl); margin: var(--space-lg) 0 0; }
+.logos img { height: 72px; width: auto; max-width: 100%; }
+.rows--dl dd small { color: var(--color-ink-2, inherit); white-space: nowrap; }
