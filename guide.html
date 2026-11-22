@@ -154,6 +154,7 @@
               <div><dt>Matériel en tableau</dt><dd>Dans Réglages : modifiez prix, cartons et fournisseurs comme dans un tableur, puis enregistrez tout.</dd></div>
               <div><dt>Écran du stock</dt><dd>Depuis le tableau de bord : un affichage en grand pour un écran au local, mis à jour en direct.</dd></div>
               <div><dt>Bilan de l’année</dt><dd>Dans Statistiques : le PDF pour le rapport d’activité, avec la comparaison à l’an dernier et le détail par activité.</dd></div>
+              <div><dt>Budget prévisionnel</dt><dd>Dans Statistiques : l’année prochaine mois par mois, par catégorie et par fournisseur, avec vos hypothèses d’activité.</dd></div>
             </dl>
           </div>
         </li>
@@ -162,7 +163,7 @@
           <div class="step-body">
             <p>Les alertes d’abord : les produits qui seront épuisés avant la prochaine livraison.</p>
             <p>Puis l’<strong>autonomie</strong> de chaque produit, en jours, du plus urgent au moins urgent. Touchez un produit pour voir son stock, sa consommation par semaine, son point de commande, ou corriger le stock.</p>
-            <p>Aussi : le budget dépensé dans l’année, les sorties et leur coût par activité sur 30 jours, et les exports en tableur (mouvements, totaux de l’année).</p>
+            <p>Aussi : le budget dépensé dans l’année, les sorties et leur coût par activité, les <strong>péremptions à venir</strong> (les lots qui risquent de périmer avant d’être distribués), ce qui a changé ce trimestre, et les exports.</p>
           </div>
           <figure class="sheet shot shot--setup" style="--r: 1deg"><div data-slot="g-bord" data-kind="product" data-alt="Le tableau de bord : deux alertes, les produits à commander, le budget et l’autonomie du stock."><img src="img/guide/bord.jpg" width="780" height="1688" alt="Le tableau de bord : deux alertes, les produits à commander, le budget et l’autonomie du stock." loading="lazy"></div></figure>
         </li>
@@ -178,9 +179,10 @@
         <li class="step" id="stats">
           <h2>Statistiques</h2>
           <div class="step-body">
-            <p>Douze vues : consommation, camemberts par dossier, évolution des pratiques, cohérence des kits, par activité, jours forts, budget, année contre an dernier, météo du stock, ruptures, produits dormants, chiffres de l’année.</p>
-            <p>Pour tout le CAARUD, ou pour une ou plusieurs activités. Sur 3 mois, 6 mois ou un an, par produit ou par catégorie, en unités ou en euros.</p>
-            <p><strong>Imprimer</strong> sort un PDF avec le tableau de consommation par mois, prêt pour le rapport d’activité.</p>
+            <p>Les vues de suivi : consommation, camemberts par dossier, évolution des pratiques, cohérence des kits, par activité, jours forts, météo du stock, ruptures et ce qu’elles ont coûté, produits dormants.</p>
+            <p>Les vues d’analyse : <strong>tableau croisé</strong> (vous choisissez lignes, colonnes et mesure), <strong>budget</strong> et <strong>budget prévisionnel</strong> de l’an prochain, <strong>ce qui a changé</strong> d’un trimestre à l’autre, <strong>fournisseurs</strong> (délais réels et prix), année contre an dernier, chiffres de l’année.</p>
+            <p>Pour tout le CAARUD, ou pour une ou plusieurs activités. Chaque graphique a une légende, et donne ses chiffres au toucher ou au survol.</p>
+            <p><strong>Exporter</strong>, sur chaque vue : PDF avec le graphique et son tableau, tableur CSV, ou envoi par WhatsApp et e-mail.</p>
           </div>
           <figure class="sheet shot shot--setup" style="--r: 1.2deg"><div data-slot="g-stats" data-kind="product" data-alt="Les statistiques : le choix de l’activité, de la période, et la courbe de consommation."><img src="img/guide/stats.jpg" width="780" height="1688" alt="Les statistiques : le choix de l’activité, de la période, et la courbe de consommation." loading="lazy"></div></figure>
         </li>
@@ -220,6 +222,7 @@
               <div><dt>Partenaires et fournisseurs</dt><dd>Les assos pour les prêts et dons, les fournisseurs avec leur délai.</dd></div>
               <div><dt>Saisonnalité</dt><dd>Une hausse l’été ou une baisse pendant une fermeture change les quantités proposées.</dd></div>
               <div><dt>Matériel</dt><dd>Contenance du carton, prix, synonymes, photo. Une base RdR de départ est prête à activer.</dd></div>
+              <div><dt>Passages et matériel récupéré</dt><dd>Facultatif. Importez le nombre de passages par jour et par activité depuis un fichier CSV (un modèle est fourni), pour obtenir le matériel distribué par passage. Vous pouvez aussi faire noter le matériel récupéré : seringues usagées, collecteurs, kilos de DASRI.</dd></div>
             </dl>
           </div>
           <figure class="sheet shot shot--setup" style="--r: 1deg"><div data-slot="g-reg" data-kind="product" data-alt="Les réglages, rangés en parties repliables."><img src="img/guide/reg.jpg" width="780" height="1688" alt="Les réglages, rangés en parties repliables." loading="lazy"></div></figure>

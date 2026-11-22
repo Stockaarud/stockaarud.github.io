@@ -90,6 +90,13 @@
     </nav>
 
     <div>
+      <section class="qsheet qsheet--top screen-only" id="essai" aria-labelledby="t-essai">
+        <h2 id="t-essai" class="doc-h2">D’abord essayer, sans compte</h2>
+        <p>Ouvrez <a href="https://stockaarud.github.io/stockaarud/" target="_blank" rel="noopener">l’appli</a> et choisissez <strong>Essayer tout de suite, sans compte</strong>. L’installation guidée démarre aussitôt, avec votre vrai matériel.</p>
+        <p>Les limites : le stock est gardé sur un seul appareil, l’équipe ne peut pas encore noter depuis ses téléphones, et tout est perdu si l’appareil casse ou si l’historique du navigateur est effacé.</p>
+        <p>Quand l’essai est concluant, <strong>Passer en ligne</strong> vous fait suivre les étapes ci-dessous : tout ce que vous avez saisi est repris.</p>
+      </section>
+
       <ol class="steps">
         <li class="step" id="base">
           <h2>Créer le projet Supabase</h2>
@@ -172,6 +179,7 @@
           <li><h3>Sauvegardes</h3><p>Supabase gratuit ne garde pas de copie. Téléchargez la sauvegarde après chaque inventaire : l’appli vous le rappelle.</p></li>
           <li><h3>Accès perdu</h3><p>Dans Supabase, <strong>SQL Editor</strong>, tapez <code>select public.code_secours();</code> puis <strong>Run</strong> : vous obtenez un nouveau code de responsable stock.</p></li>
           <li><h3>Mises à jour</h3><p>Elles arrivent seules : les téléphones prennent la nouvelle version à la prochaine ouverture.</p></li>
+          <li><h3>Règles de la base</h3><p>Le script d’installation peut être relancé sans risque, il ne supprime rien. Relancez-le de temps en temps dans <strong>SQL Editor</strong> : il apporte les protections ajoutées depuis, par exemple « l’équipe ne modifie que ses propres saisies ».</p></li>
         </ul>
       </section>
     </div>
