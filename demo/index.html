@@ -66,6 +66,13 @@ header.top{box-shadow:inset 0 -3px 0 var(--brand-2)}
 .cbar{display:flex;width:100%;align-items:center;gap:10px;justify-content:space-between;border:0;margin:0;cursor:pointer;background:#1f4d3a;color:#fff;font:800 16px/1.2 var(--display);padding:8px max(16px,env(safe-area-inset-right,0px),calc((100% - 1040px)/2 + 16px)) 8px max(16px,env(safe-area-inset-left,0px),calc((100% - 1040px)/2 + 16px));margin-bottom:3px;text-align:left}
 .cbar[hidden]{display:none}.cbar .cb-n{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:17px;letter-spacing:.01em}
 .cbar .cb-c{flex:none;display:inline-flex;align-items:center;gap:2px;font:700 13px var(--body);background:rgb(255 255 255/.16);border-radius:999px;padding:4px 6px 4px 10px}.cbar svg{width:16px;height:16px}
+.cktip{position:fixed;z-index:70;pointer-events:none;background:var(--fg);color:var(--bg);font:500 13px/1.35 var(--body);padding:7px 10px;border-radius:10px;max-width:260px;box-shadow:0 6px 18px rgb(0 0 0/.25);display:flex;flex-direction:column;gap:2px}
+.cktip[hidden]{display:none}.cktip i{display:inline-block;width:9px;height:9px;border-radius:2px;margin-right:6px;vertical-align:0}.cktip b{font-weight:800}
+.ckguide{stroke:var(--fg);stroke-width:1;stroke-dasharray:3 3;opacity:.5;pointer-events:none}
+svg[data-ck]{touch-action:pan-y}
+.jscale{display:flex;align-items:center;gap:4px;margin:6px 0 0 40px;font-size:12px;color:var(--muted)}.jscale i{display:inline-block;width:18px;height:12px;border-radius:3px;background:var(--c1)}.jscale span{margin:0 4px}
+.expg{display:grid;grid-template-columns:1fr 1fr;gap:8px}.expg .btn{justify-content:center;display:inline-flex;align-items:center;gap:6px}.expg .btn.primary{grid-column:1/-1}
+@media (max-width:380px){.expg{grid-template-columns:1fr}}
 .cl{display:flex;flex-direction:column;gap:8px}.cl-it{display:flex;gap:8px;align-items:center}
 .cl-go{flex:1;min-width:0;display:flex;flex-direction:column;align-items:flex-start;gap:2px;text-align:left;font:inherit;color:var(--fg);background:var(--surface-2);border:2px solid transparent;border-radius:12px;padding:12px 14px;cursor:pointer;min-height:56px}
 .cl-go b{font-size:17px}.cl-go span{font-size:13px;color:var(--muted)}
@@ -384,7 +391,7 @@ details summary{cursor:pointer;font-weight:600}
  .auto details[open] dl{animation:fadeUp .2s ease both}
  .actname.in-r{animation:inR .28s cubic-bezier(.2,.8,.2,1) both}.actname.in-l{animation:inL .28s cubic-bezier(.2,.8,.2,1) both}
  .actbar,.actdots i{transition:border-color .3s,background-color .3s,transform .2s}
- #app.swap>*{animation:fadeUp .28s cubic-bezier(.2,.8,.2,1) both}#app.swap>*:nth-child(2){animation-delay:.04s}#app.swap>*:nth-child(3){animation-delay:.08s}#app.swap>*:nth-child(n+4){animation-delay:.12s}
+ #app.swap>*:not(.subnav){animation:fadeUp .28s cubic-bezier(.2,.8,.2,1) both}#app.swap>*:nth-child(2){animation-delay:.04s}#app.swap>*:nth-child(3){animation-delay:.08s}#app.swap>*:nth-child(n+4){animation-delay:.12s}
  details.fold[open]>:not(summary){animation:fadeUp .22s ease both}
  details.fold>summary::after{transition:transform .25s cubic-bezier(.2,.8,.2,1)}
  .chip[aria-pressed="true"],.toggle button[aria-pressed="true"],.seg button[aria-pressed="true"]{animation:pick .26s cubic-bezier(.2,.8,.2,1)}
@@ -708,12 +715,13 @@ function draw(){
   $("#hdrBtn").innerHTML=S.view==="coordo"?'<button class="hbtn" data-act="view" data-v="equipe"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 6l-6 6 6 6" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Équipe</button>'
     :(canC?'<button class="hbtn" data-act="goCoordo"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="11" width="14" height="9" rx="2" fill="none" stroke="currentColor" stroke-width="2.2"/><path d="M8 11V8a4 4 0 0 1 8 0v3" fill="none" stroke="currentColor" stroke-width="2.2"/></svg>Gestion</button>':'');
   const st=computeStats();
-  const keepX={};document.querySelectorAll(".subnav,.tw").forEach((el,i)=>{keepX[(el.className)+i]=el.scrollLeft});
+  const keepX={};document.querySelectorAll(".subnav,.tw,.svnav,.chips").forEach((el,i)=>{keepX[(el.className)+i]=el.scrollLeft});
   paintAct();
   const key=S.view+"/"+S.ctab;if(key!==draw.last&&draw.last){const t=$(".toast");if(t)t.remove()}
   if(key!==draw.last){draw.last=key;const a=$("#app");a.classList.remove("swap");void a.offsetWidth;a.classList.add("swap");clearTimeout(draw.t);draw.t=setTimeout(()=>a.classList.remove("swap"),600)}
   $("#app").innerHTML=(S.view==="equipe"?viewEquipe(st):viewCoordo(st));
-  document.querySelectorAll(".subnav,.tw").forEach((el,i)=>{const k=(el.className)+i;if(keepX[k])el.scrollLeft=keepX[k]});
+  document.querySelectorAll(".subnav,.tw,.svnav,.chips").forEach((el,i)=>{const k=(el.className)+i;if(keepX[k])el.scrollLeft=keepX[k]});
+  {const sv=document.querySelector(".svnav"),on=sv&&sv.querySelector('[aria-pressed="true"]');if(on){const l=on.offsetLeft-sv.offsetLeft,r=l+on.offsetWidth;if(l<sv.scrollLeft)sv.scrollLeft=l-8;else if(r>sv.scrollLeft+sv.clientWidth)sv.scrollLeft=r-sv.clientWidth+8}}
   if(S.view==="coordo")addPrintButtons();
   document.querySelectorAll("table.resp").forEach(t=>{const hs=[...t.querySelectorAll("thead th")].map(h=>h.textContent);t.querySelectorAll("tbody tr").forEach(tr=>[...tr.children].forEach((td,i)=>{if(hs[i])td.setAttribute("data-label",hs[i])}))});
   const nav=document.querySelector(".subnav"),on=nav&&nav.querySelector('[aria-pressed="true"]');
@@ -865,7 +873,7 @@ let lastFocus=null;
 function focusDialog(){const d=document.querySelector("#layer [role=dialog]");if(!d)return;d.setAttribute("tabindex","-1");const h=d.querySelector("h2");if(h){h.setAttribute("tabindex","-1");h.focus({preventScroll:true})}else d.focus({preventScroll:true})}
 function restoreFocus(){if(lastFocus&&lastFocus.isConnected)try{lastFocus.focus({preventScroll:true})}catch(e){}lastFocus=null}
 new MutationObserver(()=>{const has=!!document.querySelector("#layer [role=dialog]");document.body.style.overflow=has?"hidden":"";$("#app").inert=has;const hd=document.querySelector("header.top");if(hd)hd.inert=has}).observe(document.getElementById("layer"),{childList:true});
-document.addEventListener("keydown",e=>{if(e.key!=="Escape")return;if(sheet){closeSheet();restoreFocus()}else if(document.querySelector("#layer [role=dialog]")){stopScan();$("#layer").innerHTML="";S.editProd=null;restoreFocus()}});
+document.addEventListener("keydown",e=>{if(e.key!=="Escape")return;if(sheet){closeSheet();restoreFocus()}else if(document.querySelector("#layer [role=dialog]")){stopScan();EXP=null;$("#layer").innerHTML="";S.editProd=null;restoreFocus()}});
 function drawSheet(){
   const L=$("#layer");if(!sheet){L.innerHTML="";return}
   const first=!sheet._shown;sheet._shown=true;
@@ -1284,7 +1292,17 @@ function pdfHead(doc,titre,sous){const W=doc.internal.pageSize.getWidth(),C=PDFC
   let y=28;if(sous){doc.setFont("helvetica","normal");doc.setFontSize(10);doc.setTextColor(...C.M);const L=doc.splitTextToSize(pdfTxt(sous),W-24);doc.text(L,12,34);y=34+L.length*4.2}
   return y+4}
 function pdfFoot(doc){const n=doc.getNumberOfPages(),W=doc.internal.pageSize.getWidth(),H=doc.internal.pageSize.getHeight();for(let i=1;i<=n;i++){doc.setPage(i);doc.setFont("helvetica","normal");doc.setFontSize(8);doc.setTextColor(...PDFC.M);doc.text("Stockaarud",12,H-7);doc.text(i+" / "+n,W-12,H-7,{align:"right"})}}
-async function savePdf(doc,name){pdfFoot(doc);await downloadBlob(name+"-"+today()+".pdf",doc.output("blob"))}
+function pdfBlob(doc){pdfFoot(doc);return doc.output("blob")}
+async function savePdf(doc,name){await downloadBlob(name+"-"+today()+".pdf",pdfBlob(doc))}
+/* Tableau générique dans un PDF paysage (273 mm de large) */
+function pdfTable(doc,y,titre,head,rows){const C=PDFC,X=12,Wt=273,n=head.length,first=Math.min(70,Math.max(40,Wt*0.3)),cw=n>1?(Wt-first)/(n-1):Wt,fs=n>14?6.5:n>9?7.5:8.5,rh=5.6;
+  const isNum=v=>typeof v==="number"||/^[−+-]?[\d\s\u202f\u00a0]+([,.]\d+)?\s?(%|€|u\.|j|EUR)?$/.test(String(v).trim());
+  const cell=(v,i,yy,bold)=>{doc.setFont("helvetica",bold?"bold":"normal");let t=pdfTxt(typeof v==="number"?nfr(v):String(v??"")).replace(/[\u202f\u00a0]/g," ");const w=i?cw:first;while(t.length>2&&doc.getTextWidth(t)>w-3)t=t.slice(0,-2);
+    if(i&&isNum(v))doc.text(t,X+first+cw*i-1.5,yy,{align:"right"});else doc.text(t,i?X+first+cw*(i-1)+1.5:X+2,yy)};
+  const hd=()=>{doc.setFillColor(...C.G);doc.rect(X,y-4.2,Wt,6.4,"F");doc.setFontSize(fs);doc.setTextColor(255,255,255);head.forEach((v,i)=>cell(v,i,y,true));y+=6.4};
+  if(y>180){doc.addPage();y=pdfHead(doc,titre+" (suite)","")}
+  hd();rows.forEach((r,k)=>{if(y>194){doc.addPage();y=pdfHead(doc,titre+" (suite)","");hd()}if(k%2){doc.setFillColor(...C.BG);doc.rect(X,y-4,Wt,rh,"F")}doc.setFontSize(fs);doc.setTextColor(...C.K);r.forEach((v,i)=>cell(v,i,y,false));y+=rh});
+  return y+5}
 
 // Schéma des stocks
 async function schemaPdf(){
@@ -1333,29 +1351,46 @@ async function listePdf(){
   await savePdf(doc,"stockaarud-liste-du-materiel")}
 
 // Graphiques : on recopie les styles calculés dans le SVG, puis on le dessine en image
+function withLight(fn){const h=document.documentElement,o=h.getAttribute("data-theme");h.setAttribute("data-theme","light");try{return fn()}finally{if(o==null)h.removeAttribute("data-theme");else h.setAttribute("data-theme",o)}}
 function svgPng(svg,scale){return new Promise((ok,ko)=>{const r=svg.getBoundingClientRect(),cl=svg.cloneNode(true),A=[svg,...svg.querySelectorAll("*")],B=[cl,...cl.querySelectorAll("*")];
   const P=["fill","stroke","stroke-width","stroke-dasharray","stroke-linecap","stroke-linejoin","opacity","fill-opacity","stroke-opacity","font-size","font-family","font-weight","text-anchor","dominant-baseline","visibility"];
-  A.forEach((el,i)=>{const cs=getComputedStyle(el);B[i].setAttribute("style",P.map(k=>k+":"+cs.getPropertyValue(k)).join(";"))});
+  withLight(()=>A.forEach((el,i)=>{const cs=getComputedStyle(el);B[i].setAttribute("style",P.map(k=>k+":"+cs.getPropertyValue(k)).join(";"))}));
+  cl.querySelectorAll(".ckguide").forEach(e=>e.remove());
   cl.setAttribute("width",r.width);cl.setAttribute("height",r.height);cl.setAttribute("xmlns","http://www.w3.org/2000/svg");
   const img=new Image();img.onload=()=>{const cv=document.createElement("canvas");cv.width=Math.round(r.width*scale);cv.height=Math.round(r.height*scale);const x=cv.getContext("2d");x.fillStyle="#fff";x.fillRect(0,0,cv.width,cv.height);x.drawImage(img,0,0,cv.width,cv.height);ok({url:cv.toDataURL("image/jpeg",0.92),w:r.width,h:r.height})};
   img.onerror=ko;img.src="data:image/svg+xml;charset=utf-8,"+encodeURIComponent(new XMLSerializer().serializeToString(cl))})}
 const rgbOf=s=>{const m=String(s).match(/\d+(\.\d+)?/g);return m&&m.length>=3?m.slice(0,3).map(Number):[120,120,120]};
-async function chartPdf(panel){
-  const h2=panel.querySelector("h2"),titre=h2?[...h2.childNodes].filter(n=>n.nodeType===3).map(n=>n.textContent).join("").trim():"Graphique";
-  const sous=[...panel.querySelectorAll("select")].map(s=>s.options[s.selectedIndex]&&s.options[s.selectedIndex].text).filter(Boolean)
-    .concat([...panel.querySelectorAll('.seg button[aria-pressed="true"],.chips .chip[aria-pressed="true"]')].map(b=>b.textContent.trim())).concat(SV_SCOPED.has(S.sv||"conso")?[scopeIds().length?scopeNames():"Tout le CAARUD"]:[]).join(" · ");
+function panelTitre(panel){const h2=panel.querySelector("h2");return h2?[...h2.childNodes].filter(n=>n.nodeType===3).map(n=>n.textContent).join("").trim()||h2.textContent.trim():"Statistiques"}
+function panelSous(panel){return [...panel.querySelectorAll("select")].map(s=>s.options[s.selectedIndex]&&s.options[s.selectedIndex].text).filter(Boolean)
+    .concat([...panel.querySelectorAll('.seg button[aria-pressed="true"],.chips .chip[aria-pressed="true"]')].map(b=>b.textContent.trim())).concat(S.view==="coordo"&&S.ctab==="stats"&&SV_SCOPED.has(S.sv||"conso")?[scopeIds().length?scopeNames():"Tout le CAARUD"]:[]).join(" · ")}
+/* Les données d'un bloc, sous forme de tableaux : [{titre, head, rows}] */
+function panelTables(panel){const out=[],cellN=v=>v==null?"":v;
+  if(panel.querySelector("#stWrap")&&STAT){const D=STAT;out.push({titre:(S.stat.period==="3"?"Sorties par semaine":"Sorties par mois")+(S.stat.measure==="e"?", en euros":", en unités"),head:[S.stat.group==="produit"?"Produit":"Catégorie",...D.B.map(b=>b.lab),"Total"],rows:D.keys.filter(k=>sum(D.ser[k])>0).map(k=>[D.name(k),...D.ser[k].map(v=>Math.round(v)),Math.round(sum(D.ser[k]))]),conso:true})}
+  panel.querySelectorAll("svg[data-ck]").forEach(sv=>{const d=CK.get(sv.dataset.ck);if(!d)return;const ac=sv.closest(".acard"),t=ac&&ac.querySelector("h3")?ac.querySelector("h3").textContent.trim()+" ("+(sv.getAttribute("aria-label")||"")+")":sv.getAttribute("aria-label")||"";
+    if(d.kind==="series")out.push({titre:t,head:["",...d.labels],rows:d.series.map(x=>[x.label,...x.vals.map(cellN)]),fmt:d.fmt});
+    else if(d.kind==="rows"){const tot=d.rows.reduce((a,r)=>a+r.v,0);out.push({titre:t,head:["","Valeur"].concat(d.pct?["Part"]:[]),rows:d.rows.map(r=>[r.label,r.txt||r.v].concat(d.pct?[(tot?Math.round(r.v/tot*1000)/10:0)+" %"]:[]))})}
+    else if(d.kind==="table")out.push({titre:t,head:d.head,rows:d.rows})});
+  panel.querySelectorAll("table").forEach(tb=>{const tr=[...tb.querySelectorAll("tr")].map(r=>[...r.children].map(c=>c.textContent.trim()));if(tr.length>1)out.push({titre:"",head:tr[0],rows:tr.slice(1)})});
+  return out}
+function tablesCsv(titre,sous,T){const L=[[titre]];if(sous)L.push([sous]);for(const t of T){L.push([]);if(t.titre)L.push([t.titre]);L.push(t.head);t.rows.forEach(r=>L.push(r))}
+  return L.map(r=>r.map(v=>csvCell(typeof v==="number"?String(Math.round(v*100)/100).replace(".",","):v)).join(";")).join("\r\n")}
+function tablesTexte(titre,sous,T){let t=titre+(sous?" ("+sous+")":"")+"\n";for(const x of T){t+="\n"+(x.titre?x.titre+"\n":"");if(x.head.length>8){t+="Total : "+x.rows.map(r=>r[0]+" "+(typeof r[r.length-1]==="number"?nfr(r[r.length-1]):r[r.length-1])).join(", ")+"\n";continue}x.rows.forEach(r=>{t+="- "+r[0]+" : "+r.slice(1).map((v,i)=>(x.head[i+1]?x.head[i+1]+" ":"")+(typeof v==="number"?nfr(v):v)).join(", ")+"\n"})}return t+"\nEnvoyé depuis Stockaarud"}
+async function chartPdfDoc(panel){
+  const titre=panelTitre(panel),sous=panelSous(panel),T=panelTables(panel);
   const svgs=[...panel.querySelectorAll(".stwrap svg,.chart svg")].filter(s=>s.getBoundingClientRect().width>100);
   const doc=await newPdf("landscape"),C=PDFC;let y=pdfHead(doc,titre,sous);
-  if(panel.querySelector("#stWrap")&&STAT)y=pdfConsoTable(doc,y,titre);
   const note=panel.querySelector("p.note");if(note){doc.setFont("helvetica","normal");doc.setFontSize(9);doc.setTextColor(...C.M);const L=doc.splitTextToSize(pdfTxt(note.textContent),273);doc.text(L,12,y);y+=L.length*4+3}
-  for(const s of svgs){const im=await svgPng(s,2.5),w=Math.min(273,im.w*0.32),h=w*im.h/im.w,hh=Math.min(h,200-y-12),ww=hh<h?hh*im.w/im.h:w;
-    if(y+hh>196){doc.addPage();y=pdfHead(doc,titre+" (suite)","")}doc.addImage(im.url,"JPEG",12+(273-ww)/2,y,ww,hh);y+=hh+4}
+  for(const s of svgs){const im=await svgPng(s,2.5),w=Math.min(273,im.w*0.32),h=w*im.h/im.w,hh=Math.min(h,150),ww=hh<h?hh*im.w/im.h:w,ac=s.closest(".acard"),cap=ac&&ac.querySelector("h3")?ac.querySelector("h3").textContent.trim():"";
+    if(y+hh+(cap?6:0)>196){doc.addPage();y=pdfHead(doc,titre+" (suite)","")}if(cap){doc.setFont("helvetica","bold");doc.setFontSize(11);doc.setTextColor(...C.K);doc.text(pdfTxt(cap),148.5,y+3,{align:"center"});y+=6}doc.addImage(im.url,"JPEG",12+(273-ww)/2,y,ww,hh);y+=hh+4}
   const leg=[...panel.querySelectorAll(".lg button,.legend span,.legend>*")].filter(e=>e.querySelector("i"));
-  if(leg.length){let x=12;doc.setFont("helvetica","normal");doc.setFontSize(9);for(const e of leg){if(e.getAttribute("aria-pressed")==="false")continue;const col=rgbOf(getComputedStyle(e.querySelector("i")).backgroundColor),t=pdfTxt(e.textContent.trim());const w=doc.getTextWidth(t)+9;if(x+w>285){x=12;y+=5.5}if(y>200){doc.addPage();y=pdfHead(doc,titre+" (suite)","")}doc.setFillColor(...col);doc.rect(x,y-2.8,3.2,3.2,"F");doc.setTextColor(...C.K);doc.text(t,x+4.6,y);x+=w}y+=7}
-  const rk=[...panel.querySelectorAll(".rank button")];
-  if(rk.length){if(y>170){doc.addPage();y=pdfHead(doc,titre+" (suite)","")}doc.setFontSize(9.5);for(const b of rk){const nm=b.querySelector(".nm"),v=b.querySelector(".v");if(y>196){doc.addPage();y=pdfHead(doc,titre+" (suite)","")}doc.setTextColor(...C.K);doc.text(pdfTxt(nm?nm.textContent:""),12,y);doc.text(pdfTxt(v?[...v.childNodes].map(n=>n.textContent.trim()).filter(Boolean).join("  "):""),200,y,{align:"right"});doc.setDrawColor(...C.L);doc.line(12,y+1.6,200,y+1.6);y+=6}}
-  if(!svgs.length&&!rk.length){toast("Rien à imprimer dans ce bloc");return}
-  await savePdf(doc,"stockaarud-"+slug(titre))}
+  if(leg.length){let x=12;doc.setFont("helvetica","normal");doc.setFontSize(9);for(const e of leg){if(e.getAttribute("aria-pressed")==="false")continue;const col=rgbOf(withLight(()=>getComputedStyle(e.querySelector("i")).backgroundColor)),t=pdfTxt(e.textContent.trim());const w=doc.getTextWidth(t)+9;if(x+w>285){x=12;y+=5.5}if(y>200){doc.addPage();y=pdfHead(doc,titre+" (suite)","")}doc.setFillColor(...col);doc.rect(x,y-2.8,3.2,3.2,"F");doc.setTextColor(...C.K);doc.text(t,x+4.6,y);x+=w}y+=7}
+  if(!svgs.length&&!T.length)return null;
+  for(const t of T){if(t.conso){if(y>120){doc.addPage();y=pdfHead(doc,titre+" (tableau)","")}y=pdfConsoTable(doc,y,titre);continue}
+    if(y>150){doc.addPage();y=pdfHead(doc,titre+" (suite)","")}
+    if(t.titre){doc.setFont("helvetica","bold");doc.setFontSize(10);doc.setTextColor(...C.K);doc.text(pdfTxt(t.titre),12,y);y+=6}
+    y=pdfTable(doc,y,titre,t.head,t.rows.map(r=>r.map((v,i)=>i&&typeof v==="number"&&t.fmt?t.fmt(v):v)))}
+  return doc}
+async function chartPdf(panel){const d=await chartPdfDoc(panel);if(!d){toast("Rien à imprimer dans ce bloc");return}await savePdf(d,"stockaarud-"+slug(panelTitre(panel)))}
 /* Tableau de la consommation par mois (ou par semaine sur 3 mois), en tête du PDF */
 function pdfConsoTable(doc,y,titre){const C=PDFC,D=STAT,st=S.stat,B=D.B;
   const shown=D.keys.slice(0,8),vis=(st.focus?[st.focus]:st.hidden.size?shown.filter(k=>!st.hidden.has(k)):D.keys).filter(k=>sum(D.ser[k])>0);
@@ -1374,9 +1409,27 @@ function pdfConsoTable(doc,y,titre){const C=PDFC,D=STAT,st=S.stat,B=D.B;
   if(y>192){doc.addPage();y=pdfHead(doc,titre+" (suite)","")}
   doc.setDrawColor(...C.K);doc.setLineWidth(.4);doc.line(12,y-3.6,285,y-3.6);doc.setFont("helvetica","bold");doc.setFontSize(fs);doc.setTextColor(...C.K);
   doc.text("Total",14,y+.6);tot.forEach((v,i)=>doc.text(fv(v),12+nameW+colW*(i+1)-1.5,y+.6,{align:"right"}));doc.text(fv(sum(tot)),283,y+.6,{align:"right"});
-  doc.addPage();return pdfHead(doc,titre+" (graphique)","")}
-function addPrintButtons(){document.querySelectorAll("#app .panel").forEach(p=>{if(p.querySelector(":scope > .pbtn")||p.classList.contains("bilanp"))return;const has=p.querySelector(".stwrap svg,.chart svg,.rank button");if(!has)return;
-  const b=document.createElement("button");b.className="btn small pbtn";b.dataset.act="chartPdf";b.innerHTML='<svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><path d="M7 9V3h10v6M7 17H4v-7h16v7h-3M7 14h10v7H7z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></svg>Imprimer';b.setAttribute("aria-label","Imprimer ce graphique en PDF");p.prepend(b)})}
+  return y+8}
+/* Exporter : PDF, tableur, partage (WhatsApp, e-mail…) */
+const SHARE_ICO='<svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><path d="M12 3v12M7 8l5-5 5 5M5 13v6a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+let EXP=null;
+const canShareFiles=()=>{try{return !!(navigator.canShare&&navigator.canShare({files:[new File(["x"],"t.pdf",{type:"application/pdf"})]}))}catch(e){return false}};
+function openExport(o){EXP={...o,blob:null,err:false};lastFocus=document.activeElement;drawExport();
+  if(o.pdf)Promise.resolve().then(o.pdf).then(d=>{if(EXP&&EXP.titre===o.titre){if(!d){EXP.err=true}else EXP.blob=d instanceof Blob?d:pdfBlob(d);drawExport()}}).catch(()=>{if(EXP){EXP.err=true;drawExport()}})}
+function drawExport(){if(!EXP)return;const e=EXP,share=canShareFiles(),wait=e.pdf&&!e.blob&&!e.err;
+  $("#layer").innerHTML='<div class="sheet-back" data-act="expClose"><div class="sheet" role="dialog" aria-modal="true" aria-label="Exporter"><h2>'+esc(e.titre)+'</h2>'
+   +'<div class="expg">'+(e.pdf?'<button class="btn" data-act="expPdf"'+(wait||e.err?" disabled":"")+'>'+PRINT_ICO+(wait?"PDF en préparation…":e.err?"PDF indisponible":"Télécharger le PDF")+'</button>':'')
+   +(e.csv?'<button class="btn" data-act="expCsv">Télécharger le tableur (CSV)</button>':'')
+   +(e.pdf&&share?'<button class="btn primary" data-act="expShare"'+(wait||e.err?" disabled":"")+'>'+SHARE_ICO+'Envoyer le PDF…</button>':'')
+   +(e.texte?'<button class="btn" data-act="expWa">WhatsApp</button><button class="btn" data-act="expMail">E-mail</button>':'')+'</div>'
+   +'<p class="note" style="margin:0">'+(e.pdf&&share?"« Envoyer le PDF » ouvre le partage du téléphone : WhatsApp, Mail, Drive… avec le PDF joint. ":"")+(e.texte?"WhatsApp et E-mail envoient un résumé en texte. Pour joindre le PDF depuis un ordinateur, téléchargez-le puis glissez-le dans le message.":"")+'</p>'
+   +'<button class="btn" data-act="expClose">Fermer</button></div></div>';
+  if(!document.querySelector("#layer .sheet h2:focus"))focusDialog()}
+function closeExport(){EXP=null;$("#layer").innerHTML="";restoreFocus()}
+function expFile(ext){return (EXP.nom||"stockaarud-"+slug(EXP.titre))+"-"+today()+"."+ext}
+function expTxt(){const t=EXP.texte();return t.length>1800?t.slice(0,1790)+"…":t}
+function addPrintButtons(){document.querySelectorAll("#app .panel").forEach(p=>{if(p.querySelector(":scope > .pbtn")||p.classList.contains("bilanp"))return;const has=p.querySelector(".stwrap svg,.chart svg,.rank button,.tw table");if(!has||!p.closest("#app")||S.view!=="coordo"||p.querySelector(".pbtn"))return;if(!has)return;
+  const b=document.createElement("button");b.className="btn small pbtn";b.dataset.act="chartExp";b.innerHTML=SHARE_ICO+'Exporter';b.setAttribute("aria-label","Exporter ce graphique : PDF, tableur, WhatsApp, e-mail");p.prepend(b)})}
 const PRINT_ICO='<svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><path d="M7 9V3h10v6M7 17H4v-7h16v7h-3M7 14h10v7H7z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></svg>';
 
 /* ---------- Graphiques supplémentaires (onglet Statistiques) ---------- */
@@ -1390,20 +1443,32 @@ function moisDebut(y,m){return new Date(y,m,1).getTime()}
 function derniersMois(n,fin){const d=new Date(),out=[];for(let i=n-1+(fin?1:0);i>=(fin?1:0);i--){const y=d.getFullYear(),m=d.getMonth()-i,a=moisDebut(y,m),b=moisDebut(y,m+1),dd=new Date(a);out.push({a,b,l:MOIS[dd.getMonth()]+(dd.getMonth()===0||i===n-1+(fin?1:0)?" "+String(dd.getFullYear()).slice(2):"")})}return out}
 function periodeSV(){const n=num(S.svp||"3",3);return {a:Date.now()-n*30.44*DAY,b:Date.now()+1,n}}
 const COLS=["--c1","--c2","--c3","--c4","--c5","--c6","--warn","--brand","--crit","--muted"];
+/* Données des graphiques : pour l'export CSV, les tableaux des PDF et les info-bulles */
+const CK=new Map();let ckN=0;
+function ck(d){const k="k"+(++ckN);CK.set(k,d);if(CK.size>300)CK.delete(CK.keys().next().value);return ' data-ck="'+k+'"'}
 const legende=items=>'<div class="legend">'+items.map(it=>'<span><i style="background:var('+it.col+')"></i>'+esc(it.label)+(it.extra?' <b>'+esc(it.extra)+'</b>':'')+'</span>').join("")+'</div>';
-function donut(sl,centre,size){size=size||220;const R=size/2,r=R*0.58,tot=sl.reduce((a,x)=>a+x.v,0)||1;let a0=-Math.PI/2,h='<svg viewBox="0 0 '+size+' '+size+'" role="img" aria-label="'+esc(centre||"Répartition")+'" style="max-width:'+size+'px;margin:0 auto">';
-  if(sl.length===1)h+='<circle cx="'+R+'" cy="'+R+'" r="'+(R+r)/2+'" style="fill:none;stroke:var('+sl[0].col+');stroke-width:'+(R-r)+'"><title>'+esc(sl[0].label)+'</title></circle>';
-  else for(const s of sl){const a1=a0+s.v/tot*2*Math.PI,lg=a1-a0>Math.PI?1:0,p=(ang,rr)=>(R+rr*Math.cos(ang)).toFixed(2)+" "+(R+rr*Math.sin(ang)).toFixed(2);
-    h+='<path d="M'+p(a0,R)+" A"+R+" "+R+" 0 "+lg+" 1 "+p(a1,R)+" L"+p(a1,r)+" A"+r+" "+r+" 0 "+lg+" 0 "+p(a0,r)+' Z" style="fill:var('+s.col+');stroke:var(--surface);stroke-width:2"><title>'+esc(s.label)+" : "+nfr(s.v)+" ("+Math.round(s.v/tot*100)+' %)</title></path>';a0=a1}
-  if(centre)h+='<text x="'+R+'" y="'+(R-2)+'" text-anchor="middle" style="font:800 '+(size/8.5)+'px var(--display);fill:var(--fg)">'+esc(centre.split("|")[0])+'</text><text x="'+R+'" y="'+(R+size/12)+'" text-anchor="middle" style="font:'+(size/17)+'px var(--body);fill:var(--muted)">'+esc(centre.split("|")[1]||"")+'</text>';
+function donut(sl,centre,size,noLab){size=size||220;const lab=!noLab&&sl.length>1,PX=lab?118:0,PY=lab?16:0,W=size+2*PX,H=size+2*PY,cx=W/2,cy=H/2,R=size/2,r=R*0.58,tot=sl.reduce((a,x)=>a+x.v,0)||1;let a0=-Math.PI/2;
+  let h='<svg viewBox="0 0 '+W+' '+H+'" role="img" aria-label="'+esc((centre||"Répartition").replace("|"," "))+'" style="max-width:'+W+'px;margin:0 auto"'+ck({kind:"rows",pct:true,rows:sl.map(x=>({label:x.label,v:x.v}))})+'>';
+  const pt=(ang,rr)=>(cx+rr*Math.cos(ang)).toFixed(2)+" "+(cy+rr*Math.sin(ang)).toFixed(2),labs=[];
+  if(sl.length===1)h+='<circle cx="'+cx+'" cy="'+cy+'" r="'+(R+r)/2+'" style="fill:none;stroke:var('+sl[0].col+');stroke-width:'+(R-r)+'"><title>'+esc(sl[0].label)+'</title></circle>';
+  else for(const s of sl){const a1=a0+s.v/tot*2*Math.PI,lg=a1-a0>Math.PI?1:0;
+    h+='<path d="M'+pt(a0,R)+" A"+R+" "+R+" 0 "+lg+" 1 "+pt(a1,R)+" L"+pt(a1,r)+" A"+r+" "+r+" 0 "+lg+" 0 "+pt(a0,r)+' Z" style="fill:var('+s.col+');stroke:var(--surface);stroke-width:2"><title>'+esc(s.label)+" : "+nfr(s.v)+" ("+Math.round(s.v/tot*100)+' %)</title></path>';
+    const m=(a0+a1)/2;labs.push({s,m,right:Math.cos(m)>=0,y:cy+(R+8)*Math.sin(m),p:Math.round(s.v/tot*100)});a0=a1}
+  if(lab){for(const side of [true,false]){const L=labs.filter(l=>l.right===side).sort((a,b)=>a.y-b.y),gap=30;
+      for(let k=0;k<L.length;k++){L[k].y=Math.max(L[k].y,k?L[k-1].y+gap:12)}
+      for(let k=L.length-1;k>=0;k--){L[k].y=Math.min(L[k].y,k<L.length-1?L[k+1].y-gap:H-18)}
+      for(const l of L){const ex=cx+(R+2)*Math.cos(l.m),ey=cy+(R+2)*Math.sin(l.m),bx=cx+(R+10)*Math.cos(l.m),by=cy+(R+10)*Math.sin(l.m),tx=side?cx+R+20:cx-R-20,an=side?"start":"end",nm=l.s.label.length>17?l.s.label.slice(0,16)+"…":l.s.label;
+        h+='<polyline points="'+ex.toFixed(1)+","+ey.toFixed(1)+" "+bx.toFixed(1)+","+l.y.toFixed(1)+" "+tx+","+l.y.toFixed(1)+'" style="fill:none;stroke:var('+l.s.col+');stroke-width:1.6"/><circle cx="'+tx+'" cy="'+l.y.toFixed(1)+'" r="2.6" style="fill:var('+l.s.col+')"/>'
+         +'<text x="'+(tx+(side?6:-6))+'" y="'+(l.y-2).toFixed(1)+'" text-anchor="'+an+'" style="font:800 14px var(--display);fill:var(--fg)">'+l.p+' %</text><text x="'+(tx+(side?6:-6))+'" y="'+(l.y+12).toFixed(1)+'" text-anchor="'+an+'" style="font:11px var(--body);fill:var(--muted)">'+esc(nm)+'</text>'}}}
+  if(centre)h+='<text x="'+cx+'" y="'+(cy-2)+'" text-anchor="middle" style="font:800 '+(size/8.5)+'px var(--display);fill:var(--fg)">'+esc(centre.split("|")[0])+'</text><text x="'+cx+'" y="'+(cy+size/12)+'" text-anchor="middle" style="font:'+(size/17)+'px var(--body);fill:var(--muted)">'+esc(centre.split("|")[1]||"")+'</text>';
   return h+'</svg>'}
 function parts(rows,maxN){rows=rows.filter(r=>r.v>0).sort((a,b)=>b.v-a.v);if(rows.length>maxN){const k=rows.slice(0,maxN-1),o=rows.slice(maxN-1).reduce((a,x)=>a+x.v,0);rows=k.concat([{label:"Autres",v:o,autre:true}])}const t=rows.reduce((a,x)=>a+x.v,0)||1;return rows.map((r,i)=>({...r,col:r.autre?"--muted":r.col||COLS[i%COLS.length],extra:Math.round(r.v/t*100)+" %"}))}
-function barresH(rows,fmt,opts){opts=opts||{};const W=VW(),lw=Math.min(opts.lw||190,Math.round(W*0.36)),RW=opts.rw||(W<450?82:96),rh=26,H=rows.length*rh+(opts.ref?18:6),max=Math.max(opts.max||0,...rows.map(r=>r.v),1);let h='<svg viewBox="0 0 '+W+' '+H+'" role="img" aria-label="'+esc(opts.titre||"Barres")+'">';
+function barresH(rows,fmt,opts){opts=opts||{};const W=VW(),lw=Math.min(opts.lw||190,Math.round(W*0.36)),RW=opts.rw||(W<450?82:96),rh=26,H=rows.length*rh+(opts.ref?18:6),max=Math.max(opts.max||0,...rows.map(r=>r.v),1);let h='<svg viewBox="0 0 '+W+' '+H+'" role="img" aria-label="'+esc(opts.titre||"Barres")+'"'+ck({kind:"rows",unit:opts.unit||"",rows:rows.map(r=>({label:r.label,v:r.v,txt:fmt(r.v)}))})+'>';
   rows.forEach((r,i)=>{const y=i*rh+4,w=Math.max(1,(W-lw-RW)*Math.min(r.v,max)/max);h+='<text x="'+(lw-8)+'" y="'+(y+15)+'" text-anchor="end" style="font:13px var(--body);fill:var(--fg)">'+esc(r.label.length>(W<450?18:28)?r.label.slice(0,W<450?17:27)+"…":r.label)+'</text><rect x="'+lw+'" y="'+(y+3)+'" width="'+w.toFixed(1)+'" height="16" rx="4" style="fill:var('+(r.col||"--c1")+')"><title>'+esc(r.label+" : "+fmt(r.v))+'</title></rect><text x="'+(lw+w+6)+'" y="'+(y+15)+'" style="font:600 12px var(--body);fill:var(--fg)">'+esc(fmt(r.v))+'</text>'});
   if(opts.ref){const x=lw+(W-lw-RW)*opts.ref/max;h+='<line x1="'+x+'" y1="0" x2="'+x+'" y2="'+(H-14)+'" style="stroke:var(--fg);stroke-width:1.5;stroke-dasharray:4 3"/><text x="'+x+'" y="'+(H-2)+'" text-anchor="middle" style="font:11px var(--body);fill:var(--muted)">'+esc(opts.refLabel||String(opts.ref))+'</text>'}
   return h+'</svg>'}
 function courbes(series,labels,opts){opts=opts||{};const W=VW(),H=opts.h||(W<450?220:260),L=opts.fmtY?66:44,Rr=12,T=12,B=28,all=series.flatMap(s=>s.vals.filter(v=>v!=null)),mx=Math.max(opts.ref||0,...all,1)*1.1,n=labels.length,X=i=>L+(W-L-Rr)*(n>1?i/(n-1):0.5),Y=v=>T+(H-T-B)*(1-v/mx);
-  let h='<svg viewBox="0 0 '+W+' '+H+'" role="img" aria-label="'+esc(opts.titre||"Courbes")+'">';
+  let h='<svg viewBox="0 0 '+W+' '+H+'" role="img" aria-label="'+esc(opts.titre||"Courbes")+'"'+ck({kind:"series",labels,series:series.map(x=>({label:x.label,col:x.col,vals:x.vals})),fmt:opts.fmtY,geo:{x0:L,x1:W-Rr,n,W}})+'>';
   for(let k=0;k<=4;k++){const v=mx*k/4,y=Y(v);h+='<line x1="'+L+'" x2="'+(W-Rr)+'" y1="'+y+'" y2="'+y+'" style="stroke:var(--line);stroke-width:1"/><text x="'+(L-6)+'" y="'+(y+4)+'" text-anchor="end" style="font:11px var(--body);fill:var(--muted)">'+esc(opts.fmtY?opts.fmtY(v):nfr(v))+'</text>'}
   const step=Math.ceil(n/(W<450?6:12));labels.forEach((l,i)=>{if(i%step===0||i===n-1)h+='<text x="'+X(i)+'" y="'+(H-8)+'" text-anchor="middle" style="font:11px var(--body);fill:var(--muted)">'+esc(l)+'</text>'});
   if(opts.ref){h+='<line x1="'+L+'" x2="'+(W-Rr)+'" y1="'+Y(opts.ref)+'" y2="'+Y(opts.ref)+'" style="stroke:var(--fg);stroke-width:1.2;stroke-dasharray:5 4"/>'}
@@ -1411,7 +1476,7 @@ function courbes(series,labels,opts){opts=opts||{};const W=VW(),H=opts.h||(W<450
     h+='<path d="'+d+'" style="fill:none;stroke:var('+s.col+');stroke-width:'+(s.w||2.6)+';stroke-linejoin:round;stroke-linecap:round'+(s.dash?';stroke-dasharray:'+s.dash:'')+'"/>';
     s.vals.forEach((v,i)=>{if(v!=null)h+='<circle cx="'+X(i).toFixed(1)+'" cy="'+Y(v).toFixed(1)+'" r="3" style="fill:var('+s.col+')"><title>'+esc(s.label+" · "+labels[i]+" : "+(opts.fmtY?opts.fmtY(v):nfr(v)))+'</title></circle>'})}
   return h+'</svg>'}
-function batons(vals,labels,col,fmt){const W=VW(),H=230,L=44,T=10,B=28,mx=Math.max(...vals,1)*1.1,n=vals.length,bw=(W-L-10)/n;let h='<svg viewBox="0 0 '+W+' '+H+'" role="img" aria-label="Histogramme">';
+function batons(vals,labels,col,fmt){const W=VW(),H=230,L=44,T=10,B=28,mx=Math.max(...vals,1)*1.1,n=vals.length,bw=(W-L-10)/n;let h='<svg viewBox="0 0 '+W+' '+H+'" role="img" aria-label="Histogramme"'+ck({kind:"series",labels,series:[{label:"Valeur",col,vals}],fmt,geo:{x0:L+bw/2,x1:L+bw*(n-.5),n,W}})+'>';
   for(let k=0;k<=4;k++){const v=mx*k/4,y=T+(H-T-B)*(1-v/mx);h+='<line x1="'+L+'" x2="'+(W-10)+'" y1="'+y+'" y2="'+y+'" style="stroke:var(--line)"/><text x="'+(L-6)+'" y="'+(y+4)+'" text-anchor="end" style="font:11px var(--body);fill:var(--muted)">'+nfr(v)+'</text>'}
   vals.forEach((v,i)=>{const hh=(H-T-B)*v/mx,x=L+i*bw+bw*0.15;h+='<rect x="'+x.toFixed(1)+'" y="'+(H-B-hh).toFixed(1)+'" width="'+(bw*0.7).toFixed(1)+'" height="'+hh.toFixed(1)+'" rx="3" style="fill:var('+col+')"><title>'+esc(labels[i]+" : "+(fmt?fmt(v):nfr(v)))+'</title></rect><text x="'+(x+bw*0.35).toFixed(1)+'" y="'+(H-10)+'" text-anchor="middle" style="font:'+(W<450?9:11)+'px var(--body);fill:var(--muted)">'+esc(W<450?labels[i].slice(0,1).toUpperCase():labels[i])+'</text>'});
   return h+'</svg>'}
@@ -1456,23 +1521,26 @@ function svActivites(){const {a,b}=periodeSV(),acts=cfg().activites.filter(x=>!x
 // 5. Jours forts
 function svJours(){const W=12,now=new Date();now.setHours(0,0,0,0);const lundi=new Date(now.getTime()-((now.getDay()+6)%7)*DAY),a0=lundi.getTime()-(W-1)*7*DAY;
   const g=Array.from({length:7},()=>Array(W).fill(0));for(const m of sortiesEntre(a0,Date.now()+1)){const d=Math.floor((m.t-a0)/DAY),w=Math.floor(d/7),j=(new Date(m.t).getDay()+6)%7;if(w>=0&&w<W)g[j][w]++}
-  const mx=Math.max(1,...g.flat()),L=40,cw=Math.max(20,Math.floor((VW()-L-4)/W)),ch=Math.min(26,cw),T=22,svgW=L+W*cw+4,svgH=T+7*ch+4;let s='<svg viewBox="0 0 '+svgW+' '+svgH+'" role="img" aria-label="Jours forts">';
+  const nz=g.flat().filter(v=>v>0).sort((a,b)=>a-b),q=f=>nz.length?nz[Math.min(nz.length-1,Math.floor(f*nz.length))]:1,TH=[q(.2),q(.4),q(.6),q(.8)],lev=v=>v?1+TH.filter(t=>v>t).length:0,OP=[0,.22,.42,.62,.82,1];
+  const labJ=Array.from({length:W},(_,w)=>{const d=new Date(a0+w*7*DAY);return "sem. du "+d.getDate()+" "+MOIS[d.getMonth()]});
+  const mx=Math.max(1,...g.flat()),L=40,cw=Math.max(20,Math.floor((VW()-L-4)/W)),ch=Math.min(26,cw),T=22,svgW=L+W*cw+4,svgH=T+7*ch+4;let s='<svg viewBox="0 0 '+svgW+' '+svgH+'" role="img" aria-label="Jours forts"'+ck({kind:"series",labels:labJ,series:JOURS_C.map((jn,j)=>({label:jn,col:"--c1",vals:g[j].map((v,w)=>a0+(w*7+j)*DAY>Date.now()?null:v)}))})+'>';
   for(let w=0;w<W;w++){const d=new Date(a0+w*7*DAY);if(w%(cw<30?3:2)===0)s+='<text x="'+(L+w*cw+cw/2)+'" y="14" text-anchor="middle" style="font:10px var(--body);fill:var(--muted)">'+d.getDate()+" "+MOIS[d.getMonth()]+'</text>'}
   for(let j=0;j<7;j++){s+='<text x="'+(L-6)+'" y="'+(T+j*ch+17)+'" text-anchor="end" style="font:11px var(--body);fill:var(--muted)">'+JOURS_C[j]+'</text>';
-    for(let w=0;w<W;w++){const v=g[j][w],o=v?0.18+0.82*v/mx:0;s+='<rect x="'+(L+w*cw+2)+'" y="'+(T+j*ch+2)+'" width="'+(cw-4)+'" height="'+(ch-4)+'" rx="4" style="fill:'+(v?'var(--c1)':'var(--surface-2)')+';fill-opacity:'+(v?o.toFixed(2):1)+'"><title>'+JOURS_C[j]+" "+new Date(a0+(w*7+j)*DAY).toLocaleDateString("fr-FR")+" : "+v+" saisie"+(v>1?"s":"")+'</title></rect>'}}
+    for(let w=0;w<W;w++){const v=g[j][w],o=OP[lev(v)];s+='<rect x="'+(L+w*cw+2)+'" y="'+(T+j*ch+2)+'" width="'+(cw-4)+'" height="'+(ch-4)+'" rx="4" style="fill:'+(v?'var(--c1)':'var(--surface-2)')+';fill-opacity:'+(v?o.toFixed(2):1)+'"><title>'+JOURS_C[j]+" "+new Date(a0+(w*7+j)*DAY).toLocaleDateString("fr-FR")+" : "+v+" sortie"+(v>1?"s":"")+'</title></rect>'}}
   s+='</svg>';const moy=g.map(r=>r.reduce((x,y)=>x+y,0)/W);
-  return pan("Les jours forts","Nombre de saisies de sortie par jour, sur les 12 dernières semaines. Plus c\'est foncé, plus il y a eu de distribution.",'<div class="chart" style="margin-top:10px">'+s+'</div><h3 style="margin-top:14px">En moyenne par jour de la semaine</h3><div class="chart">'+barresH(moy.map((v,j)=>({label:JOURS_C[j],v:Math.round(v*10)/10,col:"--c1"})),v=>String(v).replace(".",",")+" saisies",{lw:60})+'</div>')}
+  const echelle='<div class="jscale" aria-hidden="true"><span>Moins</span>'+OP.slice(1).map(o=>'<i style="opacity:'+o+'"></i>').join("")+'<span>Plus</span></div>';
+  return pan("Les jours forts","Nombre de sorties de stock notées chaque jour, sur les 12 dernières semaines. Cinq teintes, du plus clair (les jours les plus calmes) au plus foncé (les plus chargés). Touchez une case pour voir le chiffre.",'<div class="chart" style="margin-top:10px">'+s+'</div>'+echelle+'<h3 style="margin-top:14px">En moyenne par jour de la semaine</h3><div class="chart">'+barresH(moy.map((v,j)=>({label:JOURS_C[j],v:Math.round(v*10)/10,col:"--c1"})),v=>String(v).replace(".",",")+" sorties",{lw:60})+'</div>')}
 
 // 6. Budget
 const coutM=m=>{const p=S.produits.get(m.produit);return num(m.qte,0)*num(p&&p.prix,0)};
 function svBudget(){const y=new Date().getFullYear(),bud=num(cfg().budget,0),M=Array.from({length:12},(_,i)=>({a:moisDebut(y,i),b:moisDebut(y,i+1)}));const cm=new Date().getMonth();
   let cum=0;const reel=M.map((mo,i)=>{if(i>cm)return null;cum+=sortiesEntre(mo.a,mo.b).reduce((x,m)=>x+coutM(m),0);return Math.round(cum)});
-  const ser=[{label:"Dépensé (cumul)",col:"--c1",vals:reel}];if(bud>0)ser.push({label:"Budget au prorata",col:"--muted",dash:"6 5",w:2,vals:M.map((_,i)=>Math.round(bud*(i+1)/12))});
+  const ser=[{label:"Dépensé (cumul)",col:"--c1",vals:reel}];if(bud>0)ser.push({label:"Rythme prévu (budget ÷ 12 chaque mois)",col:"--muted",dash:"6 5",w:2,vals:M.map((_,i)=>Math.round(bud*(i+1)/12))});
   const ms=sortiesEntre(moisDebut(y,0),Date.now()+1),by={};for(const m of ms){const k=catOf(S.produits.get(m.produit));by[k]=(by[k]||0)+coutM(m)}const sl=parts(Object.entries(by).map(([k,v])=>({label:CATS[k],v,col:CATCOL[k]})),7);
   const sansPrix=prodsActifs().filter(p=>!(num(p.prix,0)>0)).length,tot=cum,proj=cm>=0?tot/(cm+1)*12:0;
   const kp='<div class="kpis"><div class="kpi"><div class="v">'+eur(tot)+'</div><div class="k">dépensé depuis janvier</div></div><div class="kpi"><div class="v">'+eur(proj)+'</div><div class="k">projection sur l\'année</div></div>'+(bud>0?'<div class="kpi"><div class="v">'+Math.round(tot/bud*100)+' %</div><div class="k">du budget '+eur(bud)+'</div></div>':'')+'</div>';
   const setB='<div class="row" style="margin-top:10px"><label class="note" style="display:flex;align-items:center;gap:8px">Budget matériel de l\'année (€)<input id="svB" type="number" min="0" value="'+(bud||"")+'" style="width:130px"></label><button class="btn small" data-act="svBudget">Enregistrer</button></div>';
-  return pan("Budget "+y,"Coût du matériel sorti, au prix unitaire TTC indiqué dans Matériel."+(sansPrix?" "+sansPrix+" produit"+(sansPrix>1?"s n\'ont":" n\'a")+" pas de prix et ne sont pas comptés.":""),kp+setB+'<div class="chart" style="margin-top:10px">'+courbes(ser,MOIS,{fmtY:v=>nfr(v)+" €",titre:"Budget"})+'</div>'+legende(ser)+(sl.length?'<h3 style="margin-top:16px">Où va l\'argent, depuis janvier</h3><div class="dn"><div class="chart">'+donut(sl,eur(tot)+"|depuis janvier",200)+'</div>'+legende(sl)+'</div>':''))}
+  return pan("Budget "+y,"Coût du matériel sorti, au prix unitaire TTC indiqué dans Matériel."+(bud>0?" La ligne pointillée montre où vous devriez en être si le budget de l\'année était dépensé régulièrement, un douzième par mois. Si la courbe pleine passe au-dessus, vous dépensez plus vite que prévu.":"")+(sansPrix?" "+sansPrix+" produit"+(sansPrix>1?"s n\'ont":" n\'a")+" pas de prix et ne sont pas comptés.":""),kp+setB+'<div class="chart" style="margin-top:10px">'+courbes(ser,MOIS,{fmtY:v=>nfr(v)+" €",titre:"Budget"})+'</div>'+legende(ser)+(sl.length?'<h3 style="margin-top:16px">Où va l\'argent, depuis janvier</h3><div class="dn"><div class="chart">'+donut(sl,eur(tot)+"|depuis janvier",200)+'</div>'+legende(sl)+'</div>':''))}
 
 // 7. Cette année contre l'an dernier
 function svAnnee(){const y=new Date().getFullYear(),opts=[["cat:","Tout le matériel"]].concat(Object.keys(CATS).map(k=>["cat:"+k,CATS[k]]),[...new Set(prodsActifs().map(p=>p.groupe).filter(Boolean))].sort().map(g=>["grp:"+g,"Dossier "+g]),ordreCat(prodsActifs()).map(p=>["prod:"+p.id,p.nom]));
@@ -1717,6 +1785,11 @@ function fcBlock(p,st){
 }
 function bonLignes(a,st){return a.map(p=>{const s=st[p.id],pc=p.parCarton>1?p.parCarton:1,nc=Math.ceil(s.suggere/pc),pu=num(p.prix,0);return {ref:p.refFournisseur||"",nom:p.nom,qte:pc>1?nc:s.suggere,cond:pc>1?"carton"+(nc>1?"s":"")+" de "+pc:"unité"+(s.suggere>1?"s":""),u:s.suggere,total:pu*s.suggere}})}
 function bonTexte(f,a,st){const L=bonLignes(a,st),tot=L.reduce((x,l)=>x+l.total,0);return "Commande "+cfg().nomStock+" pour "+f+" du "+new Date().toLocaleDateString("fr-FR")+"\n\n"+L.map(l=>"- "+(l.ref?l.ref+" : ":"")+l.nom+" : "+l.qte+" "+l.cond).join("\n")+(tot>0?"\n\nMontant estimé : "+eur(tot)+" TTC":"")}
+function bonRows(ps,st){return [["Référence","Produit","Quantité","Conditionnement","Unités","Montant estimé TTC"]].concat(bonLignes(ps,st).map(l=>[l.ref,l.nom,l.qte,l.cond,l.u,l.total?eur(l.total):""]))}
+async function bonPdf(f,ps,st){const doc=await newPdf("landscape"),L=bonLignes(ps,st),tot=L.reduce((x,l)=>x+l.total,0);let y=pdfHead(doc,"Bon de commande : "+f,(cfg().nomStructure||cfg().nomStock||"")+(tot>0?" · montant estimé "+eur(tot)+" TTC":""));
+  const R=bonRows(ps,st);y=pdfTable(doc,y,"Bon de commande",R[0],R.slice(1));return doc}
+const encLignes=()=>S.cmds.filter(enAttente).map(c=>{const p=S.produits.get(c.produit)||{nom:"?"};return [p.nom,fmtDate(c.t),fmtQ(p,c.qte),recuOf(c)?fmtQ(p,recuOf(c)):"",recuOf(c)>0?"livrée en partie":"commandée",fournNom(p)||""]});
+const ENC_HEAD=["Produit","Commandée le","Quantité","Reçu","État","Fournisseur"];
 function tabCmd(st){
   const prop=prodsActifs().filter(p=>st[p.id].suggere>0&&st[p.id].moy>0).sort((a,b)=>(st[a.id].nextOrder??0)-(st[b.id].nextOrder??0)||fournNom(a).localeCompare(fournNom(b),"fr"));
   const quand=p=>{const d=st[p.id].nextOrder;return d==null||d===0?"maintenant":fmtDay(d)};
@@ -1727,10 +1800,10 @@ function tabCmd(st){
     +'<details class="why"'+dk("fc-"+p.id)+'><summary>Voir la prévision sur 3 mois</summary>'+(S.openD["fc-"+p.id]?fcBlock(p,st):'')+'</details></div>'}).join("")+'</div><button class="btn primary big" style="margin-top:12px;width:100%" data-act="commanderTout">Enregistrer les '+prop.length+' commande'+(prop.length>1?"s":"")+'</button>':'<div class="empty">Rien à commander pour l\'instant.</div>';
   if(prop.length){const byF={};for(const p of prop){const f=fournNom(p)||"Sans fournisseur";(byF[f]=byF[f]||[]).push(p)}
     h+='<div class="panel" style="margin-top:14px;background:var(--bg)"><h3 style="font-family:var(--display);font-size:16px">Bon de commande</h3><p class="note">Le texte à envoyer au fournisseur, avec ses références. Il reprend les quantités proposées ci-dessus.</p>'
-     +Object.entries(byF).map(([f,a])=>'<div style="margin-top:10px"><div class="row" style="justify-content:space-between"><b>'+esc(f)+'</b><span class="row" style="gap:6px"><button class="btn small" data-act="bonCopy" data-v="'+esc(f)+'">Copier</button><button class="btn small" data-act="bonCsv" data-v="'+esc(f)+'">Tableur (.csv)</button></span></div><pre class="bon">'+esc(bonTexte(f,a,st))+'</pre></div>').join("")+'</div>'}
+     +Object.entries(byF).map(([f,a])=>'<div style="margin-top:10px"><div class="row" style="justify-content:space-between"><b>'+esc(f)+'</b><span class="row" style="gap:6px"><button class="btn small" data-act="bonCopy" data-v="'+esc(f)+'">Copier</button><button class="btn small" data-act="bonExp" data-v="'+esc(f)+'">'+SHARE_ICO+'Exporter</button></span></div><pre class="bon">'+esc(bonTexte(f,a,st))+'</pre></div>').join("")+'</div>'}
   h+='</div><div class="panel" style="margin-top:14px"><h2>Nouvelle commande</h2><div class="form" style="margin-top:10px"><label>Produit<select id="ncP">'+prodsActifs().map(p=>'<option value="'+p.id+'">'+esc(p.nom)+'</option>').join("")+'</select></label><label>Quantité<input id="ncQ" type="number" min="1" inputmode="numeric"></label><label>En<select id="ncM"><option value="carton">cartons</option><option value="unite">unités</option></select></label><button class="btn primary" data-act="ncAdd">Enregistrer</button></div></div>';
   const enc=S.cmds.filter(enAttente),done=S.cmds.filter(c=>!enAttente(c)).slice(0,15);
-  h+='<div class="panel" style="margin-top:14px"><h2>Commandes en cours</h2>'+(enc.length?'<div class="list">'+enc.map(c=>{const p=S.produits.get(c.produit)||{nom:"?"};return '<div class="it"><span style="flex:1;min-width:150px"><b>'+esc(p.nom)+'</b><br><span class="note">'+fmtDate(c.t)+' · '+esc(fmtQ(p,c.qte))+(recuOf(c)?' · reçu '+esc(fmtQ(p,recuOf(c))):"")+'</span></span><span class="pill '+(recuOf(c)>0?"warn":"mute")+'">'+(recuOf(c)>0?"livrée en partie":"commandée")+'</span><button class="btn small primary" data-act="recevoir" data-id="'+c.id+'">Réceptionner</button><button class="btn small" data-act="editCmd" data-id="'+c.id+'">Modifier</button><button class="btn small danger" data-act="delCmd" data-id="'+c.id+'">Annuler</button></div>'}).join("")+'</div>':'<div class="empty">Aucune commande en cours.</div>')
+  h+='<div class="panel" style="margin-top:14px">'+(enc.length?'<button class="btn small pbtn" data-act="encExp">'+SHARE_ICO+'Exporter</button>':'')+'<h2>Commandes en cours</h2>'+(enc.length?'<div class="list">'+enc.map(c=>{const p=S.produits.get(c.produit)||{nom:"?"};return '<div class="it"><span style="flex:1;min-width:150px"><b>'+esc(p.nom)+'</b><br><span class="note">'+fmtDate(c.t)+' · '+esc(fmtQ(p,c.qte))+(recuOf(c)?' · reçu '+esc(fmtQ(p,recuOf(c))):"")+'</span></span><span class="pill '+(recuOf(c)>0?"warn":"mute")+'">'+(recuOf(c)>0?"livrée en partie":"commandée")+'</span><button class="btn small primary" data-act="recevoir" data-id="'+c.id+'">Réceptionner</button><button class="btn small" data-act="editCmd" data-id="'+c.id+'">Modifier</button><button class="btn small danger" data-act="delCmd" data-id="'+c.id+'">Annuler</button></div>'}).join("")+'</div>':'<div class="empty">Aucune commande en cours.</div>')
    +(done.length?'<details style="margin-top:12px"><summary>Commandes reçues</summary><div class="list">'+done.map(c=>{const p=S.produits.get(c.produit)||{nom:"?"};return '<div class="it"><span style="flex:1">'+esc(p.nom)+'</span><span class="note">'+fmtDate(c.t)+' · '+esc(fmtQ(p,c.qte))+'</span><span class="pill good">reçue</span><button class="btn small" data-act="editCmd" data-id="'+c.id+'">Modifier</button></div>'}).join("")+'</div></details>':"")+'</div>';
   return h;
 }
@@ -1795,15 +1868,18 @@ function invRapportHtml(ss){
     else h+='<p class="note" style="margin-top:10px">Un manque vient souvent de sorties non notées ; un surplus, d\'une sortie notée deux fois ou d\'une livraison enregistrée en trop. Les plus gros écarts en euros sont en haut.</p>';
     h+='<div class="twx"><table><thead><tr><th>Produit</th><th class="n">Théorique</th><th class="n">Compté</th><th class="n">Écart</th><th class="n">Écart €</th></tr></thead><tbody>'
      +R.rows.map(r=>'<tr><td>'+esc(r.p.nom)+'</td><td class="n">'+nfr(r.th)+'</td><td class="n">'+nfr(r.q)+'</td><td class="n" style="font-weight:700;color:'+(r.e<0?"var(--crit)":r.e>0?"var(--good)":"var(--muted)")+'">'+(r.e?n(r.e):"=")+'</td><td class="n">'+(r.e&&r.pu?(r.eur>0?"+":"")+eurC(r.eur):"")+'</td></tr>').join("")+'</tbody></table></div>'}
-  h+='<div class="row" style="margin-top:12px"><button class="btn primary" data-act="invRepPdf" data-v="'+esc(ss.key)+'">'+PRINT_ICO+'Imprimer le rapport (PDF)</button><button class="btn" data-act="backup">Télécharger la sauvegarde</button></div>'
+  h+='<div class="row" style="margin-top:12px"><button class="btn primary" data-act="invRepExp" data-v="'+esc(ss.key)+'">'+SHARE_ICO+'Exporter le rapport</button><button class="btn" data-act="backup">Télécharger la sauvegarde</button></div>'
    +'<p class="note" style="margin-top:8px">Conseil : télécharge une sauvegarde après chaque inventaire et garde-la dans le dossier partagé du CAARUD. Supabase gratuit ne fait pas de sauvegarde automatique.</p></div>';
   return h}
 function invPasses(){
   const ss=invSessions().slice(0,12);if(!ss.length)return "";
   return '<div class="panel" style="margin-top:14px"><h2>Inventaires passés</h2><p class="note">Touche un inventaire pour revoir ses écarts.</p><div class="list">'
    +ss.map(x=>{const R=invRapport(x);return '<button class="it" data-act="invRep" data-v="'+esc(x.key)+'" style="width:100%;text-align:left;background:none;border:0;border-bottom:1px solid var(--line);font:inherit;color:inherit;cursor:pointer;padding:10px 4px"><span style="flex:1"><b>'+esc(fmtJour(x.t))+'</b>'+(lieux().length>1?' · '+esc(lieuNom(x.lieu)):'')+'<br><span class="note">'+(R.depart?"Inventaire de départ · "+R.rows.length+" produits":R.rows.length+" produits comptés · "+R.ec.length+" écart"+(R.ec.length>1?"s":"")+(R.manque<0?" · "+eurC(R.manque):""))+'</span></span></button>'}).join("")+'</div></div>'}
-async function invRapportPdf(key){
-  const ss=invSessions().find(x=>x.key===key);if(!ss)return;const R=invRapport(ss),doc=await newPdf("portrait"),C=PDFC,H=297,X=12;
+async function invRapportPdf(key){const d=await invRapportDoc(key);if(d)await savePdf(d,"stockaarud-inventaire")}
+const INV_HEAD=["Produit","Théorique","Compté","Écart","Écart €"];
+const invLignes=R=>R.rows.map(r=>[r.p.nom,r.th,r.q,r.e,r.e&&r.pu?Math.round(r.eur*100)/100:""]);
+async function invRapportDoc(key){
+  const ss=invSessions().find(x=>x.key===key);if(!ss)return null;const R=invRapport(ss),doc=await newPdf("portrait"),C=PDFC,H=297,X=12;
   let y=pdfHead(doc,"Rapport d'inventaire",fmtJour(ss.t)+(lieux().length>1?" · "+lieuNom(ss.lieu):"")+". "+(R.depart?"Inventaire de départ.":R.rows.length+" produits comptés, "+R.ec.length+" avec un écart. Manquant : "+eurC(R.manque)+". En trop : "+eurC(R.surplus)+"."));
   const cols=[["Produit",86],["Théorique",24],["Compté",24],["Écart",20],["Écart €",32]],rowH=6.2;
   const header=()=>{doc.setFillColor(...C.G);doc.rect(X,y,186,7,"F");doc.setFont("helvetica","bold");doc.setFontSize(8.5);doc.setTextColor(255,255,255);let x=X+2;cols.forEach(([t,w],i)=>{doc.text(pdfTxt(t),i?x+w-3:x,y+4.8,{align:i?"right":"left"});x+=w});y+=7};
@@ -1817,7 +1893,7 @@ async function invRapportPdf(key){
     doc.setDrawColor(...C.L);doc.setLineWidth(0.15);doc.line(X,y+rowH,X+186,y+rowH);y+=rowH}
   y+=8;if(y>H-30){doc.addPage();y=pdfHead(doc,"Rapport d'inventaire (suite)","")}
   doc.setFont("helvetica","normal");doc.setFontSize(9);doc.setTextColor(...C.M);doc.text(pdfTxt("Compté par : ______________________     Vérifié par : ______________________"),X,y);
-  await savePdf(doc,"stockaarud-inventaire-"+jourLocal(ss.t))}
+  return doc}
 
 function tabInv(st){
   const ps=ordreCat(prodsActifs()),L=lieux();if(!ps.length)return '<div class="empty">Aucun produit à compter.</div>';
@@ -1890,7 +1966,7 @@ function catalogue(){
   const base=BASE_RDR.filter(b=>!have.has(norm(b[0])));
   let h='<div class="panel" style="margin-top:14px"><h2>Matériel</h2><p class="note">Touche une ligne pour modifier la contenance, le fournisseur, le délai, le prix, les synonymes ou la photo.</p>';
   h+=all.length?'<div class="tw"><table class="resp"><thead><tr><th>Produit</th><th>Catégorie</th><th class="n">Par carton</th><th>Fournisseur</th><th class="n">Délai</th><th class="n">Prix u.</th><th></th></tr></thead><tbody>'+all.map(p=>'<tr><td><div class="row" style="flex-wrap:nowrap;min-width:0">'+badge(p)+'<span style="min-width:0">'+esc(p.nom)+(p.aVerifier?' <span class="pill warn">à vérifier</span>':'')+(p.essentiel?' <span class="pill ess">essentiel</span>':'')+'</span></div></td><td>'+esc(CATS[catOf(p)])+'</td><td class="n">'+(p.parCarton>1?p.parCarton+(p.parBoite>1&&p.parBoite<p.parCarton?" ("+Math.round(p.parCarton/p.parBoite*10)/10+" × "+p.parBoite+")":""):(p.parBoite>1?"boîte de "+p.parBoite:"à l\'unité"))+'</td><td>'+esc(fournNom(p)||"—")+'</td><td class="n">'+delaiOf(p)+' j</td><td class="n">'+(p.prix?num(p.prix).toFixed(2)+" €":"—")+'</td><td><button class="btn small" data-act="editProd" data-id="'+p.id+'">'+(p.actif===false?"Inactif · modifier":"Modifier")+'</button></td></tr>').join("")+'</tbody></table></div>':'<div class="empty">Aucun produit. Active ceux que vous utilisez dans la base RdR ci-dessous.</div>';
-  h+='<div class="row" style="margin-top:10px"><button class="btn" data-act="newProd">Ajouter une référence</button>'+(all.length?'<button class="btn" data-act="listePdf">'+PRINT_ICO+'Imprimer la liste (PDF)</button>':'')+'</div>';
+  h+='<div class="row" style="margin-top:10px"><button class="btn" data-act="newProd">Ajouter une référence</button>'+(all.length?'<button class="btn" data-act="listePdf">'+PRINT_ICO+'Imprimer la liste (PDF)</button><button class="btn" data-act="matCsv">Télécharger la liste (CSV)</button>':'')+'<label class="btn">Mettre à jour depuis un CSV<input type="file" accept=".csv,text/csv" id="impCsv2" hidden></label></div><p class="note" style="margin-top:6px">Le CSV a les colonnes : nom ; catégorie ; unités par carton ; prix unitaire ; fournisseur ; délai. Téléchargez la liste, modifiez-la dans un tableur, puis importez-la : l\'appli montre les changements avant de les appliquer.</p>';
   if(base.length)h+='<details style="margin-top:14px"'+(all.length?"":" open")+'><summary>Base RdR : '+base.length+' références à activer</summary>'+Object.keys(CATS).filter(k=>base.some(b=>b[1]===k)).map(k=>'<div class="label">'+CATS[k]+'</div><div class="chips">'+base.filter(b=>b[1]===k).map(b=>'<label class="chip" style="display:inline-flex;gap:8px;align-items:center"><input type="checkbox" class="baseChk" value="'+esc(b[0])+'" style="width:18px;min-height:18px">'+esc(b[0])+'</label>').join("")+'</div>').join("")+'<button class="btn primary" style="margin-top:12px" data-act="addBase">Activer la sélection</button><p class="note">Contenance par défaut : à l\'unité. Indique ensuite combien d\'unités contient un carton.</p></details>';
   return h+'</div>';
 }
@@ -1920,6 +1996,20 @@ function importPreview(){
   if(!S.importRows)return "";
   return '<div style="margin-top:14px"><h3>Changements proposés par le catalogue</h3><p class="note">Coche ce que tu veux appliquer.</p><div class="list">'+S.importRows.map((r,i)=>'<label class="it"><input type="checkbox" class="impChk" data-i="'+i+'" checked style="width:20px;min-height:20px"><span style="flex:1"><b>'+esc(r.nom)+'</b> <span class="pill '+(r.ex?"warn":"good")+'">'+(r.ex?"modifié":"nouveau")+'</span><br><span class="note">'+esc(r.diff)+'</span></span></label>').join("")+'</div><div class="row" style="margin-top:10px"><button class="btn primary" data-act="impApply">Appliquer</button><button class="btn" data-act="impCancel">Ignorer</button></div></div>';
 }
+
+/* ---------- Info-bulles des graphiques ---------- */
+function ckTip(){let t=document.getElementById("ckTip");if(!t){t=document.createElement("div");t.id="ckTip";t.className="cktip";t.hidden=true;document.body.appendChild(t)}return t}
+function ckHide(){const t=document.getElementById("ckTip");if(t)t.hidden=true;document.querySelectorAll(".ckguide").forEach(g=>g.remove())}
+function ckMove(e){const sv=e.target.closest&&e.target.closest("svg[data-ck]");if(!sv){ckHide();return}const d=CK.get(sv.dataset.ck);if(!d)return;let html="";
+  if(d.kind==="series"&&d.geo){const m=sv.getScreenCTM();if(!m)return;const x=(e.clientX-m.e)/m.a,g=d.geo,i=g.n>1?Math.round((x-g.x0)/(g.x1-g.x0)*(g.n-1)):0;if(i<0||i>=g.n){ckHide();return}
+    const f=d.fmt||nfr,lines=d.series.filter(z=>z.vals[i]!=null).map(z=>'<span><i style="background:var('+z.col+')"></i>'+(d.series.length>1?esc(z.label)+' : ':'')+'<b>'+esc(f(z.vals[i]))+'</b></span>');if(!lines.length){ckHide();return}
+    html='<b>'+esc(d.labels[i])+'</b>'+lines.join("");const gx=g.n>1?g.x0+(g.x1-g.x0)*i/(g.n-1):g.x0;let gl=sv.querySelector(".ckguide");if(!gl){gl=document.createElementNS("http://www.w3.org/2000/svg","line");gl.setAttribute("class","ckguide");sv.appendChild(gl)}
+    const vb=sv.viewBox.baseVal;gl.setAttribute("x1",gx);gl.setAttribute("x2",gx);gl.setAttribute("y1",0);gl.setAttribute("y2",vb?vb.height-24:200)}
+  else{const el=e.target.closest("[style],rect,path,circle");const ti=el&&el.querySelector&&el.querySelector(":scope > title");if(!ti){ckHide();return}html=esc(ti.textContent)}
+  const t=ckTip();t.innerHTML=html;t.hidden=false;const w=t.offsetWidth,h=t.offsetHeight;let lx=e.clientX+14,ly=e.clientY-h-12;if(lx+w>innerWidth-8)lx=e.clientX-w-14;if(lx<8)lx=8;if(ly<8)ly=e.clientY+18;t.style.left=lx+"px";t.style.top=ly+"px"}
+document.addEventListener("pointermove",e=>{if(e.target.closest&&e.target.closest("svg[data-ck]"))ckMove(e);else if(document.getElementById("ckTip")&&!document.getElementById("ckTip").hidden)ckHide()},{passive:true});
+document.addEventListener("pointerdown",e=>{if(e.target.closest&&e.target.closest("svg[data-ck]"))ckMove(e);else ckHide()},{passive:true});
+addEventListener("scroll",ckHide,{passive:true});
 
 /* ---------- Actions ---------- */
 async function saveConfig(patch){const c={...cfg(),...patch};S.config=c;render();const {...data}=c;await write("set","config/main",data)}
@@ -2230,7 +2320,7 @@ document.addEventListener("change",async e=>{
       document.querySelectorAll(".icpick button").forEach(x=>x.setAttribute("aria-pressed","false"));const nb=document.getElementById("fpNoPhotoBtn");if(nb)nb.hidden=false;
     }catch(err){toast("Cette image n'a pas pu être lue")}t.value=""}
   if(t.id==="restoreIn"&&t.files[0]){try{const d=JSON.parse(await t.files[0].text());if(!d||!d.stockaarud||!Array.isArray(d.mouvements))throw 0;S.restoreData=d;wipeStep1("restore",true);const b2=document.querySelector('[data-act="wipe2"]');if(b2)b2.dataset.v="restore"}catch(err){toast("Ce fichier n'est pas une sauvegarde Stockaarud")}t.value=""}
-  if(t.id==="impCsv"&&t.files[0]){parseCsv(await t.files[0].text());t.value="";render()}
+  if((t.id==="impCsv"||t.id==="impCsv2")&&t.files[0]){parseCsv(await t.files[0].text());t.value="";render()}
 });
 function parseCsv(txt){
   const lines=txt.replace(/^﻿/,"").split(/\r?\n/).filter(l=>l.trim());if(!lines.length)return;
@@ -2249,7 +2339,7 @@ function parseCsv(txt){
 document.addEventListener("click",async e=>{
   const b=e.target.closest("[data-act]");if(!b)return;
   const a=b.dataset.act,id=b.dataset.id;
-  if((a==="closeSheet"||a==="closeLayer")&&e.target!==b)return;
+  if((a==="closeSheet"||a==="closeLayer"||a==="expClose")&&e.target!==b&&!(a==="expClose"&&b.tagName==="BUTTON"))return;
   switch(a){
   case "unit":S.unit=b.dataset.v;ls.set("unit",S.unit);render();break;
   case "view":S.view=b.dataset.v;ls.set("view",S.view);render();break;
@@ -2299,6 +2389,13 @@ document.addEventListener("click",async e=>{
   case "retPlus":case "retMinus":case "retAll":{const e=retS&&mesGet().find(x=>x.id===retS.id);if(!e)break;const c=Math.round(num(val("retQ"),retS.n));retS.n=a==="retAll"?e.qte:Math.min(e.qte,Math.max(1,c+(a==="retPlus"?1:-1)));drawRet();break}
   case "retOk":await retOk();break;
   case "theme":ls.set("theme",b.dataset.v);applyTheme();render();break;
+  case "chartExp":{const p=b.closest(".panel"),t=panelTitre(p),so=panelSous(p);openExport({titre:t,nom:"stockaarud-"+slug(t),pdf:()=>chartPdfDoc(p),csv:()=>tablesCsv(t,so,panelTables(p)),texte:()=>tablesTexte(t,so,panelTables(p))});break}
+  case "expClose":if(e.target!==b&&!b.matches("button"))break;closeExport();break;
+  case "expPdf":if(EXP&&EXP.blob)await downloadBlob(expFile("pdf"),EXP.blob);break;
+  case "expCsv":if(EXP)await download(expFile("csv"),EXP.csv(),"text/csv");break;
+  case "expShare":if(EXP&&EXP.blob){try{await navigator.share({files:[new File([EXP.blob],expFile("pdf"),{type:"application/pdf"})],title:EXP.titre})}catch(err){if(err&&err.name!=="AbortError")toast("Partage impossible : télécharge le PDF")}}break;
+  case "expWa":if(EXP)window.open("https://wa.me/?text="+encodeURIComponent(expTxt()),"_blank","noopener");break;
+  case "expMail":if(EXP)location.href="mailto:?subject="+encodeURIComponent("Stockaarud : "+EXP.titre)+"&body="+encodeURIComponent(expTxt());break;
   case "closeLayer":stopScan();retS=null;$("#layer").innerHTML="";S.editProd=null;break;
   case "caarudSheet":if(window.SKB&&window.SKB.bases)drawCaarud();break;
   case "caarudGo":{const cur=window.SKB.bases().find(x=>x.cur);if(cur&&cur.ref===id){$("#layer").innerHTML="";break}
@@ -2341,6 +2438,11 @@ document.addEventListener("click",async e=>{
   case "delMvt":await write("delete","mouvements/"+id);toast("Mouvement supprimé");break;
   case "invLieu":S.invLieu=id;render();break;
   case "invSkip":S.invIdx++;render();break;
+  case "bonExp":{const st=computeStats(),f=b.dataset.v,ps=prodsActifs().filter(p=>st[p.id].suggere>0&&st[p.id].moy>0&&(fournNom(p)||"Sans fournisseur")===f),Rw=bonRows(ps,st);
+    openExport({titre:"Bon de commande : "+f,nom:"bon-de-commande-"+slug(f),pdf:()=>bonPdf(f,ps,st),csv:()=>tablesCsv("Bon de commande : "+f,"",[{titre:"",head:Rw[0],rows:Rw.slice(1)}]),texte:()=>bonTexte(f,ps,st)});break}
+  case "encExp":{const L=encLignes(),t="Commandes en cours";openExport({titre:t,nom:"commandes-en-cours",pdf:async()=>{const d=await newPdf("landscape");let y=pdfHead(d,t,cfg().nomStructure||cfg().nomStock||"");pdfTable(d,y,t,ENC_HEAD,L);return d},csv:()=>tablesCsv(t,"",[{titre:"",head:ENC_HEAD,rows:L}]),texte:()=>t+" ("+(cfg().nomStructure||cfg().nomStock||"")+")\n\n"+L.map(r=>"- "+r[0]+" : "+r[2]+", commandée le "+r[1]+(r[3]?", reçu "+r[3]:"")).join("\n")});break}
+  case "matCsv":{const rows=[["nom","catégorie","unités par carton","prix unitaire","fournisseur","délai"]].concat([...S.produits.values()].filter(p=>p.actif!==false).sort((a,b)=>a.nom.localeCompare(b.nom,"fr")).map(p=>[p.nom,CATS[catOf(p)]||"",p.parCarton>1?p.parCarton:1,num(p.prix,0)?String(num(p.prix)).replace(".",","):"",fournNom(p)||"",delaiOf(p)]));
+    await download("stockaarud-materiel-"+today()+".csv",rows.map(r=>r.map(csvCell).join(";")).join("\r\n"),"text/csv");break}
   case "bonCopy":case "bonCsv":{const st=computeStats(),f=b.dataset.v,ps=prodsActifs().filter(p=>st[p.id].suggere>0&&st[p.id].moy>0&&(fournNom(p)||"Sans fournisseur")===f);
     if(a==="bonCopy"){const t=bonTexte(f,ps,st);try{await navigator.clipboard.writeText(t);toast("Bon de commande copié")}catch(err){toast("Copie impossible : sélectionne le texte à la main")}}
     else{const q=v=>'"'+String(v).replace(/"/g,'""')+'"';const rows=[["Référence","Produit","Quantité","Conditionnement","Unités","Montant estimé TTC"]].concat(bonLignes(ps,st).map(l=>[l.ref,l.nom,l.qte,l.cond,l.u,l.total?l.total.toFixed(2).replace(".",","):""]));await download("bon-de-commande-"+f.replace(/\W+/g,"-").toLowerCase()+"-"+today()+".csv",rows.map(r=>r.map(q).join(";")).join("\n"),"text/csv")}break}
@@ -2389,6 +2491,9 @@ document.addEventListener("click",async e=>{
   case "invRapideOk":{const n=await saveInvRapide();if(n){S.invRep=S.lastSess;window.scrollTo(0,0);render()}break}
   case "invRep":S.invRep=b.dataset.v;window.scrollTo(0,0);render();break;
   case "invRepClose":S.invRep=null;render();break;
+  case "invRepExp":{const ss=invSessions().find(x=>x.key===b.dataset.v);if(!ss)break;const Rr=invRapport(ss),t="Rapport d'inventaire du "+fmtJour(ss.t);
+    openExport({titre:t,nom:"stockaarud-inventaire-"+jourLocal(ss.t),pdf:()=>invRapportDoc(ss.key),csv:()=>tablesCsv(t,lieux().length>1?lieuNom(ss.lieu):"",[{titre:"",head:INV_HEAD,rows:invLignes(Rr)}]),
+      texte:()=>t+"\n"+Rr.rows.length+" produits comptés, "+Rr.ec.length+" avec un écart"+(Rr.manque<0?", manquant "+eurC(Rr.manque):"")+(Rr.surplus>0?", en trop "+eurC(Rr.surplus):"")+".\n\n"+Rr.ec.map(r=>"- "+r.p.nom+" : compté "+nfr(r.q)+", attendu "+nfr(r.th)+" ("+(r.e>0?"+":"")+nfr(r.e)+")").join("\n")});break}
   case "invRepPdf":try{await invRapportPdf(b.dataset.v)}catch(err){toast("Impossible de créer le PDF (connexion ?)")}break;
   case "invRestart":S.invIdx=0;S.guideSess=null;render();break;
   case "invOk":{const p=S.produits.get(id),st=computeStats(),theo=st[id].byLieu[S.invLieu]||0;const cc=val("invC"),bb=val("invB"),uu=val("invU");if(cc===""&&bb===""&&uu===""){toast("Indique ce que tu as compté");break}
