@@ -73,6 +73,8 @@ svg[data-ck]{touch-action:pan-y}
 .jscale{display:flex;align-items:center;gap:4px;margin:6px 0 0 40px;font-size:12px;color:var(--muted)}.jscale i{display:inline-block;width:18px;height:12px;border-radius:3px;background:var(--c1)}.jscale span{margin:0 4px}
 .expg{display:grid;grid-template-columns:1fr 1fr;gap:8px}.expg .btn{justify-content:center;display:inline-flex;align-items:center;gap:6px}.expg .btn.primary{grid-column:1/-1}
 @media (max-width:380px){.expg{grid-template-columns:1fr}}
+@media (min-width:1100px){.wrap,.topin{max-width:1240px}.cbar{padding-left:max(16px,calc((100% - 1240px)/2 + 16px));padding-right:max(16px,calc((100% - 1240px)/2 + 16px))}
+  .bgrid{display:grid;grid-template-columns:minmax(0,1.3fr) minmax(0,1fr);gap:0 16px;align-items:start}.bcol{min-width:0}}
 .cl{display:flex;flex-direction:column;gap:8px}.cl-it{display:flex;gap:8px;align-items:center}
 .cl-go{flex:1;min-width:0;display:flex;flex-direction:column;align-items:flex-start;gap:2px;text-align:left;font:inherit;color:var(--fg);background:var(--surface-2);border:2px solid transparent;border-radius:12px;padding:12px 14px;cursor:pointer;min-height:56px}
 .cl-go b{font-size:17px}.cl-go span{font-size:13px;color:var(--muted)}
@@ -666,7 +668,7 @@ async function flush(){
   flushing=false;render();
 }
 window.addEventListener("online",flush);
-let rzT=0;window.addEventListener("resize",()=>{clearTimeout(rzT);rzT=setTimeout(()=>{if((S.ctab==="stats"||S.ctab==="prev")&&S.view==="coordo")render()},200)});window.addEventListener("offline",render);
+let rzT=0;window.addEventListener("resize",()=>{clearTimeout(rzT);rzT=setTimeout(()=>{const w=(window.innerWidth||0)>=900;if(S.view==="coordo"&&(S.ctab==="stats"||S.ctab==="prev"||S.ctab==="bord"||w!==S.wasWide))render();S.wasWide=w},200)});window.addEventListener("offline",render);
 
 /* ---------- Démarrage ---------- */
 async function start(){
@@ -1436,7 +1438,7 @@ const PRINT_ICO='<svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="tr
 const MOIS=["janv.","févr.","mars","avr.","mai","juin","juil.","août","sept.","oct.","nov.","déc."];
 const JOURS_C=["lun.","mar.","mer.","jeu.","ven.","sam.","dim."];
 const nfr=v=>Math.round(v).toLocaleString("fr-FR");
-const VW=()=>Math.round(Math.max(300,Math.min(640,(window.innerWidth||640)-72)));
+const VW=()=>Math.round(Math.max(300,Math.min(1000,((($("#app")||{}).clientWidth)||Math.min(640,window.innerWidth||640))-42)));
 let ACT_SCOPE=[];/* activité choisie en haut des statistiques, appliquée pendant le rendu des graphiques concernés */
 function sortiesEntre(a,b,act){if(act===undefined)act=ACT_SCOPE;const inA=Array.isArray(act)?(id=>!act.length||act.includes(id)):(id=>!act||id===act);return allMvts().filter(m=>m.type==="sortie"&&m.t>=a&&m.t<b&&inA(m.activite)&&S.produits.has(m.produit))}
 function moisDebut(y,m){return new Date(y,m,1).getTime()}
@@ -1648,8 +1650,8 @@ function viewCoordo(st){
   let h=dbBanner();
   if(!coordoOK())return h+'<div class="empty">L\'espace gestion est réservé aux responsables stock.</div>';
   if(wizardNeeded())return h+viewWizard(st);
-  {const tb=([k,v])=>'<button data-act="ctab" data-v="'+k+'" aria-pressed="'+(S.ctab===k)+'">'+v+'</button>',main=tabs.slice(0,3),extra=tabs.slice(3),inX=extra.some(([k])=>k===S.ctab),open=S.tabMore||inX;
-   h+='<nav class="subnav"><div class="main">'+main.map(tb).join("")+'<button data-act="tabMore" aria-expanded="'+!!open+'" aria-pressed="'+inX+'">Plus '+(open?"▴":"▾")+'</button></div>'+(open?'<div class="more">'+extra.map(tb).join("")+'</div>':'')+'</nav>'}
+  {const tb=([k,v])=>'<button data-act="ctab" data-v="'+k+'" aria-pressed="'+(S.ctab===k)+'">'+v+'</button>',wide=(window.innerWidth||0)>=900,main=wide?tabs:tabs.slice(0,3),extra=wide?[]:tabs.slice(3),inX=extra.some(([k])=>k===S.ctab),open=S.tabMore||inX;
+   h+='<nav class="subnav"><div class="main">'+main.map(tb).join("")+(wide?'':'<button data-act="tabMore" aria-expanded="'+!!open+'" aria-pressed="'+inX+'">Plus '+(open?"▴":"▾")+'</button>')+'</div>'+(open?'<div class="more">'+extra.map(tb).join("")+'</div>':'')+'</nav>'}
   if(S.ctab==="bord")h+=tabBord(st);
   if(S.ctab==="stats")h+=tabStats();
   if(S.ctab==="prev")h+=tabPrev(st);
@@ -1721,6 +1723,7 @@ function tabBord(st0){
    +(dep>0||bud>0?'<div class="kpi"><div class="v">'+eur(dep)+'</div><div class="k">dépensé cette année'+(bud?" sur "+eur(bud):"")+'</div></div>':"")+'</div>';
   const rank={crit:0,warn:1,good:2,mute:3};
   const sorted=[...ps].sort((x,y)=>{const a=st[x.id],b=st[y.id];const ra=a.stock<0?-1:rank[a.etat],rb=b.stock<0?-1:rank[b.etat];return ra-rb||(b.ess?1:0)-(a.ess?1:0)||a.autonomie-b.autonomie||x.nom.localeCompare(y.nom,"fr")});
+  h+='<div class="bgrid"><div class="bcol">';
   h+='<div class="panel" style="margin-top:14px"><div class="row" style="justify-content:space-between"><h2>Autonomie du stock</h2>'+unitToggle()+'</div><p class="note">Du plus urgent au moins urgent. Touche un produit pour le détail. Consommation moyenne sur '+cfg().fenetre+' semaines, dépannages exclus.'+esc(saisonNote())+'</p><div class="auto">'
    +sorted.map(p=>{const s=st[p.id],a=s.autonomie,neg=s.stock<0;
      const pill=neg?'<span class="pill crit">à recompter</span>':'<span class="pill '+s.etat+'">'+(isFinite(a)?Math.floor(a)+" j":"—")+'</span>';
@@ -1729,8 +1732,10 @@ function tabBord(st0){
       +'<dt>Stock</dt><dd>'+esc(fmtQ(p,s.stock))+(neg?' · un inventaire est nécessaire':'')+'</dd><dt>Consommation / semaine</dt><dd>'+esc(fmtQ(p,s.moy*7))+'</dd><dt>Point de commande</dt><dd>'+esc(fmtQ(p,s.pc))+'</dd><dt>Stock de sécurité</dt><dd>'+esc(fmtQ(p,s.ss))+'</dd><dt>En commande</dt><dd>'+(s.enCours?esc(fmtQ(p,s.enCours)):"—")+'</dd><dt>Délai fournisseur</dt><dd>'+s.delai+' j'+(fournNom(p)?" · "+esc(fournNom(p)):"")+'</dd></dl>'
       +'<div class="row" style="margin:0 0 12px 48px;gap:8px">'+(neg?'<button class="btn small" data-act="ctab" data-v="inv">Faire l\'inventaire</button>':'')+'<button class="btn small" data-act="fixStock" data-id="'+p.id+'">Corriger le stock</button></div></details>'}).join("")
    +'</div></div>';
+  h+='</div><div class="bcol">';
   h+='<div class="panel" style="margin-top:14px">'+repartition()+'<button class="link" data-act="ctab" data-v="stats">Voir les statistiques détaillées</button></div>';
   h+='<div class="panel" style="margin-top:14px"><h2>Exports</h2><p class="note">Pour le rapport d\'activité ou pour récupérer vos données.</p><div class="row" style="margin-top:10px"><button class="btn" data-act="exportMvts">Mouvements (CSV)</button><button class="btn" data-act="exportAnnuel">Totaux de l\'année (CSV)</button><button class="btn" data-act="exportConfig">Modèle pour un autre CAARUD</button></div></div>';
+  h+='</div></div>';
   return h;
 }
 function chart(){

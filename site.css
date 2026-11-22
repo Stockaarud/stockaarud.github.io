@@ -440,3 +440,8 @@ html { scroll-padding-top: calc(var(--space-3xl) + var(--space-lg)); }
 @media screen { .js .who-pane .part-h { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); } }
 
 .done :focus-visible { outline-color: var(--color-accent); }
+
+.flyer--full { grid-column: 1 / -1; min-height: 0; grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); align-items: end; }
+.flyer--full span { max-width: 60ch; }
+.js [data-wall] > .flyer:nth-child(5) { transition-delay: 360ms; }
+@media (max-width: 60rem) { .flyer.flyer--full { grid-column: 1 / -1; grid-template-columns: minmax(0, 1fr); } }
