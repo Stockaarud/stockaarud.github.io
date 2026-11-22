@@ -17,9 +17,12 @@
   const shiftIso = (d, ms) => new Date(Date.parse(d) + ms).toISOString().slice(0, 10);
   function persist() {
     const o = {}; for (const [c, m] of store) o[c] = Object.fromEntries(m);
-    try { localStorage.setItem(KEY, JSON.stringify({ anchorDay: startOfDay(Date.now()), data: o })); } catch (e) { console.warn("Démo : stockage local plein", e); }
+    try { localStorage.setItem(KEY, JSON.stringify({ anchorDay: startOfDay(Date.now()), data: o })); } catch (e) { console.warn("Démo : stockage local plein", e); if (!window.__demoFull) { window.__demoFull = true; setTimeout(() => alert("La démo n'a plus de place pour enregistrer sur ce navigateur : ce que vous saisissez ne sera pas gardé après fermeture. « Remettre à zéro » libère de la place."), 50); } }
   }
-  let tm = null; const save = () => { clearTimeout(tm); tm = setTimeout(persist, 300); };
+  let tm = null; const save = () => { clearTimeout(tm); tm = setTimeout(() => { tm = null; persist(); }, 300); };
+  // ne rien perdre si la page se ferme ou se recharge juste après une saisie
+  const flushNow = () => { if (tm) { clearTimeout(tm); tm = null; persist(); } };
+  window.addEventListener("pagehide", flushNow); document.addEventListener("visibilitychange", () => { if (document.visibilityState === "hidden") flushNow(); });
 
   function load(saved, seed) {
     if (saved) {
@@ -112,7 +115,7 @@
         return { ref: b.ref, nom: b.nom, cur: b.ref === base, pend };
       });
     },
-    switchBase(r) { if (r !== base) { localStorage.setItem(BASE_KEY, r); location.reload(); } },
+    switchBase(r) { if (r !== base) { flushNow(); localStorage.setItem(BASE_KEY, r); location.reload(); } },
     addLink() { return "Dans la démo, les deux CAARUD fictifs sont déjà là. Dans la vraie appli, ce QR code ou ce lien ajouterait l'autre CAARUD."; },
     setName() {},
     forget() { alert("Dans la démo, on garde les deux CAARUD fictifs."); }
@@ -133,7 +136,7 @@
     bar.innerHTML = `<span><b>Démo</b> CAARUD fictif, données inventées</span>
 <span class="dm-seg" role="group" aria-label="Se connecter comme"><button type="button" data-r="equipe" aria-pressed="${role === "equipe"}">Équipe</button><button type="button" data-r="coordo" aria-pressed="${role === "coordo"}">Responsable stock</button></span>
 <button type="button" class="dm-reset">Remettre à zéro</button>`;
-    bar.querySelectorAll("[data-r]").forEach((b) => b.addEventListener("click", () => { if (b.dataset.r === role) return; localStorage.setItem(ROLE_KEY, b.dataset.r); location.reload(); }));
+    bar.querySelectorAll("[data-r]").forEach((b) => b.addEventListener("click", () => { if (b.dataset.r === role) return; flushNow(); localStorage.setItem(ROLE_KEY, b.dataset.r); location.reload(); }));
     bar.querySelector(".dm-reset").addEventListener("click", () => { if (confirm("Remettre la démo à zéro ? Ce que vous avez saisi sera effacé.")) reset(); });
     document.body.prepend(bar);
   }

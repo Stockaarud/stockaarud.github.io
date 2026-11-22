@@ -90,6 +90,11 @@ body.en-ecran header.top,body.en-ecran #demoBar{display:none}
 .terr{display:flex;flex-wrap:wrap;align-items:center;gap:8px 12px;margin:8px 0 2px}.terr-p{display:flex;align-items:center;gap:8px;background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:6px 8px 6px 12px;flex:1;min-width:230px}
 .terr-l{flex:1;font-weight:600;font-size:14px;line-height:1.2}.terr-l small{display:block;font-weight:400;color:var(--muted);font-size:12px}.terr-n{min-width:34px;text-align:center;font:800 22px var(--display)}
 .terr-b{width:44px;height:44px;border-radius:50%;border:1px solid var(--line);background:var(--surface-2);color:var(--fg);font:800 22px var(--body);cursor:pointer}.terr-b.plus{background:var(--actc,var(--accent));color:#fff;border-color:transparent}.terr-b:disabled{opacity:.35}
+@media (max-width:899px){body.v-coordo header.top{position:static}.subnav .main button{padding-inline:8px}}
+@media (min-width:1100px){body{font-size:17px}.note{font-size:14.5px}table{font-size:15.5px}.alert{font-size:15.5px}.kpi .k{font-size:13.5px}.subnav button{font-size:15.5px}.svnav button{font-size:14.5px}.legend{font-size:13.5px}.chip{font-size:16px}.btn{font-size:15.5px}.btn.small{font-size:14.5px}label{font-size:15px}
+  .regwrap{display:grid;grid-template-columns:260px minmax(0,1fr);gap:18px;align-items:start;margin-top:14px}.regnav{display:flex;flex-direction:column;gap:2px;position:sticky;top:calc(var(--hdrH,64px) + var(--subH,52px) + 8px)}
+  .regnav button{text-align:left;border:0;background:none;padding:10px 12px;border-radius:10px;font:600 15px var(--body);color:var(--muted);cursor:pointer}.regnav button[aria-pressed="true"]{background:var(--surface);color:var(--fg);box-shadow:inset 3px 0 0 var(--brand-2)}.regnav button:hover{color:var(--fg)}}
+.cmdt td{vertical-align:middle}.cmdt tr.cmdx td{background:var(--surface-2);padding:12px 16px}
 .cl{display:flex;flex-direction:column;gap:8px}.cl-it{display:flex;gap:8px;align-items:center}
 .cl-go{flex:1;min-width:0;display:flex;flex-direction:column;align-items:flex-start;gap:2px;text-align:left;font:inherit;color:var(--fg);background:var(--surface-2);border:2px solid transparent;border-radius:12px;padding:12px 14px;cursor:pointer;min-height:56px}
 .cl-go b{font-size:17px}.cl-go span{font-size:13px;color:var(--muted)}
@@ -550,7 +555,7 @@ const uid=()=>Date.now().toString(36)+Math.random().toString(36).slice(2,8);
 const NS=window.STK_NS||"stk:";
 const ls={get(k,d){try{const v=localStorage.getItem(NS+k);return v==null?d:JSON.parse(v)}catch(e){return d}},set(k,v){try{localStorage.setItem(NS+k,JSON.stringify(v))}catch(e){}}};
 const cfg=()=>S.config||DEF_CONFIG;
-const today=()=>new Date().toISOString().slice(0,10);
+const today=()=>{const d=new Date();return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0")};
 const fmtDate=t=>new Date(t).toLocaleDateString("fr-FR",{day:"numeric",month:"short"});
 const fmtDT=t=>new Date(t).toLocaleString("fr-FR",{day:"numeric",month:"short",hour:"2-digit",minute:"2-digit"});
 const num=(v,d=0)=>{const n=parseFloat(String(v).replace(",","."));return isFinite(n)?n:d};
@@ -576,7 +581,7 @@ const lieuNom=id=>(cfg().lieux.find(l=>l.id===id)||{}).nom||"?";
 function activitesActives(){const t=today();return cfg().activites.filter(a=>!a.archive&&(!a.debut||a.debut<=t)&&(!a.fin||a.fin>=t))}
 const actNom=id=>(cfg().activites.find(a=>a.id===id)||{}).nom||"?";
 const partNom=id=>(cfg().partenaires.find(a=>a.id===id)||{}).nom||"?";
-const assoNom=m=>m.partenaireNom||assoNom(m);
+const assoNom=m=>m.partenaireNom||partNom(m.partenaire);
 const fourn=p=>p&&(cfg().fournisseurs||[]).find(f=>f.id===p.fournisseurId);
 const delaiOf=p=>{const f=fourn(p);return f?num(f.delai,7):num(p&&p.delai,7)};
 const fournNom=p=>{const f=fourn(p);return f?f.nom:(p&&p.fournisseur)||""};
@@ -604,6 +609,10 @@ function ordreCat(a){const K=Object.keys(CATS);return a.slice().sort((x,y)=>K.in
 const prodsActifs=()=>[...S.produits.values()].filter(p=>p.actif!==false).sort((a,b)=>a.nom.localeCompare(b.nom,"fr"));
 
 /* ---------- Mouvements effectifs (store + file hors ligne) ---------- */
+/* Un fichier de réglages venu d'ailleurs ne doit pas pouvoir glisser du code dans la page */
+function cleanCfg(c){const idOk=v=>String(v??"").replace(/[^\w-]/g,"").slice(0,60),colOk=v=>/^(--[\w-]+|#[0-9a-f]{3,8}|var\(--[\w-]+\))$/i.test(String(v||""))?v:"",icoOk=v=>String(v??"").replace(/[<>"'`&]/g,"").slice(0,40);
+  for(const k of ["activites","lieux","partenaires","fournisseurs","categories","saisons"])if(Array.isArray(c[k]))c[k]=c[k].filter(x=>x&&typeof x==="object").map(x=>{const o={...x};if("id" in o)o.id=idOk(o.id);for(const f of ["couleur","col"])if(f in o)o[f]=colOk(o[f]);if("icone" in o)o.icone=icoOk(o.icone);if("categorie" in o)o.categorie=idOk(o.categorie);return o});
+  return c}
 const TERRAIN=new Set(["passage","recup"]);
 /* Passages et matériel récupéré : dernière valeur connue (envoyée ou encore en attente) */
 function terrainAll(){const m=new Map((S.terrain||[]).map(x=>[x.id,x]));for(const o of S.queue){if(!o.path.startsWith("mouvements/"))continue;const id=o.path.split("/")[1];if(o.op==="delete")m.delete(id);else if(o.op==="set"&&o.data&&TERRAIN.has(o.data.type))m.set(id,{id,...o.data})}return [...m.values()]}
@@ -614,8 +623,10 @@ function passagesJour(act){const d=today();return terrainAll().filter(x=>x.type=
 /* Unités par passage, comptées seulement depuis le premier passage noté (sinon le chiffre n'a pas de sens) */
 function parPassage(a,b,act){const P=terrainAll().filter(x=>x.type==="passage"&&x.t>=a&&x.t<b&&(!act||x.activite===act)&&num(x.qte,0)>0);if(!P.length)return null;const t0=Math.min(...P.map(x=>x.t)),np=P.reduce((s2,x)=>s2+num(x.qte,0),0),u=sortiesEntre(t0,b,act||null).reduce((x,m)=>x+num(m.qte,0),0);return {np,u,r:Math.round(u/np*10)/10,t0}}
 function passagesEntre(a,b,act){return terrainAll().filter(x=>x.type==="passage"&&x.t>=a&&x.t<b&&(!act||x.activite===act)).reduce((s2,x)=>s2+num(x.qte,0),0)}
+S.passN={};
+const passMine=act=>{const id=passId(act);return id in S.passN?S.passN[id]:(terrainAll().find(x=>x.id===id)||{}).qte||0};
 function terrainBar(){const act=S.activite;if(!act||act.startsWith("__"))return "";const pOn=terrainOn("passages"),rOn=terrainOn("recup");if(!pOn&&!rOn)return "";
-  const mine=(terrainAll().find(x=>x.id===passId(act))||{}).qte||0,tot=passagesJour(act);
+  const mine=passMine(act),snap=(terrainAll().find(x=>x.id===passId(act))||{}).qte||0,tot=passagesJour(act)-snap+mine;
   return '<div class="terr">'+(pOn?'<div class="terr-p"><span class="terr-l">Passages aujourd\'hui'+(tot!==mine?' <small>('+tot+' avec les collègues)</small>':'')+'</span><button class="terr-b" data-act="passMoins" aria-label="Un passage de moins"'+(mine?"":" disabled")+'>−</button><b class="terr-n" aria-live="polite">'+mine+'</b><button class="terr-b plus" data-act="passPlus" aria-label="Un passage de plus">+</button></div>':'')
    +(rOn?'<button class="btn small" data-act="recupOpen">Matériel récupéré</button>':'')+'</div>'}
 function openRecup(){lastFocus=document.activeElement;setTimeout(focusDialog,30);
@@ -695,8 +706,9 @@ async function write(op,path,data){
 let flushing=false;
 async function flush(){
   if(flushing||!S.db||!S.queue.length||!navigator.onLine)return;flushing=true;
-  while(S.queue.length){try{await runOp(S.queue[0]);S.queue.shift();ls.set("queue",S.queue)}catch(e){break}}
-  flushing=false;render();
+  let refus=0;
+  while(S.queue.length){try{await runOp(S.queue[0]);S.queue.shift();ls.set("queue",S.queue)}catch(e){if(e&&e.code&&e.code!=="unavailable"&&navigator.onLine){S.queue.shift();ls.set("queue",S.queue);refus++;continue}break}}
+  flushing=false;if(refus)toast(refus+" saisie"+(refus>1?"s":"")+" en attente refusée"+(refus>1?"s":"")+" par la base (accès ou donnée supprimée).");render();
 }
 window.addEventListener("online",flush);
 let rzT=0;window.addEventListener("resize",()=>{clearTimeout(rzT);rzT=setTimeout(()=>{const w=(window.innerWidth||0)>=900;if(S.view==="coordo"&&(S.ctab==="stats"||S.ctab==="prev"||S.ctab==="bord"||w!==S.wasWide))render();S.wasWide=w},200)});window.addEventListener("offline",render);
@@ -712,7 +724,7 @@ async function start(){
   let got=0;const need=4;const timer=setTimeout(()=>{if(S.dbState==="loading"){S.dbState="slow";render()}},10000);
   const ok=snap=>{if(!snap.metadata.fromCache&&++got>=need){S.dbState="ok";clearTimeout(timer)}};
   const err=e=>{clearTimeout(timer);S.dbState="error";render()};
-  db.doc("config/main").onSnapshot(s=>{S.cfgExists=s.exists;S.config=s.exists?{...DEF_CONFIG,...s.data()}:null;if(!s.metadata.fromCache)ok(s);render()},err);
+  db.doc("config/main").onSnapshot(s=>{S.cfgExists=s.exists;S.config=s.exists?cleanCfg({...DEF_CONFIG,...s.data()}):null;if(!s.metadata.fromCache)ok(s);render()},err);
   db.collection("produits").onSnapshot(q=>{S.produits=new Map(q.docs.map(d=>[d.id,{id:d.id,...d.data()}]));ok(q);render()},err);
   db.collection("mouvements").onSnapshot(q=>{{const A=q.docs.map(d=>({id:d.id,...d.data()}));S.mvts=A.filter(m=>!TERRAIN.has(m.type));S.terrain=A.filter(m=>TERRAIN.has(m.type))}ok(q);render();flush()},err);
   db.collection("commandes").onSnapshot(q=>{S.cmds=q.docs.map(d=>({id:d.id,...d.data()})).sort((a,b)=>b.t-a.t);ok(q);render()},err);
@@ -753,7 +765,7 @@ function draw(){
   const key=S.view+"/"+S.ctab;if(key!==draw.last&&draw.last){const t=$(".toast");if(t)t.remove()}
   if(key!==draw.last){draw.last=key;const a=$("#app");a.classList.remove("swap");void a.offsetWidth;a.classList.add("swap");clearTimeout(draw.t);draw.t=setTimeout(()=>a.classList.remove("swap"),600)}
   if(S.view==="ecran"&&!coordoOK())S.view="equipe";
-  document.body.classList.toggle("en-ecran",S.view==="ecran");
+  document.body.classList.toggle("en-ecran",S.view==="ecran");document.body.classList.toggle("v-coordo",S.view==="coordo");
   $("#app").innerHTML=(S.view==="ecran"?viewEcran(st):S.view==="equipe"?viewEquipe(st):viewCoordo(st));
   document.querySelectorAll(".subnav,.tw,.svnav,.chips").forEach((el,i)=>{const k=(el.className)+i;if(keepX[k])el.scrollLeft=keepX[k]});
   {const sv=document.querySelector(".svnav"),on=sv&&sv.querySelector('[aria-pressed="true"]');if(on){const l=on.offsetLeft-sv.offsetLeft,r=l+on.offsetWidth;if(l<sv.scrollLeft)sv.scrollLeft=l-8;else if(r>sv.scrollLeft+sv.clientWidth)sv.scrollLeft=r-sv.clientWidth+8}}
@@ -1109,14 +1121,16 @@ function wipeStep2(kind){
   modal('<div class="warnhead"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3 2 21h20L12 3z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/><path d="M12 10v5M12 18v.5" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></svg><h2>Dernière confirmation (2/2)</h2></div><p style="margin:0">Pour confirmer, tape <b>'+word+'</b> ci-dessous.</p><input id="wipeIn" autocomplete="off" autocapitalize="characters" aria-label="Mot de confirmation"><div class="row"><button class="btn danger" data-act="wipeGo" data-v="'+kind+'">'+(kind==="restore"?"Remplacer les données":"Effacer définitivement")+'</button><button class="btn primary" data-act="closeLayer">Annuler</button></div>',"Confirmation");
 }
 async function wipeRun(kind){
+  if(!navigator.onLine&&!(window.SKB&&window.SKB.local)){$("#layer").innerHTML="";toast("Pas de connexion : réessaie quand le réseau est revenu, rien n'a été modifié.");return}
   const ops=[];for(const m of S.mvts.concat(S.terrain||[]))ops.push("mouvements/"+m.id);for(const c of S.cmds)ops.push("commandes/"+c.id);for(const g of S.sigs)ops.push("signalements/"+g.id);
   if(kind!=="histo"){for(const p of S.produits.values())ops.push("produits/"+p.id);ops.push("config/main")}
   $("#layer").innerHTML='<div class="sheet-back"><div class="sheet" role="dialog" aria-modal="true" aria-label="Progression"><h2>'+(kind==="restore"?"Restauration…":"Effacement…")+'</h2><p id="wipeProg" class="note" style="margin:0">0 / '+ops.length+'</p></div></div>';
   let i=0;for(const path of ops){try{await S.db.doc(path).delete()}catch(e){}i++;if(i%10===0||i===ops.length){const el=$("#wipeProg");if(el)el.textContent=i+" / "+ops.length}}
   S.queue=S.queue.filter(o=>!ops.includes(o.path));ls.set("queue",S.queue);
-  if(kind==="restore"&&S.restoreData){const d=S.restoreData,w=[];if(d.config)w.push(["config/main",d.config]);for(const x of d.produits||[])w.push(["produits/"+x.id,x]);for(const x of d.mouvements||[])w.push(["mouvements/"+x.id,x]);for(const x of d.commandes||[])w.push(["commandes/"+x.id,x]);
-    let j=0;for(const [path,doc] of w){const {id,_pending,...rest}=doc;try{await S.db.doc(path).set(rest)}catch(e){}j++;if(j%10===0||j===w.length){const el=$("#wipeProg");if(el)el.textContent="Écriture "+j+" / "+w.length}}S.restoreData=null}
-  $("#layer").innerHTML="";toast(kind==="restore"?"Sauvegarde restaurée":kind==="tout"?"Tout a été effacé":"Historique effacé");render(true);
+  if(kind==="restore"&&S.restoreData){const d=S.restoreData,w=[];if(d.config)w.push(["config/main",d.config]);for(const x of d.produits||[])w.push(["produits/"+x.id,x]);for(const x of d.mouvements||[])w.push(["mouvements/"+x.id,x]);for(const x of d.commandes||[])w.push(["commandes/"+x.id,x]);for(const x of d.signalements||[])w.push(["signalements/"+x.id,x]);
+    let j=0,ko=0;S.restoreKo=0;for(const [path,doc] of w){const {id,_pending,...rest}=doc;try{await S.db.doc(path).set(rest)}catch(e){try{await new Promise(r=>setTimeout(r,800));await S.db.doc(path).set(rest)}catch(e2){ko++}}S.restoreKo=ko;j++;if(j%10===0||j===w.length){const el=$("#wipeProg");if(el)el.textContent="Écriture "+j+" / "+w.length}}S.restoreData=null}
+  $("#layer").innerHTML="";if(kind==="restore"&&S.restoreKo){toast("Restauration incomplète : "+S.restoreKo+" écriture"+(S.restoreKo>1?"s ont":" a")+" échoué. Vérifie la connexion, puis restaure à nouveau la même sauvegarde.");S.restoreKo=0;render(true);return}
+  toast(kind==="restore"?"Sauvegarde restaurée":kind==="tout"?"Tout a été effacé":"Historique effacé");render(true);
 }
 function accesPanel(){
   if(!window.SKB)return "";
@@ -1601,7 +1615,8 @@ function svRecup(){const M=derniersMois(12),T=terrainAll().filter(x=>x.type==="r
   const dist=M.map(mo=>sortiesEntre(mo.a,mo.b,null).filter(isS).reduce((x,m)=>x+num(m.qte,0),0)),rec=k=>M.map(mo=>T.filter(x=>x.quoi===k&&x.t>=mo.a&&x.t<mo.b).reduce((x,m)=>x+num(m.qte,0),0));
   const rs=rec("seringues"),rc=rec("collecteurs"),rk=rec("kg"),td=sum(dist),tr=sum(rs),np=passagesEntre(M[0].a,M[M.length-1].b);
   const kp='<div class="kpis"><div class="kpi"><div class="v">'+nfr(tr)+'</div><div class="k">seringues récupérées sur 12 mois</div></div><div class="kpi"><div class="v">'+nfr(td)+'</div><div class="k">seringues distribuées (vrac et kits)</div></div><div class="kpi"><div class="v">'+(td?Math.round(tr/td*100)+" %":"—")+'</div><div class="k">taux de récupération</div></div>'+(sum(rc)?'<div class="kpi"><div class="v">'+nfr(sum(rc))+'</div><div class="k">collecteurs pleins</div></div>':'')+(sum(rk)?'<div class="kpi"><div class="v">'+(Math.round(sum(rk)*10)/10).toString().replace(".",",")+' kg</div><div class="k">de DASRI</div></div>':'')+(np?'<div class="kpi"><div class="v">'+nfr(np)+'</div><div class="k">passages comptés</div></div>':'')+'</div>';
-  return pan("Matériel récupéré","Ce que l\'équipe a noté comme rapporté, comparé aux seringues sorties (en vrac ou dans les kits d\'injection). Les deux sont des estimations : le taux donne un ordre de grandeur pour le rapport d\'activité.",kp+'<div class="chart" style="margin-top:10px">'+courbes([{label:"Distribuées",col:"--c1",vals:dist},{label:"Récupérées",col:"--c2",vals:rs}],M.map(m=>m.l),{titre:"Seringues distribuées et récupérées"})+'</div>'+legende([{label:"Seringues distribuées",col:"--c1"},{label:"Seringues récupérées",col:"--c2"}]))}
+  return pan("Matériel récupéré","Ce que l\'équipe a noté comme rapporté, comparé aux seringues sorties (en vrac ou dans les kits d\'injection). Les deux sont des estimations : le taux donne un ordre de grandeur pour le rapport d\'activité.",kp+'<div class="chart" style="margin-top:10px">'+courbes([{label:"Distribuées",col:"--c1",vals:dist},{label:"Récupérées",col:"--c2",vals:rs}],M.map(m=>m.l),{titre:"Seringues distribuées et récupérées"})+'</div>'+legende([{label:"Seringues distribuées",col:"--c1"},{label:"Seringues récupérées",col:"--c2"}])
+   +'<h3 style="margin-top:14px">Dernières saisies</h3><p class="note">Une erreur de frappe ? Supprimez la ligne et l\'équipe la ressaisit.</p><div class="tw"><table><thead><tr><th>Date</th><th>Activité</th><th>Quoi</th><th class="n">Quantité</th><th></th></tr></thead><tbody>'+[...T].sort((x,y)=>y.t-x.t).slice(0,20).map(x=>'<tr><td>'+fmtDT(x.t)+'</td><td>'+esc(actNom(x.activite)||"")+'</td><td>'+({seringues:"Seringues usagées",collecteurs:"Collecteurs pleins",kg:"DASRI (kg)"})[x.quoi]+'</td><td class="n">'+String(x.qte).replace(".",",")+'</td><td><button class="btn small danger" data-act="terrDel" data-id="'+esc(x.id)+'">Supprimer</button></td></tr>').join("")+'</tbody></table></div>')}
 
 /* Fiabilité des fournisseurs : délais réels, livraisons incomplètes, prix */
 const eur2=v=>num(v,0).toLocaleString("fr-FR",{style:"currency",currency:"EUR",minimumFractionDigits:2,maximumFractionDigits:2});
@@ -1822,7 +1837,7 @@ function viewCoordo(st){
   let h=dbBanner();
   if(!coordoOK())return h+'<div class="empty">L\'espace gestion est réservé aux responsables stock.</div>';
   if(wizardNeeded())return h+viewWizard(st);
-  {const tb=([k,v])=>'<button data-act="ctab" data-v="'+k+'" aria-pressed="'+(S.ctab===k)+'" title="Raccourci clavier : '+(CTABS.indexOf(k)+1)+'">'+v+'</button>',wide=(window.innerWidth||0)>=900,main=wide?tabs:tabs.slice(0,3),extra=wide?[]:tabs.slice(3),inX=extra.some(([k])=>k===S.ctab),open=S.tabMore||inX;
+  {const tb=([k,v])=>'<button data-act="ctab" data-v="'+k+'" aria-pressed="'+(S.ctab===k)+'" title="Raccourci clavier : '+(CTABS.indexOf(k)+1)+'">'+((window.innerWidth||0)<900&&k==="stats"?"Stats":v)+'</button>',wide=(window.innerWidth||0)>=900,main=wide?tabs:tabs.slice(0,3),extra=wide?[]:tabs.slice(3),inX=extra.some(([k])=>k===S.ctab),open=S.tabMore||inX;
    h+='<nav class="subnav"><div class="main">'+main.map(tb).join("")+(wide?'':'<button data-act="tabMore" aria-expanded="'+!!open+'" aria-pressed="'+inX+'">Plus '+(open?"▴":"▾")+'</button>')+'</div>'+(open?'<div class="more">'+extra.map(tb).join("")+'</div>':'')+'</nav>'}
   if(S.ctab==="bord")h+=tabBord(st);
   if(S.ctab==="stats")h+=tabStats();
@@ -1900,7 +1915,7 @@ function tabBord(st0){
   const ps=prodsActifs().filter(p=>!used||used.has(p.id));
   if(!ps.length)return top+'<div class="empty">'+(used?"Aucun matériel n\'est encore passé par ce stock.":"Aucun produit actif. Va dans Réglages pour activer le matériel depuis la base RdR, ou charge des données d\'exemple pour tester.")+'</div>';
   const al=alertsList(st).filter(a=>!used||!/^<b>/.test(a[1])||ps.some(p=>a[1].startsWith('<b>'+esc(p.nom)+'</b>')));
-  let h=top+(!invDejaFait()?'<div class="narr" style="margin-top:12px"><b>Première étape : l\'inventaire de départ</b><p>Le stock n\'a encore jamais été compté : l\'appli part de zéro, d\'où les alertes. Compte le garage une fois, sur une seule page, et les alertes deviendront justes.</p><div class="row" style="margin-top:8px"><button class="btn primary" data-act="goInv">Faire l\'inventaire de départ</button></div></div>':'')+'<div class="alerts">'+(al.length?al.map(([k,t])=>'<div class="alert '+k+'"><span>'+t+'</span></div>').join(""):'<div class="alert info">Aucune alerte : tout est au-dessus du point de commande.</div>')+'</div>';
+  let h=top+(!invDejaFait()?'<div class="narr" style="margin-top:12px"><b>Première étape : l\'inventaire de départ</b><p>Le stock n\'a encore jamais été compté : l\'appli part de zéro, d\'où les alertes. Compte le garage une fois, sur une seule page, et les alertes deviendront justes.</p><div class="row" style="margin-top:8px"><button class="btn primary" data-act="goInv">Faire l\'inventaire de départ</button></div></div>':'')+'<div class="alerts">'+(al.length?(()=>{const lim=(window.innerWidth||0)<900&&al.length>2&&!S.alAll?2:al.length;return al.slice(0,lim).map(([k,t])=>'<div class="alert '+k+'"><span>'+t+'</span></div>').join("")+((window.innerWidth||0)<900&&al.length>2?'<button class="link" data-act="alAll">'+(S.alAll?"Réduire":"Voir les "+al.length+" alertes")+'</button>':'')})():'<div class="alert info">Aucune alerte : tout est au-dessus du point de commande.</div>')+'</div>';
   // budget
   const y0=Date.parse(new Date().getFullYear()+"-01-01"),M=allMvts();
   let dep=0;for(const m of M)if(m.type==="reception"&&m.t>=y0){const p=S.produits.get(m.produit);if(p)dep+=m.qte*num(p.prix)}
@@ -1988,10 +2003,14 @@ function tabCmd(st){
   const prop=prodsActifs().filter(p=>st[p.id].suggere>0&&st[p.id].moy>0).sort((a,b)=>(st[a.id].nextOrder??0)-(st[b.id].nextOrder??0)||fournNom(a).localeCompare(fournNom(b),"fr"));
   const quand=p=>{const d=st[p.id].nextOrder;return d==null||d===0?"maintenant":fmtDay(d)};
   let h='<div class="panel" style="margin-top:12px"><h2>Commande proposée</h2><p class="note">Selon le rythme de chaque fournisseur : au besoin (dès le point de commande) ou à date fixe. Quantité pour tenir jusqu\'à la livraison suivante, arrondie au carton. Ajuste puis enregistre ce que tu as commandé.</p>';
-  h+=prop.length?'<div class="props">'+prop.map(p=>{const s=st[p.id];return '<div class="prop"><div class="ph">'+badge(p)+'<span class="an"><b>'+esc(p.nom)+(s.ess?' <span class="pill ess">essentiel</span>':'')+'</b><small>'+esc(fournNom(p)||"Aucun fournisseur renseigné")+', à commander '+(quand(p)==="maintenant"?"maintenant":"le "+quand(p))+'</small></span><span class="sq">'+esc(fmtQ(p,s.suggere))+'</span></div>'
+  const wideC=(window.innerWidth||0)>=900,saveAll=prop.length?'<button class="btn primary'+(wideC?'':' big')+'" style="'+(wideC?'':'width:100%;')+'margin-top:10px" data-act="commanderTout">Enregistrer les '+prop.length+' commande'+(prop.length>1?"s":"")+'</button>':'';
+  if(prop.length&&wideC){h+='<div class="row" style="justify-content:space-between;align-items:center"><span class="note">Ajuste les quantités dans la colonne « Commandé », puis enregistre.</span>'+saveAll+'</div><div class="tw"><table class="cmdt"><thead><tr><th>Produit</th><th>Fournisseur</th><th>À commander</th><th class="n">Proposé</th><th class="n">Commandé (unités)</th><th></th></tr></thead><tbody>'
+    +prop.map(p=>{const s=st[p.id],op=!!S.openD["cmd-"+p.id];return '<tr><td><div class="row" style="flex-wrap:nowrap;gap:8px">'+badge(p)+'<b>'+esc(p.nom)+'</b>'+(s.ess?' <span class="pill ess">essentiel</span>':'')+'</div></td><td>'+esc(fournNom(p)||"—")+'</td><td>'+(quand(p)==="maintenant"?'<span class="pill warn">maintenant</span>':"le "+esc(quand(p)))+'</td><td class="n"><b>'+esc(fmtQ(p,s.suggere))+'</b></td><td class="n"><input id="cq-'+p.id+'" type="number" min="0" inputmode="numeric" value="'+s.suggere+'" style="width:110px" aria-label="Quantité commandée, '+esc(p.nom)+'"></td><td><span class="row" style="gap:6px;flex-wrap:nowrap;justify-content:flex-end"><button class="btn small" data-act="cmdWhy" data-id="'+p.id+'" aria-expanded="'+op+'">'+(op?"Fermer":"Calcul et prévision")+'</button><button class="btn small" data-act="commander" data-id="'+p.id+'">Commander</button></span></td></tr>'
+      +(op?'<tr class="cmdx"><td colspan="6">'+calcExplain(p,s)+fcBlock(p,st)+'</td></tr>':'')}).join("")+'</tbody></table></div>'}
+  else h+=prop.length?saveAll+'<div class="props" style="margin-top:10px">'+prop.map(p=>{const s=st[p.id];return '<div class="prop"><div class="ph">'+badge(p)+'<span class="an"><b>'+esc(p.nom)+(s.ess?' <span class="pill ess">essentiel</span>':'')+'</b><small>'+esc(fournNom(p)||"Aucun fournisseur renseigné")+', à commander '+(quand(p)==="maintenant"?"maintenant":"le "+quand(p))+'</small></span><span class="sq">'+esc(fmtQ(p,s.suggere))+'</span></div>'
     +'<div class="row" style="gap:8px;margin-top:8px"><label class="row note" style="gap:6px;flex-wrap:nowrap">Commandé<input id="cq-'+p.id+'" type="number" min="0" inputmode="numeric" value="'+s.suggere+'" style="width:110px"> unités</label><button class="btn small" data-act="commander" data-id="'+p.id+'">Commander celui-ci</button></div>'
     +'<details class="why"'+dk("why-"+p.id)+'><summary>Comment ce chiffre est calculé</summary>'+calcExplain(p,s)+'</details>'
-    +'<details class="why"'+dk("fc-"+p.id)+'><summary>Voir la prévision sur 3 mois</summary>'+(S.openD["fc-"+p.id]?fcBlock(p,st):'')+'</details></div>'}).join("")+'</div><button class="btn primary big" style="margin-top:12px;width:100%" data-act="commanderTout">Enregistrer les '+prop.length+' commande'+(prop.length>1?"s":"")+'</button>':'<div class="empty">Rien à commander pour l\'instant.</div>';
+    +'<details class="why"'+dk("fc-"+p.id)+'><summary>Voir la prévision sur 3 mois</summary>'+(S.openD["fc-"+p.id]?fcBlock(p,st):'')+'</details></div>'}).join("")+'</div>':'<div class="empty">Rien à commander pour l\'instant.</div>';
   if(prop.length){const byF={};for(const p of prop){const f=fournNom(p)||"Sans fournisseur";(byF[f]=byF[f]||[]).push(p)}
     h+='<div class="panel" style="margin-top:14px;background:var(--bg)"><h3 style="font-family:var(--display);font-size:16px">Bon de commande</h3><p class="note">Le texte à envoyer au fournisseur, avec ses références. Il reprend les quantités proposées ci-dessus.</p>'
      +Object.entries(byF).map(([f,a])=>'<div style="margin-top:10px"><div class="row" style="justify-content:space-between"><b>'+esc(f)+'</b><span class="row" style="gap:6px"><button class="btn small" data-act="bonCopy" data-v="'+esc(f)+'">Copier</button><button class="btn small" data-act="bonExp" data-v="'+esc(f)+'">'+SHARE_ICO+'Exporter</button></span></div><pre class="bon">'+esc(bonTexte(f,a,st))+'</pre></div>').join("")+'</div>'}
@@ -2153,6 +2172,11 @@ function tabReg(st){
 /* Réglages : chaque bloc se replie sous son titre ; ce qui est ouvert est retenu sur cet appareil */
 function foldPanels(html){
   const t=document.createElement("template");t.innerHTML=html;const open=new Set(ls.get("regOpen",[]));
+  if((window.innerWidth||0)>=1100){const P=[...t.content.children].filter(el=>el.classList&&el.classList.contains("panel")&&el.querySelector(":scope > h2, :scope > summary h2")),key=el=>el.querySelector("h2").textContent.trim();
+    if(P.length>3){if(!S.regSel||!P.some(el=>key(el)===S.regSel))S.regSel=key(P[0]);
+      const nav='<nav class="regnav" aria-label="Rubriques des réglages">'+P.map(el=>'<button data-act="regSel" data-v="'+esc(key(el))+'" aria-pressed="'+(key(el)===S.regSel)+'">'+esc(key(el))+'</button>').join("")+'</nav>';
+      const cur=P.find(el=>key(el)===S.regSel);P.forEach(el=>el.remove());cur.style.marginTop="0";
+      const top=document.createElement("div");top.appendChild(t.content);return top.innerHTML+'<div class="regwrap">'+nav+'<div class="regmain">'+cur.outerHTML+'</div></div>'}}
   [...t.content.children].forEach(el=>{
     if(!el.classList||!el.classList.contains("panel"))return;
     const h2=el.querySelector(":scope > h2");if(!h2)return;
@@ -2170,7 +2194,7 @@ document.addEventListener("toggle",e=>{const d=e.target;if(!d||!d.dataset||!d.da
 /* petit cercle jaune au toucher des boutons */
 if(!matchMedia("(prefers-reduced-motion: reduce)").matches)document.addEventListener("pointerdown",e=>{const t=e.target.closest&&e.target.closest("button,.chip,.tile,a.btn,summary");if(!t)return;const d=document.createElement("span");d.className="tapfx";d.style.left=e.clientX+"px";d.style.top=e.clientY+"px";document.body.appendChild(d);setTimeout(()=>d.remove(),500)},{passive:true});
 /* hauteur du bandeau du haut et des onglets, pour que les menus restent visibles en faisant défiler */
-(()=>{const set=()=>{const t=document.querySelector(".top"),n=document.querySelector(".subnav");document.documentElement.style.setProperty("--hdrH",(t?t.getBoundingClientRect().height:64)+"px");document.documentElement.style.setProperty("--subH",(n?n.getBoundingClientRect().height+4:52)+"px")};
+(()=>{const set=()=>{const t=document.querySelector(".top"),n=document.querySelector(".subnav");document.documentElement.style.setProperty("--hdrH",(t?(getComputedStyle(t).position==="sticky"?t.getBoundingClientRect().height:0):64)+"px");document.documentElement.style.setProperty("--subH",(n?n.getBoundingClientRect().height+4:52)+"px")};
  const go=()=>{set();if(window.ResizeObserver){const ro=new ResizeObserver(set);const t=document.querySelector(".top");if(t)ro.observe(t);new MutationObserver(set).observe(document.getElementById("app")||document.body,{childList:true})}};
  document.readyState==="loading"?document.addEventListener("DOMContentLoaded",go):go();addEventListener("resize",set)})();
 function matTable(all){all=[...all].sort((a,b)=>(b.actif!==false)-(a.actif!==false)||a.nom.localeCompare(b.nom,"fr"));const F=cfg().fournisseurs||[],D=S.matDraft||{},v=(f,p,def)=>{const k="me"+f+"-"+p.id;return k in D?D[k]:def};
@@ -2634,13 +2658,18 @@ document.addEventListener("click",async e=>{
     let k=0;for(const [p,q] of L){await write("set","mouvements/"+uid(),{t:t0+(k++)*1000,type:"sortie",produit:p.id,qte:q,lieu,activite:act,lot:true})}
     S.lotDraft={date:ds,act,lieu};toast(L.length+" sortie"+(L.length>1?"s":"")+" enregistrée"+(L.length>1?"s":"")+" au "+new Date(t0).toLocaleDateString("fr-FR"));render();break}
   case "fournDelai":await saveConfig({fournisseurs:(cfg().fournisseurs||[]).map(f=>f.id===id?{...f,delai:num(b.dataset.v,f.delai)}:f)});toast("Délai réglé à "+b.dataset.v+" jours");break;
+  case "alAll":S.alAll=!S.alAll;render();break;
+  case "regSel":S.regSel=b.dataset.v;render();window.scrollTo(0,0);break;
+  case "cmdWhy":S.openD["cmd-"+id]=!S.openD["cmd-"+id];render();break;
+  case "terrDel":if(b.dataset.sure!=="1"){b.dataset.sure="1";b.textContent="Confirmer";break}await write("delete","mouvements/"+id);toast("Saisie supprimée");render();break;
   case "goOnline":if(window.SKB&&window.SKB.goOnline)window.SKB.goOnline();break;
   case "goChg":S.ctab="stats";S.sv="chg";render();window.scrollTo(0,0);break;
-  case "passPlus":case "passMoins":{const act=S.activite;if(!act||act.startsWith("__"))break;const id=passId(act),cur=(terrainAll().find(x=>x.id===id)||{}).qte||0,n=Math.max(0,cur+(a==="passPlus"?1:-1));if(n===cur)break;
+  case "passPlus":case "passMoins":{const act=S.activite;if(!act||act.startsWith("__"))break;const id=passId(act),cur=passMine(act),n=Math.max(0,cur+(a==="passPlus"?1:-1));if(n===cur)break;S.passN[id]=n;
     try{navigator.vibrate&&navigator.vibrate(8)}catch(_){}const d=new Date();d.setHours(0,0,1,0);await write("set","mouvements/"+id,{t:d.getTime(),type:"passage",activite:act,qte:n,jour:today(),lieu:S.lieu||(principal()||{}).id});render();break}
   case "recupOpen":openRecup();break;
   case "recupOk":{const L=[["seringues",Math.round(num(val("ruS"),0))],["collecteurs",Math.round(num(val("ruC"),0))],["kg",Math.round(num(val("ruK"),0)*10)/10]].filter(x=>x[1]>0);if(!L.length){toast("Indique au moins une quantité");break}
-    $("#layer").innerHTML="";for(const [quoi,q] of L)await write("set","mouvements/"+uid(),{t:Date.now(),type:"recup",quoi,qte:q,activite:S.activite,jour:today(),lieu:S.lieu||(principal()||{}).id});toast("Matériel récupéré noté");render();break}
+    $("#layer").innerHTML="";const ids=[];for(const [quoi,q] of L){const i2=uid();ids.push(i2);await write("set","mouvements/"+i2,{t:Date.now(),type:"recup",quoi,qte:q,activite:S.activite,jour:today(),lieu:S.lieu||(principal()||{}).id})}
+    toast("Matériel récupéré noté",async()=>{for(const i2 of ids){S.queue=S.queue.filter(o=>o.path!=="mouvements/"+i2);ls.set("queue",S.queue);await write("delete","mouvements/"+i2)}render()});render();break}
   case "terrTog":{const k=b.dataset.v,t={...(cfg().terrain||{})};t[k]=!t[k];await saveConfig({terrain:t});break}
   case "lotFind":S.lotQ=val("lotF").trim();render();break;
   case "xSwap":if((S.xc||"mois")!=="aucune"){const r0=S.xr||"categorie";S.xr=S.xc||"mois";S.xc=r0;render()}break;
@@ -2679,7 +2708,9 @@ document.addEventListener("click",async e=>{
   case "vers":sheet.vers=id;drawSheet();break;
   case "motif":sheet.motif=id;drawSheet();break;
   case "mesUndo":{const e=mesGet().find(x=>x.id===id);if(!e)break;if(b.dataset.sure!=="1"){b.dataset.sure="1";b.textContent="Confirmer";b.classList.add("danger");setTimeout(()=>{if(b.isConnected){b.dataset.sure="";b.textContent="Annuler";b.classList.remove("danger")}},4000);break}
-    mesDel(id);S.queue=S.queue.filter(o=>o.path!=="mouvements/"+id);ls.set("queue",S.queue);await write("delete","mouvements/"+id);toast("Saisie annulée : "+e.saisi+" · "+e.nom);render();break}
+    const mv=allMvts().find(x=>x.id===id);mesDel(id);S.queue=S.queue.filter(o=>o.path!=="mouvements/"+id);ls.set("queue",S.queue);await write("delete","mouvements/"+id);
+    if(mv&&mv.type==="reception"&&mv.commande&&S.isAdmin){const c=S.cmds.find(x=>x.id===mv.commande);if(c){const reste=allMvts().filter(x=>x.type==="reception"&&x.commande===c.id&&x.id!==id).reduce((x,m)=>x+num(m.qte,0),0);await write("update","commandes/"+c.id,{recu:reste,statut:reste>=c.qte?"recue":reste>0?"partielle":"commandee"})}}
+    toast("Saisie annulée : "+e.saisi+" · "+e.nom);render();break}
   case "pretDon":sheet.aRendre=b.dataset.v==="pret";drawSheet();break;
   case "valider":valider();break;
   case "signal":await write("set","signalements/"+uid(),{t:Date.now(),texte:S.query.trim()});toast("Signalé au responsable stock");S.query="";render();break;
@@ -2805,7 +2836,7 @@ document.addEventListener("click",async e=>{
     if(newF)await saveConfig({fournisseurs:F});S.importRows=null;toast("Catalogue appliqué");render();break}
   case "impCancel":S.importRows=null;render();break;
   case "exportMvts":{const lab={sortie:"sortie",depannage:"dépannage",transfert:"transfert",reception:"réception",entree:"entrée",inventaire:"inventaire",perte:"perte / casse",rupture:"rupture signalée"};
-    const rows=[["date","type","produit","quantité (unités)","lieu","activité / asso / destination","à rendre"]].concat(allMvts().map(m=>[new Date(m.t).toISOString().slice(0,16).replace("T"," "),lab[m.type],(S.produits.get(m.produit)||{}).nom,m.qte,lieuNom(m.lieu),m.activite?actNom(m.activite):m.partenaire?assoNom(m):m.vers?lieuNom(m.vers):m.motif?motifNom(m.motif):"",m.aRendre?"oui":""]));
+    const rows=[["date","type","produit","quantité (unités)","lieu","activité / asso / destination","à rendre"]].concat(allMvts().map(m=>[jourLocal(m.t)+" "+new Date(m.t).toLocaleTimeString("fr-FR",{hour:"2-digit",minute:"2-digit"}),lab[m.type],(S.produits.get(m.produit)||{}).nom,m.qte,lieuNom(m.lieu),m.activite?actNom(m.activite):(m.partenaire||m.partenaireNom)?assoNom(m):m.vers?lieuNom(m.vers):m.motif?motifNom(m.motif):"",m.aRendre?"oui":""]));
     download("stockaarud-mouvements-"+today()+".csv",rows.map(r=>r.map(csvCell).join(";")).join("\n"),"text/csv");break}
   case "exportAnnuel":{const y=new Date().getFullYear(),y0=Date.parse(y+"-01-01"),acts=cfg().activites,tot={};
     for(const m of allMvts())if(m.t>=y0&&!m.rendBack&&(m.type==="sortie"||m.type==="depannage"||m.type==="perte")){const k=m.produit;tot[k]=tot[k]||{};const c=m.type==="depannage"?"__dep":m.type==="perte"?"__perte":m.activite;tot[k][c]=(tot[k][c]||0)+m.qte}
