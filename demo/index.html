@@ -95,6 +95,9 @@ body.en-ecran header.top,body.en-ecran #demoBar{display:none}
   .regwrap{display:grid;grid-template-columns:260px minmax(0,1fr);gap:18px;align-items:start;margin-top:14px}.regnav{display:flex;flex-direction:column;gap:2px;position:sticky;top:calc(var(--hdrH,64px) + var(--subH,52px) + 8px)}
   .regnav button{text-align:left;border:0;background:none;padding:10px 12px;border-radius:10px;font:600 15px var(--body);color:var(--muted);cursor:pointer}.regnav button[aria-pressed="true"]{background:var(--surface);color:var(--fg);box-shadow:inset 3px 0 0 var(--brand-2)}.regnav button:hover{color:var(--fg)}}
 .cmdt td{vertical-align:middle}.cmdt tr.cmdx td{background:var(--surface-2);padding:12px 16px}
+.instb{display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:8px 12px;margin-top:20px;font-size:14px;color:var(--muted);text-align:center}
+.iosg{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:10px}.iosg li{display:flex;align-items:center;gap:12px;font-size:16px}.iosg .ig{flex:none;width:52px;height:52px;border-radius:12px;background:var(--surface-2);display:grid;place-items:center;color:#0a7aff}.iosg .ig.tx{font:700 13px var(--body);width:auto;padding:0 10px}
+.iosarrow{text-align:center;font-weight:700;color:var(--accent)}
 .cl{display:flex;flex-direction:column;gap:8px}.cl-it{display:flex;gap:8px;align-items:center}
 .cl-go{flex:1;min-width:0;display:flex;flex-direction:column;align-items:flex-start;gap:2px;text-align:left;font:inherit;color:var(--fg);background:var(--surface-2);border:2px solid transparent;border-radius:12px;padding:12px 14px;cursor:pointer;min-height:56px}
 .cl-go b{font-size:17px}.cl-go span{font-size:13px;color:var(--muted)}
@@ -912,6 +915,21 @@ function actBar(){const L=actCycle(),i=L.indexOf(S.activite),a=cfg().activites.f
    +'<div class="actmid" aria-live="polite"><div class="actname'+(dir>0?" in-r":dir<0?" in-l":"")+'">'+(a?actIcon(a,"aic big"):"")+'<span>'+esc(actLabel(S.activite))+'</span></div><div class="actdots" aria-hidden="true">'+L.map((x,k)=>'<i'+(k===i?' class="on"':'')+'></i>').join("")+'</div></div>'
    +'<button class="actarr" data-act="actStep" data-v="1" aria-label="Activité suivante"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 5l7 7-7 7" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></button></div>'
    +'<div class="actmeta"><span class="note">Gardée pour la journée</span><button class="link" data-act="actOpen">'+(S.actOpen?"Fermer la liste":"Voir toutes les activités")+'</button></div>'}
+/* Écran d'accueil : facultatif. Android propose l'installation en un geste, iPhone demande trois appuis qu'on montre en images. */
+window.addEventListener("beforeinstallprompt",e=>{e.preventDefault();S.installEvt=e;render()});
+window.addEventListener("appinstalled",()=>{S.installEvt=null;toast("Stockaarud est sur ton écran d'accueil");render()});
+const estInstallee=()=>!!(navigator.standalone||(window.matchMedia&&matchMedia("(display-mode: standalone)").matches));
+const estIos=()=>/iPad|iPhone|iPod/.test(navigator.userAgent)||(navigator.platform==="MacIntel"&&navigator.maxTouchPoints>1);
+function installBar(){if(estInstallee())return "";
+  if(S.installEvt)return '<div class="instb"><span>Envie d\'une icône sur ton écran d\'accueil ? C\'est facultatif.</span><button class="btn small" data-act="installer">Installer l\'appli</button></div>';
+  if(estIos())return '<div class="instb"><span>Envie d\'une icône sur ton écran d\'accueil ? C\'est facultatif.</span><button class="btn small" data-act="iosGuide">Voir comment faire</button></div>';
+  return ""}
+function openIosGuide(){lastFocus=document.activeElement;S.iosUrl=location.href;
+  // l'icône doit rouvrir l'appli déjà reliée à ce CAARUD : on met le lien d'invitation dans l'adresse le temps de l'ajout
+  try{const l=window.SKB&&window.SKB.installLink&&window.SKB.installLink();if(l){history.replaceState(null,"",l);const m=document.querySelector('link[rel="manifest"]');if(m){S.iosMan=m.getAttribute("href");m.remove()}}}catch(e){}
+  const SH='<svg viewBox="0 0 24 24" width="26" height="26" aria-hidden="true"><path d="M12 3v12M8 7l4-4 4 4M6 11H5v9h14v-9h-1" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>',PL='<svg viewBox="0 0 24 24" width="26" height="26" aria-hidden="true"><rect x="4" y="4" width="16" height="16" rx="4" fill="none" stroke="currentColor" stroke-width="2"/><path d="M12 8v8M8 12h8" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>';
+  $("#layer").innerHTML='<div class="sheet-back" data-act="iosClose"><div class="sheet" role="dialog" aria-modal="true" aria-label="Mettre Stockaarud sur l\'écran d\'accueil"><h2>Sur l\'écran d\'accueil, en 3 appuis</h2><ol class="iosg"><li><span class="ig">'+SH+'</span><span>En bas de Safari, touche le bouton <b>Partager</b>.</span></li><li><span class="ig">'+PL+'</span><span>Fais défiler, puis touche <b>Sur l\'écran d\'accueil</b>.</span></li><li><span class="ig tx">Ajouter</span><span>Touche <b>Ajouter</b>, en haut à droite.</span></li></ol><p class="note" style="margin:0">Laisse cette fenêtre ouverte pendant que tu le fais. La première fois, l\'icône te demandera peut-être de confirmer le code d\'équipe.</p><div class="iosarrow" aria-hidden="true">Le bouton Partager est juste là ↓</div><button class="btn" data-act="iosClose">J\'ai fini</button></div></div>';focusDialog()}
+function closeIosGuide(){try{if(S.iosUrl)history.replaceState(null,"",S.iosUrl);if(S.iosMan){const m=document.createElement("link");m.rel="manifest";m.href=S.iosMan;document.head.appendChild(m);S.iosMan=null}}catch(e){}S.iosUrl=null;$("#layer").innerHTML="";restoreFocus()}
 function themeBar(){const t=ls.get("theme","auto");return '<div class="themebar"><span class="note">Affichage</span><div class="seg" role="group" aria-label="Affichage clair ou sombre">'+[["auto","Auto"],["light","Clair"],["dark","Sombre"]].map(([v,l])=>'<button data-act="theme" data-v="'+v+'" aria-pressed="'+(t===v)+'">'+l+'</button>').join("")+'</div></div>'}
 function applyTheme(){const t=ls.get("theme","auto"),H=document.documentElement;if(t==="auto")delete H.dataset.theme;else H.dataset.theme=t}
 applyTheme();
@@ -949,7 +967,7 @@ function viewEquipe(st){
       h+='<details class="cat"'+dk("cat-"+k,ps.length<=12)+' style="--cat:var('+(CATCOL[k]||"--muted")+')"><summary><span class="cic">'+iconSvg(catIcon(k))+'</span><span class="ct">'+CATS[k]+'</span>'+(low?'<span class="pill crit">'+low+' stock bas</span>':'')+'<span class="cn">'+a.length+'</span></summary>'+catBody(k,a)+'</details>'}
   }
   h+=livraisonsEquipe();
-  h+=mesRecap()+themeBar();
+  h+=mesRecap()+installBar()+themeBar();
   if(window.SKB&&!S.isAdmin)h+='<p class="note" style="text-align:center;margin-top:24px">Appareil connecté à l\'équipe. <button class="link" data-act="skbLogout">Déconnecter cet appareil</button></p>';
   const RD0=rendusSet(),prets=allMvts().filter(m=>m.type==="depannage"&&m.aRendre&&!estRendu(m,RD0));
   if(prets.length)h+='<details class="panel" style="margin-top:16px"><summary><b>Prêts en cours ('+prets.length+')</b> <span class="note">· touche « Rendu » quand l\'asso rend le matériel</span></summary><div class="list" style="margin-top:6px">'+prets.map(m=>{const p=S.produits.get(m.produit)||{nom:"?"};return '<div class="it"><span style="flex:1;min-width:150px"><b>'+esc(p.nom)+'</b> · '+esc(fmtQ(p,m.qte))+'<br><span class="note">'+esc(assoNom(m))+', le '+fmtDate(m.t)+'</span></span><button class="btn small" data-act="rendu" data-id="'+m.id+'">Rendu</button></div>'}).join("")+'</div></details>';
@@ -1308,8 +1326,20 @@ function equipePanel(inWizard){
      +'<button class="btn small primary" data-act="fichePdf">Fiche équipe (PDF)</button>'
      +(navigator.share&&window.SKB?'<button class="btn small" data-act="ficheShare">Partager…</button>':'')+'</div>'
      +'<p class="note" style="margin-top:8px">La fiche tient sur deux pages : à quoi sert l\'appli, comment l\'installer, comment noter une sortie. Joins-la au mail, ou imprime-la pour le garage. Si l\'e-mail ne s\'ouvre pas, <button class="link" style="padding:0;min-height:0" data-act="copyMail">copie le message</button>.</p></div></div>'}
+  if(window.SKB&&window.SKB.inviteLink)h+='<div style="border-top:1px solid var(--line);margin-top:12px;padding-top:10px"><b>Une affiche pour le local</b><p class="note">Un grand QR code à coller au stock : on le scanne en venant chercher du matériel et l\'appli s\'ouvre, sans rien installer. Un téléphone déjà connecté arrive directement sur la saisie ; un nouveau téléphone devra taper le code d\'équipe.</p><button class="btn" style="margin-top:6px" data-act="affichePdf">'+PRINT_ICO+'Affiche QR code (PDF)</button></div>';
   return h+'</div>';
 }
+async function afficheDoc(){const doc=await newPdf("portrait"),C=PDFC,W=210,link=window.SKB.inviteLink(),nm=(cfg().nomStructure||"").trim()||cfg().nomStock||"";
+  doc.setFillColor(...C.G);doc.rect(0,0,W,34,"F");doc.setFillColor(...C.Y);doc.rect(0,34,W,3,"F");
+  doc.setFont("helvetica","bold");doc.setFontSize(30);doc.setTextColor(255,255,255);doc.text("STOCK",16,22);const w=doc.getTextWidth("STOCK");doc.setTextColor(...C.Y);doc.text("AARUD",16+w,22);
+  if(nm){doc.setFont("helvetica","normal");doc.setFontSize(14);doc.setTextColor(220,238,228);doc.text(pdfTxt(nm),W-16,21,{align:"right"})}
+  doc.setFont("helvetica","bold");doc.setTextColor(...C.K);doc.setFontSize(38);doc.text(pdfTxt("Tu prends du matériel ?"),W/2,62,{align:"center"});doc.setFontSize(26);doc.setTextColor(...C.G);doc.text("Scanne, note, c'est tout.",W/2,76,{align:"center"});
+  if(typeof qrcode==="function"){const q=qrcode(0,"M");q.addData(link);q.make();const c=q.getModuleCount(),size=118,cell=size/c,x0=(W-size)/2,y0=92;doc.setFillColor(255,255,255);doc.setDrawColor(...C.K);doc.setLineWidth(1.2);doc.roundedRect(x0-9,y0-9,size+18,size+18,4,4,"FD");doc.setFillColor(...C.K);
+    for(let r=0;r<c;r++)for(let k=0;k<c;k++)if(q.isDark(r,k))doc.rect(x0+k*cell,y0+r*cell,cell+0.05,cell+0.05,"F")}
+  const st=[["1","Pour quoi ?","l'activité"],["2","Quel matos ?","le produit"],["3","Combien ?","la quantité"]],bw=56,gx=(W-3*bw-12)/2;
+  st.forEach(([n,t,d],i)=>{const x=gx+i*(bw+6),y=230;doc.setFillColor(...C.BG);doc.roundedRect(x,y,bw,30,3,3,"F");doc.setFillColor(...C.Y);doc.circle(x+10,y+11,6,"F");doc.setFont("helvetica","bold");doc.setFontSize(15);doc.setTextColor(...C.K);doc.text(n,x+10,y+13,{align:"center"});doc.setFontSize(14);doc.text(pdfTxt(t),x+19,y+13);doc.setFont("helvetica","normal");doc.setFontSize(11);doc.setTextColor(...C.M);doc.text(pdfTxt(d),x+19,y+21)});
+  doc.setFont("helvetica","normal");doc.setFontSize(12);doc.setTextColor(...C.M);doc.text(pdfTxt("Ouvre l'appareil photo du téléphone et vise le QR code. Rien à installer."),W/2,272,{align:"center"});doc.text(pdfTxt("Première fois sur ce téléphone ? Demande le code d'équipe au responsable stock."),W/2,279,{align:"center"});
+  return doc}
 let jspdfP=null;
 function loadJsPdf(){if(window.jspdf)return Promise.resolve();if(!jspdfP)jspdfP=new Promise((ok,ko)=>{const s=document.createElement("script");s.src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js";s.onload=ok;s.onerror=()=>{jspdfP=null;ko()};document.head.appendChild(s)});return jspdfP}
 async function fichePdf(link){
@@ -2655,7 +2685,7 @@ function parseCsv(txt){
 document.addEventListener("click",async e=>{
   const b=e.target.closest("[data-act]");if(!b)return;
   const a=b.dataset.act,id=b.dataset.id;
-  if((a==="closeSheet"||a==="closeLayer"||a==="expClose")&&e.target!==b&&!(a==="expClose"&&b.tagName==="BUTTON"))return;
+  if((a==="closeSheet"||a==="closeLayer"||a==="expClose"||a==="iosClose")&&e.target!==b&&!((a==="expClose"||a==="iosClose")&&b.tagName==="BUTTON"))return;
   switch(a){
   case "unit":S.unit=b.dataset.v;ls.set("unit",S.unit);render();break;
   case "view":S.view=b.dataset.v;ls.set("view",S.view);render();break;
@@ -2716,6 +2746,10 @@ document.addEventListener("click",async e=>{
   case "regSel":S.regSel=b.dataset.v;render();window.scrollTo(0,0);break;
   case "cmdWhy":S.openD["cmd-"+id]=!S.openD["cmd-"+id];render();break;
   case "terrDel":if(b.dataset.sure!=="1"){b.dataset.sure="1";b.textContent="Confirmer";break}await write("delete","mouvements/"+id);toast("Saisie supprimée");render();break;
+  case "affichePdf":openExport({titre:"Affiche QR code pour le local",nom:"stockaarud-affiche-qr",pdf:()=>afficheDoc()});break;
+  case "installer":if(S.installEvt){const ev=S.installEvt;S.installEvt=null;try{ev.prompt();await ev.userChoice}catch(err){}render()}break;
+  case "iosGuide":openIosGuide();break;
+  case "iosClose":closeIosGuide();break;
   case "goOnline":if(window.SKB&&window.SKB.goOnline)window.SKB.goOnline();break;
   case "goChg":S.ctab="stats";S.sv="chg";render();window.scrollTo(0,0);break;
   case "passPlus":case "passMoins":{const act=S.activite;if(!act||act.startsWith("__"))break;const id=passId(act),cur=passMine(act),n=Math.max(0,cur+(a==="passPlus"?1:-1));if(n===cur)break;S.passN[id]=n;
