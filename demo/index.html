@@ -1408,12 +1408,55 @@ function viewWizard(st){
       h+='</div></details>'}
     h+='<p class="note" style="margin-top:10px">Il manque un produit ? Tu l\'ajouteras en un instant dans Réglages, ou l\'équipe le signalera.</p>'}
   if(s===4){h+='<p>Compte le matériel une première fois : sans ce comptage, l\'appli part de zéro et toutes les alertes sont fausses. Remplis ce que tu peux, le reste se fera plus tard.</p>'+invRapide(st,ordreCat(prodsActifs()),lieux())}
-  if(s===5){h+='<p>C\'est presque fini. Envoie le lien à l\'équipe, avec la fiche qui explique tout en deux pages.</p>'+equipePanel(true)}
+  if(s===5){h+='<p>C\'est presque fini. Envoie le lien à l\'équipe, avec la fiche qui explique tout en deux pages.</p>'+equipePanel(true)+alertesPanel(true)}
   h+='<div class="wiznav">'+(s>1?'<button class="btn" data-act="wzPrev">Retour</button>':'<button class="btn" data-act="wzSkip">Plus tard</button>')
    +(s===4?'<button class="btn" data-act="wzNext" data-v="skip">Passer cette étape</button>':'')
    +'<button class="btn primary" data-act="wzNext">'+(s===5?"Terminer":s===4?"Enregistrer et continuer":"Continuer")+'</button></div></div>';
   return h;
 }
+/* ---------- Alertes par e-mail (facultatif) ----------
+   L'appli ne sait pas envoyer de mail : elle confie les chiffres à un relais tenu par Stockaarud (dossier relais/),
+   qui n'écrit qu'aux adresses ayant confirmé. N'importe quel appareil de l'équipe, en ligne, déclenche les envois dus ;
+   le relais écarte les doublons. */
+const RELAIS=window.STK_RELAIS||"https://apoepftykwoztrrjtjyx.supabase.co/functions/v1/alertes";
+const alCfg=()=>Object.assign({emails:"",rupture:true,avenir:true,recap:0},cfg().alertes||{});
+const alLire=t=>[...new Set(String(t||"").split(/[,;\s]+/).map(x=>x.trim().toLowerCase()).filter(x=>/^[^@\s]+@[^@\s]+\.[a-z]{2,}$/.test(x)))].slice(0,5);
+const alMails=()=>alLire(alCfg().emails);
+const alRef=()=>{try{return new URL(window.SKB.url).hostname.split(".")[0]}catch(e){return ""}};
+const alNom=()=>(cfg().nomStructure||"").trim()||cfg().nomStock||"";
+const alDispo=()=>!!(RELAIS&&window.SKB&&!window.SKB.local&&alRef());
+async function relais(body){const r=await fetch(RELAIS,{method:"POST",headers:{"content-type":"application/json"},body:JSON.stringify(body)});const j=await r.json().catch(()=>({}));if(!r.ok)throw new Error(j.erreur||("relais "+r.status));return j}
+const alMeteo=()=>{const st=computeStats(),ps=prodsActifs().filter(p=>st[p.id].moy>0).sort((a,b)=>st[a.id].autonomie-st[b.id].autonomie),l=e=>ps.filter(p=>st[p.id].etat===e).map(p=>({id:p.id,nom:p.nom,jours:isFinite(st[p.id].autonomie)?Math.round(st[p.id].autonomie):0}));return {urgents:l("crit"),aprevoir:l("warn"),tranquilles:ps.filter(p=>st[p.id].etat==="good").length}};
+let alT=0;
+async function alertesTick(force){
+  if(!alDispo()||!navigator.onLine||S.dbState!=="ok")return;const mails=alMails(),a=alCfg(),now=Date.now();if(!mails.length)return;
+  if(!force&&now-alT<10*60e3)return;alT=now;
+  const vus=ls.get("alvus",{});for(const k in vus)if(now-vus[k]>40*DAY)delete vus[k];
+  const base={action:"envoyer",ref:alRef(),caarud:alNom(),emails:mails},wk=Math.floor((now/DAY+3)/7),todo=[];
+  if(a.rupture)for(const m of S.mvts)if(m.type==="rupture"&&now-m.t<3*DAY&&!vus["r"+m.id]){const p=S.produits.get(m.produit);if(p)todo.push([["r"+m.id],{type:"rupture",cle:"r-"+m.id,data:{produit:p.nom,activite:m.activite?actNom(m.activite):"",date:m.t}}])}
+  if(a.avenir||num(a.recap,0)>0){const M=alMeteo();
+    if(a.avenir){const ps=M.urgents.filter(p=>!vus["a"+p.id+"-"+wk]);if(ps.length)todo.push([ps.map(p=>"a"+p.id+"-"+wk),{type:"avenir",cle:"s"+wk,data:{produits:ps}}])}
+    const n=num(a.recap,0);if(n>0){const d=new Date(),k=n>=30?"m"+d.getFullYear()+"-"+(d.getMonth()+1):"w"+n+"-"+Math.floor(wk/Math.max(1,Math.round(n/7)));
+      if(!vus["c"+k])todo.push([["c"+k],{type:"recap",cle:"c-"+k,data:{...M,date:now,ruptures:[...new Set(S.mvts.filter(m=>m.type==="rupture"&&now-m.t<n*DAY).map(m=>(S.produits.get(m.produit)||{}).nom).filter(Boolean))]}}])}}
+  for(const [ks,b] of todo){try{const j=await relais({...base,...b});if(j.envoyes||j.deja)for(const k of ks)vus[k]=now}catch(e){break}}
+  ls.set("alvus",vus)}
+setInterval(()=>{alertesTick().catch(()=>{})},5*60e3);setTimeout(()=>{alertesTick().catch(()=>{})},25e3);
+function alertesPanel(inWizard){
+  if(!window.SKB)return inWizard?"":'<div class="panel" style="margin-top:14px"><h2>Alertes par e-mail</h2><p class="note">Un mail quand l\'équipe signale une rupture, quand un produit sera épuisé avant la prochaine livraison, et un récap « Météo du stock » chaque semaine, toutes les deux semaines ou chaque mois. Dans la démo, aucun mail n\'est envoyé.</p></div>';
+  if(!RELAIS)return "";
+  if(window.SKB.local)return inWizard?"":'<div class="panel" style="margin-top:14px"><h2>Alertes par e-mail</h2><p class="note">Disponible une fois en ligne : sans compte, rien ne sort de cet appareil, donc aucun mail ne peut partir.</p></div>';
+  const a=alCfg(),E=S.alEtat||{},ms=alMails(),lab={confirme:["good","confirmée"],attente:["warn","à confirmer : ouvre le mail reçu"],inconnu:["mute","pas encore inscrite"],plus_tard:["warn","réessaie demain"]};
+  if(S.alMe===undefined){S.alMe="";if(window.SKB.email)window.SKB.email().then(m=>{S.alMe=m||"";if(m&&!alCfg().emails)render()}).catch(()=>{})}
+  if(ms.length&&!S.alEtat&&!S.alAsk){S.alAsk=1;relais({action:"etat",emails:ms}).then(j=>{S.alEtat=j.etats||{};render()}).catch(()=>{})}
+  let h='<div class="panel" style="margin-top:14px"><h2>Alertes par e-mail</h2><p class="note">'+(inWizard?"Facultatif, modifiable ensuite dans Réglages. ":"Facultatif. ")+'Les mails partent quand un appareil de l\'équipe ouvre l\'appli avec du réseau.</p>'
+   +'<label class="wizl" style="margin:10px 0 0">Adresse(s) qui reçoivent les alertes, séparées par une virgule<input id="alM" type="email" multiple inputmode="email" autocomplete="email" value="'+esc(a.emails||S.alMe||"")+'" placeholder="stock@moncaarud.org"></label>'
+   +(ms.length?'<div class="row" style="margin-top:8px;gap:6px">'+ms.map(m=>{const l=lab[E[m]]||["mute","…"];return '<span class="pill '+l[0]+'">'+esc(m)+' : '+l[1]+'</span>'}).join("")+'</div>':'')
+   +'<p class="note" style="margin-top:8px">Le mail de confirmation n\'arrive pas ? Regarde dans les indésirables. Les messageries d\'association bloquent parfois les expéditeurs inconnus : essaie une autre adresse, ou demande à ton administrateur d\'autoriser Stockaarud.</p>'+'<div class="list" style="margin-top:10px"><label class="it" style="cursor:pointer"><input type="checkbox" id="alR"'+(a.rupture?" checked":"")+' style="width:22px;min-height:22px"><span style="flex:1"><b>Rupture signalée</b><br><span class="note">Dès que l\'équipe touche « Il n\'y en a plus ».</span></span></label>'
+   +'<label class="it" style="cursor:pointer"><input type="checkbox" id="alA"'+(a.avenir?" checked":"")+' style="width:22px;min-height:22px"><span style="flex:1"><b>Rupture à venir</b><br><span class="note">Quand un produit sera épuisé avant la prochaine livraison. Une fois par semaine au plus pour un même produit.</span></span></label></div>'
+   +'<label class="wizl" style="margin:10px 0 0">Récap « Météo du stock »<select id="alC">'+[[0,"Jamais"],[7,"Chaque semaine"],[14,"Toutes les deux semaines"],[30,"Chaque mois"]].map(([v,t])=>'<option value="'+v+'"'+(num(a.recap,0)===v?" selected":"")+'>'+t+'</option>').join("")+'</select></label>'
+   +'<div class="row" style="margin-top:12px"><button class="btn primary" data-act="alSave">Enregistrer</button>'+(ms.some(m=>E[m]==="confirme")?'<button class="btn" data-act="alTest">Envoyer un mail d\'essai</button>':'')+'</div>'
+   +'<p class="note" style="margin-top:10px">Chaque adresse reçoit d\'abord un mail pour confirmer : rien n\'est envoyé avant. Les alertes passent par un service d\'envoi tenu par Stockaarud, qui reçoit le nom du CAARUD, les noms de produits et les jours de stock restants. Jamais rien sur les personnes.</p></div>';
+  return h}
 function aCompleter(){const ps=prodsActifs(),v=ps.filter(p=>p.aVerifier).length,np=ps.filter(p=>!(num(p.prix,0)>0)).length,nf=ps.filter(p=>!fournNom(p)).length;if(!v&&!np&&!nf)return "";
   return '<div class="panel" style="margin-top:12px"><h2>À compléter quand tu auras le temps</h2><ul class="calc">'+(v?'<li>'+v+' conditionnement'+(v>1?"s":"")+' pré-rempli'+(v>1?"s":"")+' à vérifier (marqués « à vérifier » dans Matériel).</li>':'')+(np?'<li>'+np+' produit'+(np>1?"s":"")+' sans prix : facultatif, sert au budget.</li>':'')+(nf?'<li>'+nf+' produit'+(nf>1?"s":"")+' sans fournisseur : facultatif, sert aux délais et au bon de commande.</li>':'')+'</ul></div>'}
 
@@ -2226,7 +2269,7 @@ function tabInvGuide(st,ps,L){
 /* Réglages */
 function tabReg(st){
   const c=cfg();
-  let h='<div class="row" style="margin-top:12px;justify-content:flex-end"><button class="btn small" data-act="wzStart">Relancer l\'installation guidée</button></div>'+equipePanel(false)+aCompleter()+(window.SKB&&window.SKB.local?'':accesPanel())+(S.db?codePanel():'')+'<div class="panel" style="margin-top:14px"><button class="btn small pbtn" data-act="schemaExp">'+SHARE_ICO+'Exporter le schéma</button><h2>Stocks et organisation</h2><p class="note">Le stock central reçoit les commandes des fournisseurs. Si tu stockes aussi ailleurs (un local, une antenne), ajoute un stock intermédiaire : il est réapprovisionné depuis le stock central, et l\'équipe peut y prendre le matériel. Un seul stock suffit dans la plupart des CAARUD.</p><label class="wizl" style="margin:0 0 12px">Nom de la structure, affiché en haut de l\'appli<input id="nomStruct" value="'+esc(c.nomStructure||"")+'" placeholder="Ex. CAARUD Centre-ville"></label>'+schemaStocks(false)+'<div class="list" style="margin-top:8px">'
+  let h='<div class="row" style="margin-top:12px;justify-content:flex-end"><button class="btn small" data-act="wzStart">Relancer l\'installation guidée</button></div>'+equipePanel(false)+aCompleter()+(window.SKB&&window.SKB.local?'':accesPanel())+(S.db?codePanel():'')+alertesPanel(false)+'<div class="panel" style="margin-top:14px"><button class="btn small pbtn" data-act="schemaExp">'+SHARE_ICO+'Exporter le schéma</button><h2>Stocks et organisation</h2><p class="note">Le stock central reçoit les commandes des fournisseurs. Si tu stockes aussi ailleurs (un local, une antenne), ajoute un stock intermédiaire : il est réapprovisionné depuis le stock central, et l\'équipe peut y prendre le matériel. Un seul stock suffit dans la plupart des CAARUD.</p><label class="wizl" style="margin:0 0 12px">Nom de la structure, affiché en haut de l\'appli<input id="nomStruct" value="'+esc(c.nomStructure||"")+'" placeholder="Ex. CAARUD Centre-ville"></label>'+schemaStocks(false)+'<div class="list" style="margin-top:8px">'
    +c.lieux.map(l=>'<div class="it"><input id="ln-'+l.id+'" value="'+esc(l.nom)+'" style="flex:1;min-width:160px" aria-label="Nom du stock">'+(l.principal?'<span class="pill good">stock central</span>':'<span class="pill mute">stock intermédiaire</span>'+'<button class="btn small" data-act="lieuArch" data-id="'+l.id+'">'+(l.archive?"Réactiver":"Archiver")+'</button>')+'</div>').join("")
    +'</div><div class="row" style="margin-top:10px"><button class="btn primary" data-act="saveLieux">Enregistrer les noms</button><button class="btn" data-act="addLieu">Ajouter un stock intermédiaire</button></div></div>';
   h+='<div class="panel" style="margin-top:14px"><h2>Passages et matériel récupéré</h2><p class="note"><b>Tout est facultatif.</b> Rien ne s\'affiche sur l\'écran de l\'équipe tant que tu ne coches rien. Aucun nom, aucune donnée personnelle : seulement des nombres par activité et par jour.</p>'
@@ -2885,7 +2928,7 @@ document.addEventListener("click",async e=>{
   case "svBudget":await saveConfig({budget:Math.max(0,num(val("svB"),0))});toast("Budget enregistré");break;
   case "bilanPdf":{const t0=b.innerHTML;b.disabled=true;try{await bilanPdf()}catch(err){toast("Impression impossible (connexion ?)")}finally{if(b.isConnected){b.disabled=false;b.innerHTML=t0}}break}
   case "rupture":{const p=sheet&&sheet.p;if(!p)break;const id=uid(),m={t:Date.now(),type:"rupture",produit:p.id,lieu:S.lieu||(principal()||{}).id};if(S.activite&&!S.activite.startsWith("__"))m.activite=S.activite;
-    closeSheet();await write("set","mouvements/"+id,m);mesAdd({id,t:m.t,prod:p.id,nom:p.nom,saisi:"plus rien",dest:"Rupture signalée"});toast("Rupture signalée au responsable stock : "+p.nom);render();break}
+    closeSheet();await write("set","mouvements/"+id,m);mesAdd({id,t:m.t,prod:p.id,nom:p.nom,saisi:"plus rien",dest:"Rupture signalée"});toast("Rupture signalée au responsable stock : "+p.nom);render();alertesTick(true).catch(()=>{});break}
   case "invMode":S.invMode=b.dataset.v;render();break;
   case "goInv":S.view="coordo";S.ctab="inv";S.invMode="rapide";window.scrollTo(0,0);render();break;
   case "invRapideOk":{const n=await saveInvRapide();if(n){S.invRep=S.lastSess;window.scrollTo(0,0);render()}break}
@@ -2898,6 +2941,12 @@ document.addEventListener("click",async e=>{
   case "invRestart":S.invIdx=0;S.guideSess=null;render();break;
   case "invOk":{const p=S.produits.get(id),st=computeStats(),theo=st[id].byLieu[S.invLieu]||0;const cc=val("invC"),bb=val("invB"),uu=val("invU");if(cc===""&&bb===""&&uu===""){toast("Indique ce que tu as compté");break}
     const qte=Math.round(num(cc)*(p.parCarton>1?p.parCarton:0)+num(bb)*(p.parBoite>1?p.parBoite:0)+num(uu));if(!S.guideSess)S.guideSess="inv"+uid();await write("set","mouvements/"+uid(),{t:Date.now(),type:"inventaire",produit:id,qte,theorique:theo,lieu:S.invLieu,session:S.guideSess});S.invIdx++;render();break}
+  case "alSave":{const mails=alLire(val("alM")),brut=val("alM").trim();if(brut&&!mails.length){toast("Adresse e-mail non reconnue");break}
+    await saveConfig({alertes:{emails:mails.join(", "),rupture:!!$("#alR").checked,avenir:!!$("#alA").checked,recap:num(val("alC"),0)}});
+    if(!mails.length){S.alEtat={};toast("Alertes désactivées");render();break}
+    try{const j=await relais({action:"abonner",emails:mails,caarud:alNom()});S.alEtat=j.etats||{};const att=mails.filter(m=>S.alEtat[m]!=="confirme");toast(att.length?"Enregistré. Un mail de confirmation est parti vers "+att.join(", "):"Enregistré");alT=0;alertesTick(true).catch(()=>{})}catch(err){toast("Enregistré, mais le service d'envoi ne répond pas. Réessaie plus tard.")}
+    render();break}
+  case "alTest":{try{const j=await relais({action:"envoyer",type:"test",ref:alRef(),caarud:alNom(),emails:alMails(),cle:"t-"+Math.floor(Date.now()/60e3),data:{}});toast(j.envoyes?"Mail d'essai envoyé : regarde aussi dans les indésirables":"Rien n'est parti : l'adresse doit d'abord être confirmée")}catch(err){toast("Le service d'envoi ne répond pas. Réessaie plus tard.")}break}
   case "saveLieux":await saveConfig({nomStructure:val("nomStruct").trim(),lieux:cfg().lieux.map(l=>({...l,nom:val("ln-"+l.id)||l.nom})),nomStock:val("ln-"+principal().id)||cfg().nomStock});toast("Enregistré");break;
   case "addLieu":await saveConfig({lieux:[...cfg().lieux,{id:uid(),nom:"Nouveau stock"}]});break;
   case "lieuArch":await saveConfig({lieux:cfg().lieux.map(l=>l.id===id?{...l,archive:!l.archive}:l)});break;
