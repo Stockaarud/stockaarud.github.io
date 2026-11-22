@@ -9,7 +9,7 @@
   /* Deux CAARUD fictifs, pour essayer le passage de l'un à l'autre */
   const BASES = [{ ref: "nord", nom: "CAARUD Démo Nord" }, { ref: "sud", nom: "CAARUD Démo Sud" }];
   const base = BASES.some(b => b.ref === localStorage.getItem(BASE_KEY)) ? localStorage.getItem(BASE_KEY) : "nord";
-  const KEY = base === "nord" ? "stockaarud-demo-v3" : "stockaarud-demo-v3-" + base;
+  const KEY = base === "nord" ? "stockaarud-demo-v4" : "stockaarud-demo-v4-" + base;
   window.STK_NS = base === "nord" ? "stk:" : "stk@demo-" + base + ":";
   const store = new Map();
   const startOfDay = (t) => { const d = new Date(t); d.setHours(0, 0, 0, 0); return d.getTime(); };
@@ -26,6 +26,7 @@
       for (const c in saved.data) store.set(c, new Map(Object.entries(saved.data[c])));
       const days = Math.round((startOfDay(Date.now()) - saved.anchorDay) / DAY);
       if (days > 0) for (const m of (store.get("mouvements") || new Map()).values()) { if (typeof m.t === "number") m.t += days * DAY; if (m.peremption) m.peremption = shiftIso(m.peremption, days * DAY); }
+      if (days > 0) for (const c of (store.get("commandes") || new Map()).values()) if (typeof c.t === "number") c.t += days * DAY;
     } else {
       const shift = startOfDay(Date.now()) - DAY - startOfDay(seed.anchor);
       const cf = JSON.parse(JSON.stringify(seed.config));
@@ -35,6 +36,8 @@
       const mv = new Map();
       seed.mouvements.forEach((m, i) => mv.set("demo-" + i.toString(36), { lieu: "principal", ...m, t: m.t + shift, ...(m.peremption ? { peremption: shiftIso(m.peremption, shift) } : {}) }));
       store.set("mouvements", mv);
+      const cm = new Map();Object.entries(seed.commandes || {}).forEach(([id, c]) => cm.set(id, { ...c, t: c.t + shift }));
+      store.set("commandes", cm);
     }
     persist();
   }
@@ -90,7 +93,7 @@
   window.claude = Object.freeze({ use: (name) => ready.then(() => caps[name] || null) });
 
   function reset() {
-    Object.keys(localStorage).filter((k) => k.startsWith("stockaarud-demo-v3") || k.startsWith("stk:") || k.startsWith("stk@demo-")).forEach((k) => localStorage.removeItem(k));
+    Object.keys(localStorage).filter((k) => k.startsWith("stockaarud-demo-v") || k.startsWith("stk:") || k.startsWith("stk@demo-")).forEach((k) => localStorage.removeItem(k));
     location.reload();
   }
   const demoLink = () => "https://stockaarud.github.io/demo/";

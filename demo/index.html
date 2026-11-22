@@ -73,7 +73,7 @@ svg[data-ck]{touch-action:pan-y}
 .jscale{display:flex;align-items:center;gap:4px;margin:6px 0 0 40px;font-size:12px;color:var(--muted)}.jscale i{display:inline-block;width:18px;height:12px;border-radius:3px;background:var(--c1)}.jscale span{margin:0 4px}
 .expg{display:grid;grid-template-columns:1fr 1fr;gap:8px}.expg .btn{justify-content:center;display:inline-flex;align-items:center;gap:6px}.expg .btn.primary{grid-column:1/-1}
 @media (max-width:380px){.expg{grid-template-columns:1fr}}
-@media (min-width:1100px){.wrap,.topin{max-width:1240px}.cbar{padding-left:max(16px,calc((100% - 1240px)/2 + 16px));padding-right:max(16px,calc((100% - 1240px)/2 + 16px))}
+@media (min-width:1100px){.wrap,.topin{max-width:1240px}.svnav{flex-wrap:wrap;overflow:visible}.cbar{padding-left:max(16px,calc((100% - 1240px)/2 + 16px));padding-right:max(16px,calc((100% - 1240px)/2 + 16px))}
   .bgrid{display:grid;grid-template-columns:minmax(0,1.3fr) minmax(0,1fr);gap:0 16px;align-items:start}.bcol{min-width:0}}
 .xctl{display:flex;flex-wrap:wrap;gap:8px 14px;align-items:flex-end;margin-top:8px}.xctl label{display:flex;flex-direction:column;gap:4px;font-size:13px;color:var(--muted);font-weight:600}
 .xt table{width:auto;min-width:min(100%,520px)}.xt table td{white-space:nowrap}.xt table th{white-space:normal;max-width:6.5em;vertical-align:bottom;line-height:1.2}.xt table td:first-child,.xt table th:first-child{max-width:none;white-space:normal;min-width:12em}.xt tr.xtot td{border-top:2px solid var(--fg)}
@@ -1575,6 +1575,33 @@ function svChg(){const C=changements();if(!C.assez)return pan("Ce qui a changé"
   const body=grp("En hausse",r=>r.kind==="up")+grp("En baisse",r=>r.kind==="down")+grp("Nouveau ou arrêté",r=>r.kind==="new"||r.kind==="stop");
   return pan("Ce qui a changé","Les 3 derniers mois comparés aux 3 mois d\'avant, et aux mêmes mois l\'an dernier quand c\'est possible. Seuls les écarts nets sont gardés : 20 % ou plus, sur des volumes qui comptent. À discuter en équipe : un changement de pratiques, de public, ou simplement une rupture ou un oubli de saisie ?",body||'<div class="empty">Rien de marquant : la distribution est stable d\'un trimestre à l\'autre.</div>')}
 
+/* Fiabilité des fournisseurs : délais réels, livraisons incomplètes, prix */
+const eur2=v=>num(v,0).toLocaleString("fr-FR",{style:"currency",currency:"EUR",minimumFractionDigits:2,maximumFractionDigits:2});
+const mediane=a=>{if(!a.length)return null;const b=[...a].sort((x,y)=>x-y),k=Math.floor(b.length/2);return b.length%2?b[k]:(b[k-1]+b[k])/2};
+function fournStats(){const now=Date.now(),lim=now-365*DAY,rec={};for(const m of allMvts())if(m.type==="reception"&&m.commande)(rec[m.commande]=rec[m.commande]||[]).push(m);
+  const F={};for(const c of S.cmds){if(c.t<lim)continue;const p=S.produits.get(c.produit),nom=c.fournisseur||fournNom(p)||"Sans fournisseur",fc=(cfg().fournisseurs||[]).find(f=>f.nom===nom);
+    const o=F[nom]=F[nom]||{nom,f:fc,annonce:fc?num(fc.delai,7):delaiOf(p),n:0,delais:[],heure:0,mesure:0,plusieurs:0,incompletes:0,retard:[],prix:{}};o.n++;
+    const R=(rec[c.id]||[]).sort((a,b)=>a.t-b.t),recu=recuOf(c),ann=o.annonce;
+    if(R.length){const d=(R[0].t-c.t)/DAY;o.delais.push(d);o.mesure++;if(d<=ann+1)o.heure++;if(R.length>1||(num(R[0].qte,0)<c.qte&&recu>=c.qte))o.plusieurs++}
+    if(c.statut==="recue"&&recu<c.qte*0.98)o.incompletes++;
+    if(enAttente(c)&&now-c.t>(ann+1)*DAY)o.retard.push({c,p,j:Math.floor((now-c.t)/DAY)});
+    if(num(c.prixU,0)>0&&p)(o.prix[p.id]=o.prix[p.id]||[]).push({t:c.t,v:num(c.prixU)})}
+  return Object.values(F).sort((a,b)=>b.n-a.n)}
+function svFourn(){const L=fournStats();if(!L.length)return pan("Fournisseurs","","<div class=\"empty\">Aucune commande enregistrée ces 12 derniers mois. Les chiffres apparaîtront à mesure que les commandes sont enregistrées puis réceptionnées.</div>");
+  const pc=(a,b)=>b?Math.round(a/b*100)+" %":"—",j=v=>v==null?"—":(Math.round(v*10)/10).toString().replace(".",",")+" j";
+  let h='<div class="tw"><table><thead><tr><th>Fournisseur</th><th class="n">Commandes</th><th class="n">Délai réglé</th><th class="n">Délai réel (médian)</th><th class="n">À l\'heure</th><th class="n">En plusieurs fois</th><th class="n">Incomplètes</th><th class="n">En retard</th></tr></thead><tbody>'
+   +L.map(o=>{const md=mediane(o.delais);return '<tr><td>'+esc(o.nom)+'</td><td class="n">'+o.n+'</td><td class="n">'+o.annonce+' j</td><td class="n"><b>'+j(md)+'</b></td><td class="n">'+pc(o.heure,o.mesure)+'</td><td class="n">'+(o.plusieurs||"")+'</td><td class="n">'+(o.incompletes||"")+'</td><td class="n">'+(o.retard.length?'<b style="color:var(--crit)">'+o.retard.length+'</b>':"")+'</td></tr>'}).join("")+'</tbody></table></div>';
+  const sug=L.filter(o=>o.f&&o.delais.length>=3&&Math.abs(Math.round(mediane(o.delais))-o.annonce)>=2);
+  if(sug.length)h+='<div class="narr" style="margin-top:12px"><b>Délais à ajuster</b>'+sug.map(o=>{const md=Math.round(mediane(o.delais));return '<p>'+esc(o.nom)+' : réglé à '+o.annonce+' j, mais livre en '+md+' j en pratique. Un délai juste évite les ruptures (ou les commandes trop tôt). <button class="btn small" data-act="fournDelai" data-id="'+o.f.id+'" data-v="'+md+'">Régler à '+md+' j</button></p>'}).join("")+'</div>';
+  const ret=L.flatMap(o=>o.retard.map(x=>({...x,f:o.nom,ann:o.annonce})));
+  if(ret.length)h+='<h3 style="margin-top:14px">En retard en ce moment</h3><ul class="chg">'+ret.map(x=>'<li class="up">'+esc((x.p||{nom:"?"}).nom)+' chez '+esc(x.f)+' : commandé il y a '+x.j+' j (délai '+x.ann+' j)</li>').join("")+'</ul>';
+  const rows=[];for(const o of L)for(const [pid,a] of Object.entries(o.prix)){a.sort((x,y)=>x.t-y.t);const p=S.produits.get(pid);if(!p||a.length<2)continue;const f=a[0].v,l=a[a.length-1].v;if(f!==l)rows.push({p,o,f,l,ev:Math.round((l-f)/f*1000)/10,t0:a[0].t,t1:a[a.length-1].t})}
+  rows.sort((a,b)=>Math.abs(b.ev)-Math.abs(a.ev));
+  h+='<h3 style="margin-top:14px">Évolution des prix</h3>'+(rows.length?'<div class="tw"><table><thead><tr><th>Produit</th><th>Fournisseur</th><th class="n">Prix au début</th><th class="n">Dernier prix</th><th class="n">Évolution</th></tr></thead><tbody>'+rows.map(r=>'<tr><td>'+esc(r.p.nom)+'</td><td>'+esc(r.o.nom)+'</td><td class="n">'+eur2(r.f)+' <span class="note">'+fmtDate(r.t0)+'</span></td><td class="n">'+eur2(r.l)+' <span class="note">'+fmtDate(r.t1)+'</span></td><td class="n"><b style="color:'+(r.ev>0?"var(--crit)":"var(--good)")+'">'+(r.ev>0?"+":"")+String(r.ev).replace(".",",")+' %</b></td></tr>').join("")+'</tbody></table></div>':'<p class="note">Aucun changement de prix sur les commandes de l\'année. Le prix unitaire de Matériel est enregistré sur chaque commande : modifiez-le quand le fournisseur change ses tarifs.</p>');
+  const bars=L.filter(o=>o.delais.length).map(o=>({label:o.nom,v:Math.round(mediane(o.delais)*10)/10,col:mediane(o.delais)>o.annonce+1?"--warn":"--good"}));
+  const g=bars.length?'<div class="chart" style="margin-top:12px">'+barresH(bars,v=>String(v).replace(".",",")+" j",{titre:"Délai réel médian"})+'</div>'+legende([{label:"Délai réel médian : dans les temps",col:"--good"},{label:"Plus long que le délai réglé",col:"--warn"}]):"";
+  return pan("Fournisseurs","Les commandes des 12 derniers mois : le délai réel entre la commande et la première livraison, les livraisons en plusieurs fois ou incomplètes, et l\'évolution des prix enregistrés sur les commandes.",g+h)}
+
 /* Péremptions : les lots en stock, sortis du plus ancien au plus récent, au rythme actuel */
 function perimRisques(st){const out=[],now=Date.now();
   for(const p of prodsActifs()){const s=st[p.id];if(!s||!s.receptions.length||s.stock<=0)continue;let reste=s.stock;const lots=[];
@@ -1757,9 +1784,9 @@ function svRuptures(){const {a,b}=periodeSV(),R=ruptures(a,b),ids=Object.keys(R.
 function rupturesOuvertes(){const out=[];const byP={};for(const m of allMvts())(byP[m.produit]=byP[m.produit]||[]).push(m);
   for(const pid in byP){let open=null;for(const m of byP[pid]){if(m.type==="rupture")open=open||m;else if(open&&m.t>open.t&&(m.type==="reception"||m.type==="entree"||(m.type==="inventaire"&&m.qte>0)))open=null}if(open&&S.produits.has(pid))out.push(open)}return out}
 
-const SV_VUES=[["conso","Consommation"],["explo","Tableau croisé"],["repart","Camemberts par dossier"],["prat","Évolution des pratiques"],["coh","Cohérence des kits"],["act","Par activité"],["jours","Jours forts"],["budget","Budget"],["bprev","Budget prévisionnel"],["chg","Ce qui a changé"],["annee","Année / an dernier"],["meteo","Météo du stock"],["rupt","Ruptures"],["dorm","Produits dormants"],["bilan","Chiffres de l\'année"]];
+const SV_VUES=[["conso","Consommation"],["explo","Tableau croisé"],["repart","Camemberts par dossier"],["prat","Évolution des pratiques"],["coh","Cohérence des kits"],["act","Par activité"],["jours","Jours forts"],["budget","Budget"],["bprev","Budget prévisionnel"],["chg","Ce qui a changé"],["four","Fournisseurs"],["annee","Année / an dernier"],["meteo","Météo du stock"],["rupt","Ruptures"],["dorm","Produits dormants"],["bilan","Chiffres de l\'année"]];
 function svNav(){return '<div class="svnav" role="tablist" aria-label="Graphiques">'+SV_VUES.map(([k,l])=>'<button data-act="sv" data-v="'+k+'" aria-pressed="'+((S.sv||"conso")===k)+'">'+l+'</button>').join("")+'</div>'}
-function svView(){const v=S.sv||"conso";return v==="bprev"?svBprev():v==="chg"?svChg():v==="explo"?svExplo():v==="repart"?svRepart():v==="prat"?svPratiques():v==="coh"?svCoherence():v==="act"?svActivites():v==="jours"?svJours():v==="budget"?svBudget():v==="annee"?svAnnee():v==="meteo"?svMeteo():v==="rupt"?svRuptures():v==="dorm"?svDormants():v==="bilan"?svBilan():null}
+function svView(){const v=S.sv||"conso";return v==="four"?svFourn():v==="bprev"?svBprev():v==="chg"?svChg():v==="explo"?svExplo():v==="repart"?svRepart():v==="prat"?svPratiques():v==="coh"?svCoherence():v==="act"?svActivites():v==="jours"?svJours():v==="budget"?svBudget():v==="annee"?svAnnee():v==="meteo"?svMeteo():v==="rupt"?svRuptures():v==="dorm"?svDormants():v==="bilan"?svBilan():null}
 
 function viewCoordo(st){
   const tabs=[["bord","Tableau de bord"],["cmd","Commandes"],["stats","Statistiques"],["prev","Prévisions"],["mvt","Mouvements"],["inv","Inventaire"],["reg","Réglages"]];
@@ -2561,6 +2588,7 @@ document.addEventListener("click",async e=>{
     if(b.dataset.sure!=="1"){b.dataset.sure="1";b.textContent="Confirmer : "+L.length+" sortie"+(L.length>1?"s":"")+" le "+new Date(t0).toLocaleDateString("fr-FR")+" pour "+actNom(act);break}
     let k=0;for(const [p,q] of L){await write("set","mouvements/"+uid(),{t:t0+(k++)*1000,type:"sortie",produit:p.id,qte:q,lieu,activite:act,lot:true})}
     S.lotDraft={date:ds,act,lieu};toast(L.length+" sortie"+(L.length>1?"s":"")+" enregistrée"+(L.length>1?"s":"")+" au "+new Date(t0).toLocaleDateString("fr-FR"));render();break}
+  case "fournDelai":await saveConfig({fournisseurs:(cfg().fournisseurs||[]).map(f=>f.id===id?{...f,delai:num(b.dataset.v,f.delai)}:f)});toast("Délai réglé à "+b.dataset.v+" jours");break;
   case "goChg":S.ctab="stats";S.sv="chg";render();window.scrollTo(0,0);break;
   case "xSwap":if((S.xc||"mois")!=="aucune"){const r0=S.xr||"categorie";S.xr=S.xc||"mois";S.xc=r0;render()}break;
   case "tabMore":S.tabMore=!S.tabMore;render();break;
@@ -2603,9 +2631,9 @@ document.addEventListener("click",async e=>{
   case "valider":valider();break;
   case "signal":await write("set","signalements/"+uid(),{t:Date.now(),texte:S.query.trim()});toast("Signalé au responsable stock");S.query="";render();break;
   case "delSig":await write("delete","signalements/"+id);break;
-  case "commanderTout":{let n=0;for(const el of document.querySelectorAll('input[id^="cq-"]')){const pid=el.id.slice(3),q=Math.round(num(el.value)),p=S.produits.get(pid);if(p&&q>0){await write("set","commandes/"+uid(),{t:Date.now(),produit:pid,qte:q,recu:0,statut:"commandee",fournisseur:fournNom(p)});n++}}toast(n?n+" commande"+(n>1?"s":"")+" enregistrée"+(n>1?"s":""):"Rien à commander");break}
-  case "commander":{const q=Math.round(num(val("cq-"+id)));if(q>0){const p=S.produits.get(id);await write("set","commandes/"+uid(),{t:Date.now(),produit:id,qte:q,recu:0,statut:"commandee",fournisseur:fournNom(p)});toast("Commande enregistrée")}break}
-  case "ncAdd":{const p=S.produits.get(val("ncP")),q=num(val("ncQ"));if(!p||q<=0){toast("Indique une quantité");break}const u=val("ncM")==="carton"?q*(p.parCarton||1):q;await write("set","commandes/"+uid(),{t:Date.now(),produit:p.id,qte:Math.round(u),recu:0,statut:"commandee",fournisseur:fournNom(p)});toast("Commande enregistrée");break}
+  case "commanderTout":{let n=0;for(const el of document.querySelectorAll('input[id^="cq-"]')){const pid=el.id.slice(3),q=Math.round(num(el.value)),p=S.produits.get(pid);if(p&&q>0){await write("set","commandes/"+uid(),{t:Date.now(),produit:pid,qte:q,recu:0,statut:"commandee",fournisseur:fournNom(p),...(num(p.prix,0)>0?{prixU:num(p.prix)}:{})});n++}}toast(n?n+" commande"+(n>1?"s":"")+" enregistrée"+(n>1?"s":""):"Rien à commander");break}
+  case "commander":{const q=Math.round(num(val("cq-"+id)));if(q>0){const p=S.produits.get(id);await write("set","commandes/"+uid(),{t:Date.now(),produit:id,qte:q,recu:0,statut:"commandee",fournisseur:fournNom(p),...(num(p.prix,0)>0?{prixU:num(p.prix)}:{})});toast("Commande enregistrée")}break}
+  case "ncAdd":{const p=S.produits.get(val("ncP")),q=num(val("ncQ"));if(!p||q<=0){toast("Indique une quantité");break}const u=val("ncM")==="carton"?q*(p.parCarton||1):q;await write("set","commandes/"+uid(),{t:Date.now(),produit:p.id,qte:Math.round(u),recu:0,statut:"commandee",fournisseur:fournNom(p),...(num(p.prix,0)>0?{prixU:num(p.prix)}:{})});toast("Commande enregistrée");break}
   case "delCmd":await write("delete","commandes/"+id);toast("Commande annulée");break;
   case "recevoir":openReception(S.cmds.find(c=>c.id===id));break;
   case "rcOk":{const c=S.cmds.find(x=>x.id===id),p0=c&&S.produits.get(c.produit),q=Math.round(num(val("rcQ"))*(document.getElementById("rcM")&&val("rcM")==="carton"&&p0?p0.parCarton:1));if(!c||q<=0)break;const m={t:Date.now(),type:"reception",produit:c.produit,qte:q,lieu:val("rcL"),commande:c.id};if(val("rcD"))m.peremption=val("rcD");
