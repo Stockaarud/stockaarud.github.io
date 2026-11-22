@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="robots" content="noindex">
+<title>Fiche équipe Stockaarud</title>
+<style>
+@font-face{font-family:Archivo;src:url(../fonts/archivo.woff2) format("woff2");font-weight:100 900;font-stretch:62% 125%}
+@font-face{font-family:"Atkinson Hyperlegible";src:url(../fonts/atkinson-hyperlegible-latin-400-normal.woff2) format("woff2");font-weight:400}
+@font-face{font-family:"Atkinson Hyperlegible";src:url(../fonts/atkinson-hyperlegible-latin-700-normal.woff2) format("woff2");font-weight:700}
+:root{--kraft:#c4a27a;--paper:#f7f5ee;--ink:#14201d;--green:#1f4d3a;--yellow:#f2b705;--muted:#4b4136}
+*{box-sizing:border-box;margin:0}
+@page{size:210mm 297mm;margin:0}
+html,body{background:var(--kraft)}
+body{font-family:"Atkinson Hyperlegible",sans-serif;color:var(--ink)}
+.a{width:210mm;height:297mm;overflow:hidden;padding:11mm 13mm 9mm;background:var(--kraft);display:flex;flex-direction:column;gap:5mm}
+.top{display:flex;align-items:center;justify-content:space-between;background:var(--paper);padding:3.5mm 5mm;box-shadow:0 2mm 4mm rgba(40,25,10,.25)}
+.brand{display:flex;align-items:center}.top img.ic{width:13mm;height:13mm}.top img.wm{height:7mm;margin-left:3.5mm}
+.top span{font-family:Archivo;font-weight:800;font-stretch:62%;text-transform:uppercase;font-size:7mm}
+h1{font-family:Archivo;font-weight:800;font-stretch:62%;text-transform:uppercase;line-height:.95;font-size:17mm}
+h1 em{font-style:normal;background:var(--yellow);padding:0 2.5mm}
+h2{font-family:Archivo;font-weight:800;font-stretch:62%;text-transform:uppercase;font-size:7.5mm;line-height:1}
+.steps{display:grid;grid-template-columns:1fr 1fr 1fr;gap:4mm}
+.s{background:var(--paper);padding:4mm;box-shadow:0 1.5mm 3mm rgba(40,25,10,.22)}
+.s .h{display:flex;align-items:center;gap:3mm;margin-bottom:2mm}
+.s i{font-style:normal;flex:none;width:10mm;height:10mm;background:var(--yellow);display:grid;place-items:center;font-family:Archivo;font-weight:800;font-size:7mm}
+.s b{font-family:Archivo;font-weight:800;font-stretch:62%;text-transform:uppercase;font-size:8mm;line-height:1}
+.s p{font-size:3.9mm;line-height:1.35}
+.cases{background:var(--paper);box-shadow:0 2mm 4mm rgba(40,25,10,.25);padding:5mm 6mm 3mm;display:flex;flex-direction:column;gap:2.5mm;flex:1}
+.cases dl{display:grid;grid-template-columns:1fr 1fr;column-gap:8mm}
+.cases dl>div{padding:3.4mm 0;border-top:.3mm solid #b9b3a3}
+.cases dt{font-weight:700;font-size:5mm;line-height:1.2}
+.cases dd{font-size:4.3mm;line-height:1.38;margin-top:.8mm}
+.cases dd b{background:#fbe9a8;padding:0 .8mm}
+.foot{background:var(--green);color:#fff;padding:3.5mm 5mm;font-size:4.2mm;line-height:1.35;box-shadow:0 1.5mm 3mm rgba(40,25,10,.22)}
+.foot b{color:var(--yellow)}
+@media screen and (min-width:230mm){body{display:grid;place-items:center;padding:8mm}}
+</style>
+</head>
+<body>
+<section class="a">
+  <div class="top"><div class="brand"><img class="ic" src="../img/icon.png" alt=""><img class="wm" src="../img/wordmark.png" alt="Stockaarud"></div><span>La fiche équipe</span></div>
+  <h1>Tu prends du matériel ?<br><em>Trois touches.</em></h1>
+  <div class="steps">
+    <div class="s"><div class="h"><i>1</i><b>Où ?</b></div><p>Touche l’activité : accueil, maraude, festif… Elle reste choisie toute la journée. Les flèches passent à une autre.</p></div>
+    <div class="s"><div class="h"><i>2</i><b>Quoi ?</b></div><p>Touche le produit. Les plus utilisés sont en haut ; la recherche comprend « capotes » ou « paille ».</p></div>
+    <div class="s"><div class="h"><i>3</i><b>Combien ?</b></div><p>Tape le nombre ou touche +5, +10, +20, +50. En unités, boîtes ou cartons. Puis <b style="font:inherit;font-weight:700;text-transform:none">Valider</b>.</p></div>
+  </div>
+  <div class="cases">
+    <h2>Et si…</h2>
+    <dl>
+      <div><dt>Je me suis trompé</dt><dd>Dans <b>Mes saisies d’aujourd’hui</b>, touche <b>Annuler</b>, puis recommence.</dd></div>
+      <div><dt>Il n’y en a plus au stock</dt><dd>Dans l’écran Combien, touche <b>Il n’y en a plus</b> : le responsable stock est prévenu.</dd></div>
+      <div><dt>Je ramène du matériel</dt><dd>Dans <b>Mes saisies d’aujourd’hui</b>, touche <b>J’en ramène</b> et indique combien.</dd></div>
+      <div><dt>Le produit n’est pas dans la liste</dt><dd>Tape son nom dans la recherche, puis <b>Signaler au responsable stock</b>.</dd></div>
+      <div><dt>C’est cassé, perdu ou périmé</dt><dd>À l’étape Où ?, choisis <b>Perte / casse</b>.</dd></div>
+      <div><dt>Je prête ou je donne à une asso</dt><dd>Choisis <b>Prêt / don à une asso</b>. Au retour du matériel, touche <b>Rendu</b>.</dd></div>
+      <div><dt>Une livraison arrive</dt><dd>En bas de l’écran, <b>Une livraison est arrivée ?</b> : touche le produit et indique ce qui est arrivé.</dd></div>
+      <div><dt>Je n’ai pas de réseau</dt><dd>Note quand même : tout part dès que le réseau revient.</dd></div>
+      <div><dt>Je ne sais pas le nombre exact</dt><dd>Une estimation honnête suffit : pas besoin de compter au carton près.</dd></div>
+      <div><dt>Je travaille dans deux CAARUD</dt><dd>Le nom du CAARUD est dans la bande verte. <b>Changer</b> passe de l’un à l’autre.</dd></div>
+    </dl>
+  </div>
+  <p class="foot"><b>Tu ne peux rien casser.</b> Tu peux annuler tes propres saisies, et le responsable stock peut tout corriger. Aucun nom n’est enregistré : l’appli ne compte que du matériel.</p>
+</section>
+</body>
+</html>

@@ -4,6 +4,9 @@ Le site de présentation de [Stockaarud](https://github.com/Stockaarud/stockaaru
 
 - `index.html` : l'accueil
 - `installer.html` : le guide d'installation pas à pas
+- `guide.html` : le guide utilisateur
+- `flyer/fiche-equipe.html` : la fiche équipe d'une page
+- `docs/` : les PDF (guide utilisateur, guide d'installation, fiche équipe), exportés de ces trois pages, et le logo
 - `documents.html` : tous les documents à télécharger (flyers, affiche, guide PDF, vidéos, logo dans `docs/`)
 - `site.css`, `tokens.css`, `base.css` : la mise en page
 - `img/` : captures de la vraie appli, avec des données fictives

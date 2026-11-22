@@ -450,3 +450,5 @@ html { scroll-padding-top: calc(var(--space-3xl) + var(--space-lg)); }
 .logos { display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-lg) var(--space-2xl); margin: var(--space-lg) 0 0; }
 .logos img { height: 72px; width: auto; max-width: 100%; }
 .rows--dl dd small { color: var(--color-ink-2, inherit); white-space: nowrap; }
+/* Impression du guide : une longue étape peut passer sur deux pages, mais pas une ligne de tableau ni une capture */
+@media print { .steps .step--full { break-inside: auto; } .part-lead, .step h2 { break-inside: avoid; break-after: avoid; } .step .shot, .step-body > p { break-inside: avoid; } .step .shot { align-self: start; } p { orphans: 3; widows: 3; } }

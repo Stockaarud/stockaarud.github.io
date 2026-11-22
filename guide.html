@@ -60,26 +60,25 @@
   <section class="doc-hero" aria-labelledby="titre">
     <div class="container doc-hero-grid">
       <div class="doc-hero-text">
-      <h1 id="titre" class="h1-wide">Le guide d’utilisation</h1>
-      <p class="lead">Tout ce que fait Stockaarud, écran par écran : pour l’équipe qui note les sorties, pour le responsable stock qui commande et suit les chiffres.</p>
+      <h1 id="titre" class="h1-wide">Le guide utilisateur</h1>
+      <p class="lead">Tout ce que fait Stockaarud, écran par écran, et à quoi sert chaque chiffre : pour l’équipe qui note les sorties, pour le responsable stock qui commande et suit les statistiques.</p>
       <div class="actions">
-        <a class="btn btn--primary" href="docs/guide-stockaarud.pdf" download>Le guide complet en PDF</a>
+        <a class="btn btn--primary" href="docs/guide-utilisateur-stockaarud.pdf" download>Le guide utilisateur en PDF</a>
         <a class="btn btn--secondary" href="demo/" target="_blank" rel="noopener">Essayer dans la démo</a>
       </div>
       </div>
       <div class="sheet sheet--fluoro need screen-only" style="--r: 2deg">
-        <p class="need-t">Le PDF contient</p>
+        <p class="need-t">Trois documents</p>
         <ul>
-          <li>L’installation, pas à pas</li>
-          <li>Ce guide d’utilisation</li>
-          <li>Qui peut faire quoi</li>
+          <li>Ce guide utilisateur</li>
+          <li><a href="installer.html">Le guide d’installation</a></li>
+          <li><a href="docs/fiche-equipe-stockaarud.pdf">La fiche équipe, une page</a></li>
         </ul>
       </div>
     </div>
   </section>
 
   <div class="container guide">
-      <div id="print-install" hidden></div>
 
       <div class="who" role="tablist" aria-label="Le guide pour">
         <button class="tab who-btn" type="button" role="tab" id="tab-equipe" aria-controls="equipe" aria-selected="true" tabindex="0"><span class="tab-t"><b>L’équipe</b>Noter les sorties, depuis son téléphone.</span></button>
@@ -147,86 +146,193 @@
           <h2>Sur ordinateur</h2>
           <div class="step-body">
             <p>Ouvrez la même adresse sur l’ordinateur du bureau : <a href="https://stockaarud.github.io/stockaarud/" target="_blank" rel="noopener">stockaarud.github.io/stockaarud</a>. Connectez-vous avec votre e-mail, ou avec un code de responsable stock : sur le téléphone, <strong>Réglages</strong>, <strong>Accès et appareils</strong>, <strong>Ajouter un responsable stock</strong>.</p>
-            <p>Le téléphone et l’ordinateur voient le même stock, en direct. L’équipe continue de noter sur son téléphone ; vous préparez les commandes, regardez les statistiques en grand, faites l’inventaire sur une page et sortez les PDF du rapport d’activité depuis le bureau.</p>
+            <p>Le téléphone et l’ordinateur voient le même stock, en direct. Tout ce que décrit ce guide marche sur les deux ; l’ordinateur ajoute :</p>
             <dl class="rows--dl rows--tight">
               <div><dt>Tous les onglets</dt><dd>Visibles d’un coup, avec des graphiques en grand. Les touches <strong>1</strong> à <strong>7</strong> passent d’un onglet à l’autre.</dd></div>
-              <div><dt>Tableau croisé</dt><dd>Dans Statistiques : choisissez les lignes, les colonnes et la mesure, par exemple les produits par activité, puis exportez en tableur.</dd></div>
-              <div><dt>Saisie en lot</dt><dd>Dans Mouvements : les sorties notées sur papier, d’un coup, à la date voulue.</dd></div>
-              <div><dt>Matériel en tableau</dt><dd>Dans Réglages : modifiez prix, cartons et fournisseurs comme dans un tableur, puis enregistrez tout.</dd></div>
-              <div><dt>Écran du stock</dt><dd>Depuis le tableau de bord : un affichage en grand pour un écran au local, mis à jour en direct.</dd></div>
-              <div><dt>Bilan de l’année</dt><dd>Dans Statistiques : le PDF pour le rapport d’activité, avec la comparaison à l’an dernier et le détail par activité.</dd></div>
-              <div><dt>Budget prévisionnel</dt><dd>Dans Statistiques : l’année prochaine mois par mois, par catégorie et par fournisseur, avec vos hypothèses d’activité.</dd></div>
+              <div><dt>Saisie en lot</dt><dd>Dans Mouvements : les sorties notées sur papier, d’un coup, à la date voulue. Entrée passe au produit suivant.</dd></div>
+              <div><dt>Matériel en tableau</dt><dd>Dans Réglages : prix, cartons et fournisseurs se modifient comme dans un tableur.</dd></div>
+              <div><dt>Écran du stock</dt><dd>Depuis le tableau de bord : un affichage en grand pour un écran ou une tablette au local, mis à jour tout seul.</dd></div>
             </dl>
           </div>
         </li>
         <li class="step" id="bord">
           <h2>Tableau de bord</h2>
           <div class="step-body">
-            <p>Les alertes d’abord : les produits qui seront épuisés avant la prochaine livraison.</p>
-            <p>Puis l’<strong>autonomie</strong> de chaque produit, en jours, du plus urgent au moins urgent. Touchez un produit pour voir son stock, sa consommation par semaine, son point de commande, ou corriger le stock.</p>
-            <p>Aussi : le budget dépensé dans l’année, les sorties et leur coût par activité, les <strong>péremptions à venir</strong> (les lots qui risquent de périmer avant d’être distribués), ce qui a changé ce trimestre, et les exports.</p>
+            <p>C’est la page à regarder en arrivant. Elle répond à une question : <strong>qu’est-ce qui va manquer ?</strong></p>
+            <dl class="rows--dl rows--tight">
+              <div><dt>Les alertes</dt><dd>Les produits qui seront épuisés avant la prochaine livraison, les ruptures signalées par l’équipe, les références demandées, les gros écarts d’inventaire.</dd></div>
+              <div><dt>L’autonomie</dt><dd>Pour chaque produit, le nombre de jours qu’il reste au rythme actuel, du plus urgent au moins urgent. Touchez un produit pour voir son stock, sa consommation par semaine, son point de commande, ou pour corriger son stock.</dd></div>
+              <div><dt>Le budget</dt><dd>Ce qui a été dépensé depuis janvier, comparé au budget de l’année.</dd></div>
+              <div><dt>Par activité</dt><dd>Les 30 derniers jours : nombre de sorties et coût du matériel de chaque activité.</dd></div>
+              <div><dt>Péremptions à venir</dt><dd>Les lots qui périment dans l’année. « À risque » : ce qui sera encore en stock à la date de péremption, au rythme actuel. Un lot à risque peut être proposé à un partenaire à temps.</dd></div>
+              <div><dt>Ce qui a changé</dt><dd>Les hausses et les baisses nettes du trimestre, à discuter en équipe.</dd></div>
+              <div><dt>Exports</dt><dd>Tous les mouvements, les totaux de l’année, ou un modèle de réglages pour un autre CAARUD.</dd></div>
+            </dl>
           </div>
-          <figure class="sheet shot shot--setup" style="--r: 1deg"><div data-slot="g-bord" data-kind="product" data-alt="Le tableau de bord : deux alertes, les produits à commander, le budget et l’autonomie du stock."><img src="img/guide/bord.jpg" width="780" height="1688" alt="Le tableau de bord : deux alertes, les produits à commander, le budget et l’autonomie du stock." loading="lazy"></div></figure>
+          <figure class="sheet shot shot--setup" style="--r: 1deg"><div data-kind="product" data-alt="Le tableau de bord : deux alertes, les produits à commander, le budget et l’autonomie du stock."><img src="img/guide/bord.jpg" width="780" height="1688" alt="Le tableau de bord : deux alertes, les produits à commander, le budget et l’autonomie du stock." loading="lazy"></div></figure>
         </li>
         <li class="step" id="commandes">
           <h2>Commandes</h2>
           <div class="step-body">
-            <p>L’appli propose une commande par fournisseur, arrondie au carton. <strong>Comment ce chiffre est calculé</strong> détaille le calcul ; la prévision sur 3 mois dit en clair si la quantité suffit.</p>
-            <p>Le <strong>bon de commande</strong> est prêt à copier ou en tableur, avec les références et le montant estimé.</p>
-            <p>Enregistrez la commande : à la livraison, l’équipe ou vous indiquez ce qui est arrivé, avec la date de péremption si besoin.</p>
+            <p>L’appli propose une commande par fournisseur, arrondie au carton.</p>
+            <dl class="rows--dl rows--tight">
+              <div><dt>D’où vient le chiffre</dt><dd>De la consommation des dernières semaines, du délai de livraison du fournisseur, d’un stock de sécurité et des saisons que vous avez réglées. <strong>Comment ce chiffre est calculé</strong> détaille le calcul produit par produit.</dd></div>
+              <div><dt>Deux rythmes</dt><dd>« Au besoin » : l’appli propose de commander dès que le stock passe sous le point de commande. À date fixe : elle prépare la quantité pour tenir jusqu’à la livraison suivante. Le rythme se règle par fournisseur.</dd></div>
+              <div><dt>Le bon de commande</dt><dd>Le texte à envoyer au fournisseur, avec ses références et le montant estimé, à copier ou en tableur.</dd></div>
+              <div><dt>Enregistrer</dt><dd>Ajustez les quantités, puis enregistrez ce que vous avez réellement commandé : l’appli sait alors ce qui est attendu.</dd></div>
+              <div><dt>La livraison</dt><dd>L’équipe ou vous indiquez ce qui est arrivé, avec la date de péremption si besoin. Une livraison partielle laisse le reste « attendu ».</dd></div>
+              <div><dt>Le prix</dt><dd>Le prix unitaire est enregistré sur chaque commande : modifiez-le quand le fournisseur change ses tarifs, les statistiques suivront l’évolution.</dd></div>
+            </dl>
           </div>
-          <figure class="sheet shot shot--setup" style="--r: -1deg"><div data-slot="g-cmd" data-kind="product" data-alt="La commande proposée : chaque produit avec sa quantité, et le bouton Commander celui-ci."><img src="img/guide/cmd.jpg" width="780" height="1688" alt="La commande proposée : chaque produit avec sa quantité, et le bouton Commander celui-ci." loading="lazy"></div></figure>
+          <figure class="sheet shot shot--setup" style="--r: -1deg"><div data-kind="product" data-alt="La commande proposée : chaque produit avec sa quantité, et le bouton Commander celui-ci."><img src="img/guide/cmd.jpg" width="780" height="1688" alt="La commande proposée : chaque produit avec sa quantité, et le bouton Commander celui-ci." loading="lazy"></div></figure>
         </li>
         <li class="step" id="stats">
-          <h2>Statistiques</h2>
+          <h2>Statistiques : le principe</h2>
           <div class="step-body">
-            <p>Les vues de suivi : consommation, camemberts par dossier, évolution des pratiques, cohérence des kits, par activité, jours forts, météo du stock, ruptures et ce qu’elles ont coûté, produits dormants.</p>
-            <p>Les vues d’analyse : <strong>tableau croisé</strong> (vous choisissez lignes, colonnes et mesure), <strong>budget</strong> et <strong>budget prévisionnel</strong> de l’an prochain, <strong>ce qui a changé</strong> d’un trimestre à l’autre, <strong>fournisseurs</strong> (délais réels et prix), année contre an dernier, chiffres de l’année.</p>
-            <p>Pour tout le CAARUD, ou pour une ou plusieurs activités. Chaque graphique a une légende, et donne ses chiffres au toucher ou au survol.</p>
-            <p><strong>Exporter</strong>, sur chaque vue : PDF avec le graphique et son tableau, tableur CSV, ou envoi par WhatsApp et e-mail.</p>
+            <p>Dix-sept vues, à choisir dans la bande en haut de l’onglet. Trois réglages reviennent partout :</p>
+            <dl class="rows--dl rows--tight">
+              <div><dt>Pour</dt><dd>Tout le CAARUD, ou une ou plusieurs activités : les chiffres et les couleurs suivent.</dd></div>
+              <div><dt>La période</dt><dd>1, 3, 6 mois ou 1 an selon la vue.</dd></div>
+              <div><dt>Exporter</dt><dd>Sur chaque vue : un PDF avec le graphique et son tableau, un tableur CSV, ou un envoi par WhatsApp et e-mail.</dd></div>
+            </dl>
+            <p>Chaque graphique a une légende et donne ses chiffres au toucher ou au survol. Les prêts et dons à d’autres associations sont comptés à part : ils ne gonflent pas vos sorties.</p>
           </div>
-          <figure class="sheet shot shot--setup" style="--r: 1.2deg"><div data-slot="g-stats" data-kind="product" data-alt="Les statistiques : le choix de l’activité, de la période, et la courbe de consommation."><img src="img/guide/stats.jpg" width="780" height="1688" alt="Les statistiques : le choix de l’activité, de la période, et la courbe de consommation." loading="lazy"></div></figure>
+          <figure class="sheet shot shot--setup" style="--r: 1.2deg"><div data-kind="product" data-alt="Les statistiques : le choix de l’activité, de la période, et la courbe de consommation."><img src="img/guide/stats.jpg" width="780" height="1688" alt="Les statistiques : le choix de l’activité, de la période, et la courbe de consommation." loading="lazy"></div></figure>
+        </li>
+        <li class="step" id="stats-conso">
+          <h2>Statistiques : ce qui sort</h2>
+          <div class="step-body">
+            <dl class="rows--dl rows--tight">
+              <div><dt>Consommation</dt><dd>Les sorties mois par mois, par produit ou par catégorie, en unités ou en euros, avec le classement complet. Touchez une ligne pour l’isoler. <em>Sert à</em> voir ce qui part le plus et repérer une hausse ou un creux.</dd></div>
+              <div><dt>Par activité</dt><dd>Pour chaque activité, la répartition par catégorie et les produits les plus distribués. <em>Sert à</em> décrire le public de chaque lieu : l’accueil et le festif ne distribuent pas la même chose.</dd></div>
+              <div><dt>Camemberts par dossier</dt><dd>Dans un même dossier (les filtres, les seringues…), quels produits sont choisis. <em>Sert à</em> décider quelles références garder ou développer.</dd></div>
+              <div><dt>Jours forts</dt><dd>Le nombre de sorties notées chaque jour sur 12 semaines, et la moyenne par jour de la semaine. <em>Sert à</em> organiser les permanences et le réassort.</dd></div>
+              <div><dt>Année / an dernier</dt><dd>Les unités sorties chaque mois, cette année et l’an dernier, pour tout le matériel, une catégorie, un dossier ou un produit. <em>Sert à</em> distinguer une vraie tendance d’un effet de saison.</dd></div>
+            </dl>
+          </div>
+          <figure class="sheet shot shot--setup" style="--r: -1deg"><div data-kind="product" data-alt="Par activité : un camembert par activité, avec les catégories et les produits les plus distribués."><img src="img/guide/s-act.jpg" width="780" height="1688" alt="Par activité : un camembert par activité, avec les catégories et les produits les plus distribués." loading="lazy"></div></figure>
+        </li>
+        <li class="step" id="stats-pratiques">
+          <h2>Statistiques : comprendre les pratiques</h2>
+          <div class="step-body">
+            <dl class="rows--dl rows--tight">
+              <div><dt>Évolution des pratiques</dt><dd>Chaque catégorie comparée à sa propre moyenne : 100 = un mois moyen, 150 = 50 % de plus. <em>Sert à</em> comparer l’injection et l’inhalation même si leurs volumes n’ont rien à voir, sur 12 ou 24 mois.</dd></div>
+              <div><dt>Cohérence des kits</dt><dd>Pour 100 seringues sorties en vrac, combien de filtres, de Stéricup, d’eau, de tampons sont partis avec. Sous 100, des personnes repartent probablement sans le matériel complet. <em>Sert à</em> ajuster le discours au guichet et la présentation du matériel.</dd></div>
+              <div><dt>Ce qui a changé</dt><dd>Les 3 derniers mois comparés aux 3 précédents, et aux mêmes mois de l’an dernier. Seuls les écarts de 20 % ou plus, sur des volumes qui comptent, sont gardés. <em>Sert à</em> préparer une réunion d’équipe : changement de pratiques, de public, rupture, ou oubli de saisie ?</dd></div>
+              <div><dt>Tableau croisé</dt><dd>Vous choisissez les lignes, les colonnes et la mesure : produits par activité, catégories mois par mois, sorties par jour de la semaine… en unités, en euros ou en nombre de sorties. <em>Sert à</em> répondre à une question précise, puis à sortir le tableau en CSV.</dd></div>
+            </dl>
+          </div>
+          <figure class="sheet shot shot--setup" style="--r: 1deg"><div data-kind="product" data-alt="Cohérence des kits : pour 100 seringues, le nombre de filtres, de Stéricup, d’eau et de tampons sortis."><img src="img/guide/s-coh.jpg" width="780" height="1688" alt="Cohérence des kits : pour 100 seringues, le nombre de filtres, de Stéricup, d’eau et de tampons sortis." loading="lazy"></div></figure>
+        </li>
+        <li class="step" id="stats-budget">
+          <h2>Statistiques : l’argent</h2>
+          <div class="step-body">
+            <dl class="rows--dl rows--tight">
+              <div><dt>Budget</dt><dd>Le coût du matériel sorti depuis janvier, la projection sur l’année et la part du budget consommée. La ligne pointillée montre le rythme régulier, un douzième par mois : au-dessus, vous dépensez plus vite que prévu. Tapez le budget de l’année pour l’activer.</dd></div>
+              <div><dt>Budget prévisionnel</dt><dd>L’année prochaine, mois par mois, par catégorie, par fournisseur et par produit, à partir des sorties des 12 derniers mois et des saisons réglées. Vous pouvez appliquer une hausse ou une baisse d’activité, prolonger la tendance, ou ajuster une catégorie. <em>Sert à</em> chiffrer la demande de financement.</dd></div>
+              <div><dt>Fournisseurs</dt><dd>Sur 12 mois : le délai réel entre la commande et la livraison, les livraisons incomplètes ou en plusieurs fois, et l’évolution des prix. Si un fournisseur livre plus lentement que le délai réglé, l’appli propose de le corriger. <em>Sert à</em> éviter les ruptures dues à un délai optimiste.</dd></div>
+            </dl>
+            <p>Les coûts utilisent le prix unitaire TTC indiqué dans Matériel. Un produit sans prix n’est pas compté : l’appli le signale.</p>
+          </div>
+          <figure class="sheet shot shot--setup" style="--r: -1.2deg"><div data-kind="product" data-alt="Budget : dépensé depuis janvier, projection, part du budget, et la courbe face au rythme prévu."><img src="img/guide/s-budget.jpg" width="780" height="1688" alt="Budget : dépensé depuis janvier, projection, part du budget, et la courbe face au rythme prévu." loading="lazy"></div></figure>
+        </li>
+        <li class="step" id="stats-stock">
+          <h2>Statistiques : l’état du stock</h2>
+          <div class="step-body">
+            <dl class="rows--dl rows--tight">
+              <div><dt>Météo du stock</dt><dd>Combien de jours chaque produit va tenir, saisons comprises. Rouge : commander tout de suite. Orange : à prévoir. Vert : tranquille.</dd></div>
+              <div><dt>Ruptures</dt><dd>Les jours où un produit a manqué. Rouge : rupture constatée par l’équipe avec « Il n’y en a plus ». Orange : rupture probable d’après les calculs, à confirmer. L’appli estime aussi les unités non distribuées, leur valeur et le nombre de passages concernés. <em>Sert à</em> défendre un budget ou de la place de stockage.</dd></div>
+              <div><dt>Produits dormants</dt><dd>Le matériel qui n’est pas sorti depuis 3 mois. <em>Sert à</em> le proposer à un partenaire avant qu’il périme, ou à le retirer du catalogue.</dd></div>
+            </dl>
+          </div>
+          <figure class="sheet shot shot--setup" style="--r: 1deg"><div data-kind="product" data-alt="Ruptures : produits touchés, jours cumulés, passages probablement sans matériel et unités non distribuées."><img src="img/guide/s-rupt.jpg" width="780" height="1688" alt="Ruptures : produits touchés, jours cumulés, passages probablement sans matériel et unités non distribuées." loading="lazy"></div></figure>
+        </li>
+        <li class="step" id="stats-rapport">
+          <h2>Statistiques : le rapport d’activité</h2>
+          <div class="step-body">
+            <dl class="rows--dl rows--tight">
+              <div><dt>Chiffres de l’année</dt><dd>Tout le matériel distribué dans l’année : unités, nombre de saisies, références, coût estimé, le graphique par mois, la part de chaque catégorie et le détail produit par produit et par activité. <strong>Exporter le bilan</strong> sort le PDF, avec la comparaison à l’an dernier, les pertes, les prêts et dons, et les ruptures.</dd></div>
+              <div><dt>Récupération</dt><dd>Si vous faites noter le matériel récupéré : seringues usagées, collecteurs, kilos de DASRI, et le taux de récupération par rapport aux seringues distribuées.</dd></div>
+              <div><dt>Par passage</dt><dd>Si vous importez le nombre de passages, le bilan ajoute le matériel distribué par passage.</dd></div>
+            </dl>
+          </div>
+          <figure class="sheet shot shot--setup" style="--r: -1deg"><div data-kind="product" data-alt="Chiffres de l’année : unités distribuées, saisies, références, coût, et le graphique par mois."><img src="img/guide/s-bilan.jpg" width="780" height="1688" alt="Chiffres de l’année : unités distribuées, saisies, références, coût, et le graphique par mois." loading="lazy"></div></figure>
         </li>
         <li class="step" id="previsions">
           <h2>Prévisions</h2>
           <div class="step-body">
             <p>Les 3 prochains mois selon trois hypothèses : le rythme actuel, comme l’an dernier, ou une hausse ou baisse que vous fixez. L’appli compte les commandes à prévoir, leur coût et les ruptures possibles.</p>
-            <p><strong>Et si je commande</strong> : changez une quantité ou une date, la courbe du stock suit.</p>
+            <p><strong>Et si je commande</strong> : changez une quantité ou une date de commande, la courbe du stock suit. Utile avant un festival ou une fermeture.</p>
           </div>
-          <figure class="sheet shot shot--setup" style="--r: -1deg"><div data-slot="g-prev" data-kind="product" data-alt="Les prévisions : commandes à prévoir, coût estimé et la courbe du stock prévu."><img src="img/guide/prev.jpg" width="780" height="1688" alt="Les prévisions : commandes à prévoir, coût estimé et la courbe du stock prévu." loading="lazy"></div></figure>
+          <figure class="sheet shot shot--setup" style="--r: -1deg"><div data-kind="product" data-alt="Les prévisions : commandes à prévoir, coût estimé et la courbe du stock prévu."><img src="img/guide/prev.jpg" width="780" height="1688" alt="Les prévisions : commandes à prévoir, coût estimé et la courbe du stock prévu." loading="lazy"></div></figure>
         </li>
         <li class="step" id="mouvements">
           <h2>Mouvements</h2>
           <div class="step-body">
-            <p><strong>Entrée hors commande</strong> : un don, un retour d’activité, du matériel rendu ou emprunté à une asso, avec la péremption si besoin.</p>
-            <p>Les prêts et emprunts à rendre sont listés à part.</p>
-            <p>Le <strong>journal</strong> garde chaque mouvement, sans prénom. Une ligne se modifie ou se supprime ; les corrections restent signalées.</p>
+            <dl class="rows--dl rows--tight">
+              <div><dt>Entrée hors commande</dt><dd>Un don, du matériel rendu par une asso, un emprunt, des cartons qui reviennent d’une activité, avec la péremption si besoin.</dd></div>
+              <div><dt>Saisie en lot</dt><dd>Pour rentrer d’un coup des sorties notées sur papier : choisissez le jour et l’activité, tapez les quantités, enregistrez.</dd></div>
+              <div><dt>Prêts et emprunts</dt><dd>La liste de ce qui reste à rendre, dans un sens ou dans l’autre.</dd></div>
+              <div><dt>Le journal</dt><dd>Chaque mouvement, sans prénom. Vous pouvez modifier ou supprimer n’importe quelle ligne ; les corrections restent signalées. L’équipe, elle, ne peut corriger que ses propres saisies.</dd></div>
+            </dl>
           </div>
-          <figure class="sheet shot shot--setup" style="--r: 1deg"><div data-slot="g-mvt" data-kind="product" data-alt="L’écran Mouvements : le formulaire d’entrée hors commande."><img src="img/guide/mvt.jpg" width="780" height="1688" alt="L’écran Mouvements : le formulaire d’entrée hors commande." loading="lazy"></div></figure>
+          <figure class="sheet shot shot--setup" style="--r: 1deg"><div data-kind="product" data-alt="L’écran Mouvements : le formulaire d’entrée hors commande."><img src="img/guide/mvt.jpg" width="780" height="1688" alt="L’écran Mouvements : le formulaire d’entrée hors commande." loading="lazy"></div></figure>
         </li>
         <li class="step" id="inventaire">
           <h2>Inventaire</h2>
           <div class="step-body">
-            <p>Produit par produit, l’appli affiche le stock théorique : tapez ce que vous comptez, <strong>Valider et suivant</strong>. Ou tout sur une page.</p>
-            <p>Les écarts sont enregistrés et les inventaires passés restent consultables. Téléchargez ensuite la sauvegarde : l’appli vous le rappelle.</p>
+            <p>L’inventaire remet le stock de l’appli d’accord avec les étagères. Les sorties sont des estimations : un inventaire par trimestre, ou avant une grosse commande, garde les calculs justes.</p>
+            <dl class="rows--dl rows--tight">
+              <div><dt>Produit par produit</dt><dd>L’appli affiche le stock théorique de chaque produit. Tapez ce que vous comptez, <strong>Valider et suivant</strong>, ou <strong>Passer</strong> si vous ne l’avez pas compté.</dd></div>
+              <div><dt>Tout sur une page</dt><dd>Tout le matériel d’un coup, pratique sur ordinateur ou avec une feuille de comptage. Les lignes laissées vides ne changent rien. Cartons et unités en vrac s’additionnent.</dd></div>
+              <div><dt>Ce qui se passe ensuite</dt><dd>Le stock compté remplace le stock théorique : les alertes et les commandes repartent de là. Les sorties déjà notées ne sont pas modifiées.</dd></div>
+              <div><dt>Lire les écarts</dt><dd>Les plus gros écarts en euros sont en haut. Un manque vient souvent de sorties non notées ; un surplus, d’une sortie notée deux fois ou d’une livraison enregistrée en trop. Les écarts importants remontent aussi dans les alertes.</dd></div>
+              <div><dt>Inventaires passés</dt><dd>Ils restent consultables, avec leurs écarts.</dd></div>
+              <div><dt>Un seul produit</dt><dd>Pas besoin d’un inventaire complet : depuis le tableau de bord, touchez le produit puis corrigez son stock.</dd></div>
+              <div><dt>Après</dt><dd>Téléchargez une sauvegarde et rangez-la dans le dossier partagé du CAARUD : l’appli vous le rappelle.</dd></div>
+            </dl>
           </div>
-          <figure class="sheet shot shot--setup" style="--r: -1.2deg"><div data-slot="g-inv" data-kind="product" data-alt="L’inventaire guidé : un produit, son stock théorique, Valider et suivant."><img src="img/guide/inv.jpg" width="780" height="1688" alt="L’inventaire guidé : un produit, son stock théorique, Valider et suivant." loading="lazy"></div></figure>
+          <figure class="sheet shot shot--setup" style="--r: -1.2deg"><div data-kind="product" data-alt="L’inventaire guidé : un produit, son stock théorique, Valider et suivant."><img src="img/guide/inv.jpg" width="780" height="1688" alt="L’inventaire guidé : un produit, son stock théorique, Valider et suivant." loading="lazy"></div></figure>
+        </li>
+        <li class="step" id="historique">
+          <h2>Reprendre un historique</h2>
+          <div class="step-body">
+            <p>Vous suiviez le stock dans un tableur ? Importez les sorties des années précédentes : vous aurez tout de suite des statistiques, la comparaison avec l’an dernier et un budget prévisionnel fiable. <strong>Le stock actuel n’est pas touché</strong>.</p>
+            <ol>
+              <li>Vérifiez que tout votre matériel est dans <strong>Réglages</strong>, <strong>Matériel</strong>, avec les bons noms.</li>
+              <li>Dans <strong>Réglages</strong>, <strong>Reprendre un historique</strong>, touchez <strong>Télécharger le modèle (CSV)</strong>. Il contient déjà une ligne par produit et une colonne par mois, pour les deux dernières années.</li>
+              <li>Ouvrez-le dans Excel ou LibreOffice et remplissez les quantités sorties chaque mois. Laissez vide ce que vous ne savez pas.</li>
+              <li>Enregistrez au format CSV, puis touchez <strong>Importer l’historique</strong>. L’appli montre ce qu’elle a lu avant d’enregistrer.</li>
+            </ol>
+            <dl class="rows--dl rows--tight">
+              <div><dt>Prix de l’époque</dt><dd>La colonne prix unitaire est facultative. Remplie, elle donne le coût réel de cette année-là ; vide, le prix actuel est utilisé.</dd></div>
+              <div><dt>Par activité</dt><dd>Facultatif aussi : pour détailler un produit par activité, recopiez sa ligne et indiquez l’activité.</dd></div>
+              <div><dt>Passages</dt><dd>En tête de chaque année, une ligne « Passages » par activité accueille le nombre de personnes, mois par mois.</dd></div>
+              <div><dt>Une autre année</dt><dd>Recopiez un bloc et changez l’année.</dd></div>
+              <div><dt>Se tromper</dt><dd>Réimportez le fichier corrigé : il remplace les chiffres des mêmes mois. L’historique repris peut aussi être retiré d’un geste.</dd></div>
+            </dl>
+          </div>
+          <figure class="sheet shot shot--setup" style="--r: 1deg"><div data-kind="product" data-alt="Réglages, Reprendre un historique : télécharger le modèle, puis importer le fichier rempli."><img src="img/guide/histo.jpg" width="780" height="1688" alt="Réglages, Reprendre un historique : télécharger le modèle, puis importer le fichier rempli." loading="lazy"></div></figure>
         </li>
         <li class="step" id="reglages">
           <h2>Réglages</h2>
           <div class="step-body">
             <dl class="rows--dl rows--tight">
-              <div><dt>Inviter l’équipe</dt><dd>Un lien et un QR code, à envoyer par WhatsApp ou par e-mail, et la fiche équipe en PDF.</dd></div>
+              <div><dt>Inviter l’équipe</dt><dd>Le lien et le QR code de votre CAARUD, à envoyer par WhatsApp ou par e-mail, la fiche équipe et l’affiche QR code pour le local.</dd></div>
               <div><dt>Accès et appareils</dt><dd>Ajouter un responsable stock. Un téléphone perdu : <strong>Retirer l’accès de toute l’équipe</strong>, puis donnez un nouveau code.</dd></div>
-              <div><dt>Stocks et organisation</dt><dd>Le nom de la structure, le stock central et les stocks intermédiaires, avec un schéma à imprimer.</dd></div>
-              <div><dt>Points de distribution</dt><dd>Les activités ; une date de fin en fait un point temporaire, pour un festival.</dd></div>
-              <div><dt>Partenaires et fournisseurs</dt><dd>Les assos pour les prêts et dons, les fournisseurs avec leur délai.</dd></div>
-              <div><dt>Saisonnalité</dt><dd>Une hausse l’été ou une baisse pendant une fermeture change les quantités proposées.</dd></div>
-              <div><dt>Matériel</dt><dd>Contenance du carton, prix, synonymes, photo. Une base RdR de départ est prête à activer.</dd></div>
-              <div><dt>Passages et matériel récupéré</dt><dd>Facultatif. Importez le nombre de passages par jour et par activité depuis un fichier CSV (un modèle est fourni), pour obtenir le matériel distribué par passage. Vous pouvez aussi faire noter le matériel récupéré : seringues usagées, collecteurs, kilos de DASRI.</dd></div>
+              <div><dt>Accès à la gestion</dt><dd>Un code à chiffres pour protéger l’espace gestion sur un appareil partagé.</dd></div>
+              <div><dt>Stocks et organisation</dt><dd>Le nom de la structure, le stock central et les stocks intermédiaires (un local, une antenne), avec un schéma à imprimer.</dd></div>
+              <div><dt>Points de distribution</dt><dd>Les activités proposées à l’étape « Où ? ». Une date de fin en fait un point temporaire, pour un festival. Un point archivé reste dans les statistiques.</dd></div>
+              <div><dt>Associations partenaires</dt><dd>Les assos à qui vous prêtez ou donnez du matériel.</dd></div>
+              <div><dt>Fournisseurs</dt><dd>Le délai de livraison et le rythme des commandes, réglés une fois par fournisseur.</dd></div>
+              <div><dt>Saisonnalité</dt><dd>Une hausse (festivals, été) ou une baisse (fermeture) change la consommation prévue, donc les quantités proposées. « Chaque année » répète la période.</dd></div>
+              <div><dt>Calcul des stocks</dt><dd>Le niveau de prudence : éviter la rupture 95 % ou 99 % du temps, et la marge des produits essentiels.</dd></div>
+              <div><dt>Catégories et matériel</dt><dd>Contenance du carton, prix, fournisseur, synonymes, photo. Une base RdR de départ est prête à activer. La liste s’exporte et s’importe en CSV : l’appli montre les changements avant de les appliquer.</dd></div>
+              <div><dt>Passages et matériel récupéré</dt><dd>Facultatif, sans aucun nom. Importez le nombre de passages par jour depuis un CSV (un modèle est fourni) ou faites-les compter sur le téléphone ; faites noter le matériel récupéré.</dd></div>
+              <div><dt>Sauvegarde et remise à zéro</dt><dd>Télécharger ou restaurer une sauvegarde complète. Effacer l’historique, ou tout effacer.</dd></div>
             </dl>
           </div>
-          <figure class="sheet shot shot--setup" style="--r: 1deg"><div data-slot="g-reg" data-kind="product" data-alt="Les réglages, rangés en parties repliables."><img src="img/guide/reg.jpg" width="780" height="1688" alt="Les réglages, rangés en parties repliables." loading="lazy"></div></figure>
+          <figure class="sheet shot shot--setup" style="--r: 1deg"><div data-kind="product" data-alt="Les réglages, rangés en parties repliables."><img src="img/guide/reg.jpg" width="780" height="1688" alt="Les réglages, rangés en parties repliables." loading="lazy"></div></figure>
         </li>
       </ol>
       </section>
@@ -263,7 +369,9 @@
         <li><a href="https://wa.me/?text=Le%20guide%20pour%20installer%20Stockaarud%20dans%20ton%20CAARUD%20%28gratuit%2C%2015%20minutes%29%20%3A%20https%3A//stockaarud.github.io/installer.html" target="_blank" rel="noopener">Partager sur WhatsApp</a></li>
         <li><a href="https://stockaarud.github.io/stockaarud/" target="_blank" rel="noopener">Ouvrir l’appli</a></li>
         <li><a href="guide.html">Le guide d’utilisation</a></li>
-        <li><a href="docs/guide-stockaarud.pdf">Le guide complet (PDF)</a></li>
+        <li><a href="docs/guide-utilisateur-stockaarud.pdf">Le guide utilisateur (PDF)</a></li>
+        <li><a href="docs/guide-installation-stockaarud.pdf">Le guide d’installation (PDF)</a></li>
+        <li><a href="docs/fiche-equipe-stockaarud.pdf">La fiche équipe (PDF)</a></li>
         <li><a href="https://github.com/Stockaarud/stockaarud#readme">Le guide complet sur GitHub</a></li>
         <li><a href="documents.html">Tous les documents (flyers, affiche, logo)</a></li>
         <li><a href="flyer/flyer-stockaarud-A5.pdf">Le flyer à imprimer (PDF)</a></li>
