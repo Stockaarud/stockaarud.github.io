@@ -12,4 +12,4 @@ L'appli elle-même reste à l'adresse https://stockaarud.github.io/stockaarud/
 
 ## Flyer
 
-`flyer/flyer.html` est la source du flyer. Les PDF (A5, A4 à deux flyers) et le PNG du même dossier sont des exports : il faut les regénérer après chaque modification de `flyer.html`.
+`flyer/flyer.html` est la source du flyer, `flyer/affiche-qr.html` celle de l'affiche QR code pour le local. Les PDF (A5, A4 à deux flyers) et le PNG du même dossier sont des exports : il faut les regénérer après chaque modification de `flyer.html`.

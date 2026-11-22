@@ -1329,9 +1329,12 @@ function equipePanel(inWizard){
   if(window.SKB&&window.SKB.inviteLink)h+='<div style="border-top:1px solid var(--line);margin-top:12px;padding-top:10px"><b>Une affiche pour le local</b><p class="note">Un grand QR code à coller au stock : on le scanne en venant chercher du matériel et l\'appli s\'ouvre, sans rien installer. Un téléphone déjà connecté arrive directement sur la saisie ; un nouveau téléphone devra taper le code d\'équipe.</p><button class="btn" style="margin-top:6px" data-act="affichePdf">'+PRINT_ICO+'Affiche QR code (PDF)</button></div>';
   return h+'</div>';
 }
-async function afficheDoc(){const doc=await newPdf("portrait"),C=PDFC,W=210,link=window.SKB.inviteLink(),nm=(cfg().nomStructure||"").trim()||cfg().nomStock||"";
-  doc.setFillColor(...C.G);doc.rect(0,0,W,34,"F");doc.setFillColor(...C.Y);doc.rect(0,34,W,3,"F");
-  doc.setFont("helvetica","bold");doc.setFontSize(30);doc.setTextColor(255,255,255);doc.text("STOCK",16,22);const w=doc.getTextWidth("STOCK");doc.setTextColor(...C.Y);doc.text("AARUD",16+w,22);
+/* Le logo de l'appli, pour les documents imprimés */
+async function logoData(){if(S.logoData!==undefined)return S.logoData;S.logoData=null;for(const u of ["icons/icon-512.png","../img/icon.png"]){try{const r=await fetch(u);if(!r.ok)continue;const bl=await r.blob();S.logoData=await new Promise((ok,ko)=>{const f=new FileReader();f.onload=()=>ok(f.result);f.onerror=ko;f.readAsDataURL(bl)});break}catch(e){}}return S.logoData}
+async function afficheDoc(){const doc=await newPdf("portrait"),C=PDFC,W=210,link=window.SKB.inviteLink(),nm=(cfg().nomStructure||"").trim()||cfg().nomStock||"",lg=await logoData();
+  doc.setFillColor(...C.G);doc.rect(0,0,W,34,"F");doc.setFillColor(...C.Y);doc.rect(0,34,W,3,"F");const tx=lg?44:16;
+  if(lg){try{doc.setFillColor(255,255,255);doc.roundedRect(13,5,25,25,4,4,"F");doc.addImage(lg,"PNG",14,6,23,23)}catch(e){}}
+  doc.setFont("helvetica","bold");doc.setFontSize(30);doc.setTextColor(255,255,255);doc.text("STOCK",tx,22);const w=doc.getTextWidth("STOCK");doc.setTextColor(...C.Y);doc.text("AARUD",tx+w,22);
   if(nm){doc.setFont("helvetica","normal");doc.setFontSize(14);doc.setTextColor(220,238,228);doc.text(pdfTxt(nm),W-16,21,{align:"right"})}
   doc.setFont("helvetica","bold");doc.setTextColor(...C.K);doc.setFontSize(38);doc.text(pdfTxt("Tu prends du matériel ?"),W/2,62,{align:"center"});doc.setFontSize(26);doc.setTextColor(...C.G);doc.text("Scanne, note, c'est tout.",W/2,76,{align:"center"});
   if(typeof qrcode==="function"){const q=qrcode(0,"M");q.addData(link);q.make();const c=q.getModuleCount(),size=118,cell=size/c,x0=(W-size)/2,y0=92;doc.setFillColor(255,255,255);doc.setDrawColor(...C.K);doc.setLineWidth(1.2);doc.roundedRect(x0-9,y0-9,size+18,size+18,4,4,"FD");doc.setFillColor(...C.K);
