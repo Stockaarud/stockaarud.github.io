@@ -9,3 +9,7 @@ Le site de présentation de [Stockaarud](https://github.com/Stockaarud/stockaaru
 - `video/` : le film de présentation
 
 L'appli elle-même reste à l'adresse https://stockaarud.github.io/stockaarud/
+
+## Flyer
+
+`flyer/flyer.html` est la source du flyer. Les PDF (A5, A4 à deux flyers) et le PNG du même dossier sont des exports : il faut les regénérer après chaque modification de `flyer.html`.
