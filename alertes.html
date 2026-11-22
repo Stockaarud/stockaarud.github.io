@@ -1,0 +1,107 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Stockaarud : alertes de stock</title>
+<meta name="robots" content="noindex">
+<meta name="description" content="Confirmer ou arrêter les alertes de stock par e-mail de Stockaarud.">
+<meta name="theme-color" content="#1f4d3a">
+<link rel="icon" href="img/icon.png">
+<link rel="stylesheet" href="site.css">
+</head>
+<body class="fibre">
+<script>document.documentElement.classList.add('js');</script>
+
+<header class="nav-wrap">
+  <div class="container">
+    <nav class="nav sheet" aria-label="Principale">
+      <a class="wordmark" href="./" aria-label="Stockaarud, accueil"><img src="img/icon.png" width="40" height="40" alt=""><img class="wm" src="img/wordmark.png" width="1133" height="115" alt=""></a>
+      <ul class="nav-links">
+        <li class="nav-link"><a href="./">Accueil</a></li>
+        <li class="nav-link"><a href="guide.html">Guide</a></li>
+        <li class="nav-link"><a href="demo/" target="_blank" rel="noopener">Démo</a></li>
+        <li class="nav-link"><a href="documents.html">Documents</a></li>
+        <li class="nav-link"><a href="questions.html">Questions</a></li>
+        <li class="nav-link"><a href="./#contact">Contact</a></li>
+        <li><a class="btn btn--primary btn--nav" href="https://stockaarud.github.io/stockaarud/" target="_blank" rel="noopener">Ouvrir l’appli</a></li>
+      </ul>
+      <details class="nav-menu">
+        <summary aria-label="Menu"><span class="burger" aria-hidden="true"><i></i><i></i><i></i></span>Menu</summary>
+        <div class="nav-drop sheet">
+          <ul>
+            <li><a href="./">Accueil</a></li>
+            <li><a href="guide.html">Guide</a></li>
+            <li><a href="demo/" target="_blank" rel="noopener">Démo</a></li>
+            <li><a href="questions.html">Questions</a></li>
+            <li><a href="documents.html">Documents</a></li>
+            <li><a href="./#contact">Contact</a></li>
+            <li><a href="https://github.com/Stockaarud/stockaarud">Code source</a></li>
+          </ul>
+          <a class="btn btn--primary" href="https://stockaarud.github.io/stockaarud/" target="_blank" rel="noopener">Ouvrir l’appli</a>
+        </div>
+      </details>
+    </nav>
+  </div>
+</header>
+
+<main>
+  <section class="doc-hero" aria-labelledby="titre">
+    <div class="container">
+      <div class="doc-hero-text">
+        <h1 id="titre" class="h1-wide" tabindex="-1">Alertes de stock</h1>
+        <p class="lead" id="msg" aria-live="polite">Cette page sert à confirmer ou à arrêter les alertes par e-mail de Stockaarud. Ouvre-la depuis le lien reçu par mail.</p>
+        <div class="actions" id="act" hidden><button class="btn btn--primary" type="button" id="stop">Oui, ne plus rien recevoir</button><a class="btn btn--secondary" href="https://stockaarud.github.io/stockaarud/">Non, ouvrir Stockaarud</a></div>
+        <div class="actions" id="app"><a class="btn btn--primary" href="https://stockaarud.github.io/stockaarud/">Ouvrir Stockaarud</a></div>
+      </div>
+    </div>
+  </section>
+</main>
+<footer class="footer">
+  <div class="container">
+    <div class="footer-grid">
+      <ul>
+        <li><a href="./">Accueil</a></li>
+        <li><a href="guide.html#installation">Installer Stockaarud</a></li>
+        <li><a href="demo/" target="_blank" rel="noopener">Essayer la démo</a></li>
+        <li><a href="https://stockaarud.github.io/stockaarud/" target="_blank" rel="noopener">Ouvrir l’appli</a></li>
+        <li><a href="guide.html">Le guide d’utilisation</a></li>
+        <li><a href="documents.html">Tous les documents (flyers, affiche, logo)</a></li>
+        <li><a href="flyer/flyer-stockaarud-A5.pdf">Le flyer à imprimer (PDF)</a></li>
+        <li><a href="flyer/affiche-qr-stockaarud.pdf">L’affiche QR code pour le local (PDF)</a></li>
+        <li><a href="./#contact">Nous écrire</a></li>
+      </ul>
+      <p><small>Contact : <a href="mailto:stockaarud@proton.me">stockaarud@proton.me</a>.</small></p>
+    </div>
+  </div>
+</footer>
+<script>window.hallmarkSlots = (m) => { for (const [k, v] of Object.entries(m)) { const s = document.querySelector(`[data-slot="${k}"]`); if (!s) continue; const im = new Image(); im.src = typeof v === 'string' ? v : v.src; im.alt = (typeof v === 'object' && v.alt) || s.dataset.alt || ''; s.querySelectorAll(':scope > img').forEach((o) => o.remove()); s.prepend(im); } };
+document.querySelectorAll('[data-slot] img').forEach((i) => { if (i.complete && !i.naturalWidth) i.remove(); else i.addEventListener('error', () => i.remove(), { once: true }); });</script>
+<script>if(!matchMedia('(prefers-reduced-motion: reduce)').matches)document.addEventListener('pointerdown',(e)=>{const t=e.target.closest&&e.target.closest('a,button,summary,.tab');if(!t)return;const d=document.createElement('span');d.className='tapfx';d.style.left=e.clientX+'px';d.style.top=e.clientY+'px';document.body.appendChild(d);setTimeout(()=>d.remove(),500)},{passive:true});
+document.addEventListener('click',(e)=>{const m=document.querySelector('.nav-menu[open]');if(m&&(!m.contains(e.target)||e.target.closest('.nav-drop a')))m.open=false});</script>
+<script>
+(() => {
+  const RELAIS = 'https://apoepftykwoztrrjtjyx.supabase.co/functions/v1/alertes';
+  const q = new URLSearchParams(location.search), $ = (i) => document.getElementById(i);
+  const dire = (titre, texte) => { $('titre').textContent = titre; $('msg').textContent = texte; };
+  const etat = q.get('etat'), tk = (q.get('stop') || '').replace(/[^a-zA-Z0-9]/g, '');
+  if (etat === 'confirme') dire('Adresse confirmée', 'Tu recevras maintenant les alertes de stock à cette adresse. La fréquence se règle dans l’appli : Réglages, Alertes par e-mail.');
+  else if (etat === 'inconnu') dire('Lien périmé', 'Ce lien de confirmation ne correspond plus à une inscription. Dans l’appli, Réglages, Alertes par e-mail, enregistre à nouveau l’adresse pour recevoir un nouveau lien.');
+  else if (tk) {
+    dire('Arrêter les alertes ?', 'Cette adresse ne recevra plus aucun mail de Stockaarud. Pour seulement réduire la fréquence, passe plutôt par l’appli : Réglages, Alertes par e-mail.');
+    $('act').hidden = false; $('app').hidden = true;
+    $('stop').addEventListener('click', async () => {
+      $('stop').disabled = true;
+      try {
+        const r = await fetch(RELAIS, { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ action: 'stop', token: tk }) });
+        if (!r.ok) throw 0;
+        dire('C’est fait', 'Cette adresse ne recevra plus rien. Pour reprendre les alertes, enregistre-la à nouveau dans l’appli.');
+        $('act').hidden = true; $('app').hidden = false;
+      } catch (e) { $('stop').disabled = false; dire('Ça n’a pas marché', 'Le service ne répond pas. Réessaie dans un moment.'); }
+      $('titre').focus();
+    });
+  }
+})();
+</script>
+</body>
+</html>
