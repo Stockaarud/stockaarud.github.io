@@ -75,6 +75,16 @@ svg[data-ck]{touch-action:pan-y}
 @media (max-width:380px){.expg{grid-template-columns:1fr}}
 @media (min-width:1100px){.wrap,.topin{max-width:1240px}.cbar{padding-left:max(16px,calc((100% - 1240px)/2 + 16px));padding-right:max(16px,calc((100% - 1240px)/2 + 16px))}
   .bgrid{display:grid;grid-template-columns:minmax(0,1.3fr) minmax(0,1fr);gap:0 16px;align-items:start}.bcol{min-width:0}}
+.xctl{display:flex;flex-wrap:wrap;gap:8px 14px;align-items:flex-end;margin-top:8px}.xctl label{display:flex;flex-direction:column;gap:4px;font-size:13px;color:var(--muted);font-weight:600}
+.xt table td,.xt table th{white-space:nowrap}.xt tr.xtot td{border-top:2px solid var(--fg)}
+.lotp>summary{cursor:pointer;list-style:none}.lotp>summary::-webkit-details-marker{display:none}.lotp>summary::after{content:" ▾";color:var(--muted)}.lotp[open]>summary::after{content:" ▴"}
+.lotg{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:6px 14px;margin-top:12px}.loti{display:flex;align-items:center;gap:8px;padding:4px 0;border-bottom:1px solid var(--line)}.loti span{flex:1;min-width:0;font-size:14px}.loti input{width:90px;text-align:right}
+.mt table input,.mt table select{min-height:36px;padding:4px 8px;font-size:14px}.mt td{vertical-align:middle}
+body.en-ecran header.top,body.en-ecran #demoBar{display:none}
+.ecran{padding:12px 0 40px}.eh{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;flex-wrap:wrap}.eh h1{font:800 clamp(28px,4vw,52px)/1.05 var(--display);margin:0}.eh p{margin:4px 0 0;color:var(--muted);font-size:clamp(15px,1.6vw,22px)}
+.eg{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:16px;margin-top:18px}.ec{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:16px 18px;border-top:8px solid var(--line)}.ec.crit{border-top-color:var(--crit)}.ec.warn{border-top-color:var(--warn)}
+.ec h2{font:800 clamp(18px,1.8vw,26px) var(--display);margin:0 0 10px}.ec ul{list-style:none;margin:0;padding:0}.ec li{display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid var(--line);font-size:clamp(16px,1.5vw,22px)}
+.ec .en{flex:1;min-width:0}.ec .ej{font-weight:800;white-space:nowrap}.ec .ej.crit{color:var(--crit)}.ec .ej.warn{color:var(--warn)}.eok{color:var(--muted);font-size:18px}.ef{margin-top:16px;color:var(--muted);font-size:13px;text-align:center}
 .cl{display:flex;flex-direction:column;gap:8px}.cl-it{display:flex;gap:8px;align-items:center}
 .cl-go{flex:1;min-width:0;display:flex;flex-direction:column;align-items:flex-start;gap:2px;text-align:left;font:inherit;color:var(--fg);background:var(--surface-2);border:2px solid transparent;border-radius:12px;padding:12px 14px;cursor:pointer;min-height:56px}
 .cl-go b{font-size:17px}.cl-go span{font-size:13px;color:var(--muted)}
@@ -721,7 +731,9 @@ function draw(){
   paintAct();
   const key=S.view+"/"+S.ctab;if(key!==draw.last&&draw.last){const t=$(".toast");if(t)t.remove()}
   if(key!==draw.last){draw.last=key;const a=$("#app");a.classList.remove("swap");void a.offsetWidth;a.classList.add("swap");clearTimeout(draw.t);draw.t=setTimeout(()=>a.classList.remove("swap"),600)}
-  $("#app").innerHTML=(S.view==="equipe"?viewEquipe(st):viewCoordo(st));
+  if(S.view==="ecran"&&!coordoOK())S.view="equipe";
+  document.body.classList.toggle("en-ecran",S.view==="ecran");
+  $("#app").innerHTML=(S.view==="ecran"?viewEcran(st):S.view==="equipe"?viewEquipe(st):viewCoordo(st));
   document.querySelectorAll(".subnav,.tw,.svnav,.chips").forEach((el,i)=>{const k=(el.className)+i;if(keepX[k])el.scrollLeft=keepX[k]});
   {const sv=document.querySelector(".svnav"),on=sv&&sv.querySelector('[aria-pressed="true"]');if(on){const l=on.offsetLeft-sv.offsetLeft,r=l+on.offsetWidth;if(l<sv.scrollLeft)sv.scrollLeft=l-8;else if(r>sv.scrollLeft+sv.clientWidth)sv.scrollLeft=r-sv.clientWidth+8}}
   if(S.view==="coordo")addPrintButtons();
@@ -1487,6 +1499,36 @@ const chipsSV=(act,cur,opts)=>'<div class="chips" style="margin-top:8px">'+opts.
 const segP=()=>'<div class="seg" role="group" aria-label="Période" style="margin-top:8px">'+[["1","1 mois"],["3","3 mois"],["6","6 mois"],["12","1 an"]].map(([v,l])=>'<button data-act="svp" data-v="'+v+'" aria-pressed="'+((S.svp||"3")===v)+'">'+l+'</button>').join("")+'</div>';
 function sumBy(ms,key){const o={};for(const m of ms){const k=key(m);if(k==null)continue;o[k]=(o[k]||0)+num(m.qte,0)}return o}
 
+// 0. Tableau croisé : on choisit les lignes, les colonnes et la mesure
+const XDIM=[["categorie","Catégorie"],["produit","Produit"],["groupe","Dossier"],["activite","Activité"],["lieu","Lieu"],["mois","Mois"],["trim","Trimestre"],["jsem","Jour de la semaine"]];
+const XTIME=new Set(["mois","trim","jsem"]);
+function xKey(dim,m){const p=S.produits.get(m.produit)||{},d=new Date(m.t);
+  switch(dim){case "produit":return [p.nom||"?",p.nom||"?"];case "categorie":return [catOf(p),CATS[catOf(p)]||"Autre"];case "groupe":return [p.groupe||"~",p.groupe||"Sans dossier"];
+    case "activite":return [m.activite||"~",actNom(m.activite)||"Sans activité"];case "lieu":return [m.lieu||"~",lieuNom(m.lieu)||"?"];
+    case "mois":return [d.getFullYear()*100+d.getMonth(),MOIS[d.getMonth()]+" "+String(d.getFullYear()).slice(2)];case "trim":{const q=Math.floor(d.getMonth()/3);return [d.getFullYear()*10+q,"T"+(q+1)+" "+d.getFullYear()]}
+    case "jsem":{const j=(d.getDay()+6)%7;return [j,JOURS_C[j]]}}return ["",""]}
+function svExplo(){const xr=S.xr||"categorie",xc=S.xc||"mois",xm=S.xm||"u",{a,b}=periodeSV(),ms=sortiesEntre(a,b);
+  const val=m=>xm==="e"?coutM(m):xm==="n"?1:num(m.qte,0),fmt=v=>xm==="e"?eur(v):nfr(v);
+  const sel=(id,cur,opts)=>'<select id="'+id+'" style="width:auto">'+opts.map(([k,l])=>'<option value="'+k+'"'+(k===cur?" selected":"")+'>'+esc(l)+'</option>').join("")+'</select>';
+  const ctl='<div class="xctl"><label>Lignes '+sel("xR",xr,XDIM)+'</label><label>Colonnes '+sel("xC",xc,[["aucune","Aucune"]].concat(XDIM.filter(d=>d[0]!==xr)))+'</label><label>Mesure '+sel("xM",xm,[["u","Unités sorties"],["e","Coût en euros"],["n","Nombre de sorties"]])+'</label><button class="btn small" data-act="xSwap" title="Inverser lignes et colonnes">⇄ Inverser</button></div>'+segP();
+  if(!ms.length)return pan("Tableau croisé","Croisez deux critères pour voir les sorties sous l\'angle qui vous intéresse.",ctl+'<div class="empty">Aucune sortie sur la période.</div>');
+  const R=new Map(),C=new Map(),M=new Map();let tot=0;
+  for(const m of ms){const [rk,rl]=xKey(xr,m),v=val(m);tot+=v;if(!R.has(rk))R.set(rk,{l:rl,t:0});R.get(rk).t+=v;
+    const ck2=xc==="aucune"?"_":xKey(xc,m);const cKey=xc==="aucune"?"_":ck2[0];if(!C.has(cKey))C.set(cKey,{l:xc==="aucune"?"":ck2[1],t:0});C.get(cKey).t+=v;const k=rk+"|"+cKey;M.set(k,(M.get(k)||0)+v)}
+  const srt=(mp,dim)=>[...mp.entries()].sort((x,y)=>XTIME.has(dim)?(x[0]>y[0]?1:-1):y[1].t-x[1].t);
+  let rows=srt(R,xr),cols=xc==="aucune"?[]:srt(C,xc);const maxR=xr==="produit"?60:40;
+  if(cols.length>24&&!XTIME.has(xc))cols=cols.slice(0,24);
+  const rowsShown=rows.slice(0,maxR),cellMax=Math.max(1,...[...M.values()]);
+  const cell=(v,strong)=>'<td class="n"'+(v&&!strong?' style="background:color-mix(in srgb,var(--c1) '+Math.round(8+50*v/cellMax)+'%,transparent)"':'')+'>'+(v?(strong?'<b>'+fmt(v)+'</b>':fmt(v)):'')+'</td>';
+  let t='<div class="tw xt"><table class="resp"><thead><tr><th>'+esc(XDIM.find(d=>d[0]===xr)[1])+'</th>'+cols.map(([k,c])=>'<th class="n">'+esc(c.l)+'</th>').join("")+'<th class="n">Total</th></tr></thead><tbody>'
+   +rowsShown.map(([rk,r])=>'<tr><td>'+esc(r.l)+'</td>'+cols.map(([ck3])=>cell(M.get(rk+"|"+ck3)||0)).join("")+cell(r.t,true)+'</tr>').join("")
+   +'<tr class="xtot"><td><b>Total</b></td>'+cols.map(([,c])=>cell(c.t,true)).join("")+cell(tot,true)+'</tr></tbody></table></div>';
+  if(rows.length>maxR)t+='<p class="note">'+maxR+' premières lignes sur '+rows.length+' : le total les compte toutes.</p>';
+  let g="";const top=rows.slice(0,8);
+  if(cols.length>1&&XTIME.has(xc))g=courbes(top.map(([rk,r],i)=>({label:r.l,col:PAL[i%PAL.length],vals:cols.map(([ck3])=>M.get(rk+"|"+ck3)||0)})),cols.map(([,c])=>c.l),{fmtY:xm==="e"?(v=>nfr(v)+" €"):null,titre:"Tableau croisé"})+legende(top.map(([,r],i)=>({label:r.l,col:PAL[i%PAL.length]})));
+  else g=barresH(rows.slice(0,15).map(([,r],i)=>({label:r.l,v:Math.round(r.t*100)/100,col:"--c1"})),fmt,{titre:"Tableau croisé"});
+  return pan("Tableau croisé","Choisissez ce qui va en lignes et en colonnes : par exemple les produits par activité, ou les catégories mois par mois. Plus la case est foncée, plus le chiffre est élevé. Le bouton Exporter sort le tableau en CSV pour un tableur.",ctl+t+'<div class="chart" style="margin-top:12px">'+g+'</div>')}
+
 // 1. Répartition dans un dossier
 function svRepart(){const gs=[...new Set(prodsActifs().map(p=>p.groupe).filter(Boolean))].sort((a,b)=>a.localeCompare(b,"fr"));
   if(!gs.length)return pan("Répartition dans un dossier","","<div class=\"empty\">Range d\'abord le matériel en dossiers (Réglages › Matériel) pour comparer les produits d\'un même dossier.</div>");
@@ -1575,23 +1617,30 @@ function bilanData(y){const ms=sortiesEntre(moisDebut(y,0),moisDebut(y+1,0)),act
     rupt:(()=>{const R=ruptures(moisDebut(y,0),Math.min(Date.now(),moisDebut(y+1,0)));const k=Object.keys(R.P);return {n:k.length,j:k.reduce((x,i)=>x+R.P[i].nD+R.P[i].nC,0),c:k.reduce((x,i)=>x+R.P[i].nD,0)}})(),pertes:allMvts().filter(m=>m.type==="perte"&&new Date(m.t).getFullYear()===y).reduce((x,m)=>x+num(m.qte,0),0),dep:allMvts().filter(m=>m.type==="depannage"&&new Date(m.t).getFullYear()===y).reduce((x,m)=>x+num(m.qte,0),0)}}
 function svBilan(){const ys=[...new Set(allMvts().filter(m=>m.type==="sortie").map(m=>new Date(m.t).getFullYear()))].sort((a,b)=>b-a);const y=num(S.svyr,ys[0]||new Date().getFullYear());
   const D=bilanData(y),sl=parts(Object.entries(D.parCat).map(([k,v])=>({label:CATS[k],v,col:CATCOL[k]})),7);
-  let h=chipsSV("svyr",y,(ys.length?ys:[y]).map(v=>[v,String(v)]))+'<button class="btn small" style="margin-top:8px" data-act="bilanPdf">'+PRINT_ICO+'Imprimer le bilan (PDF)</button>';
+  let h=chipsSV("svyr",y,(ys.length?ys:[y]).map(v=>[v,String(v)]))+'<button class="btn small" style="margin-top:8px" data-act="bilanExp">'+SHARE_ICO+'Exporter le bilan (rapport d\'activité)</button>';
   if(!D.ms.length)return pan("Les chiffres de l\'année","",h+'<div class="empty">Aucune sortie en '+y+'.</div>');
   h+='<div class="kpis"><div class="kpi"><div class="v">'+nfr(D.unites)+'</div><div class="k">unités distribuées</div></div><div class="kpi"><div class="v">'+nfr(D.ms.length)+'</div><div class="k">saisies de sortie</div></div><div class="kpi"><div class="v">'+D.refs+'</div><div class="k">références distribuées</div></div>'+(D.cout>0?'<div class="kpi"><div class="v">'+eur(D.cout)+'</div><div class="k">coût estimé</div></div>':'')+'</div>';
-  h+='<div class="bil"><div><h3>Unités par mois</h3><div class="chart">'+batons(D.parMois,MOIS,"--c1")+'</div></div><div><h3>Par catégorie</h3><div class="dn"><div class="chart">'+donut(sl,nfr(D.unites)+"|unités",190)+'</div>'+legende(sl)+'</div></div></div>';
+  h+='<div class="bil"><div><h3>Unités par mois</h3><div class="chart">'+batons(D.parMois,MOIS,"--c1")+'</div></div><div><h3>Par catégorie</h3><div class="dn"><div class="chart">'+donut(sl,nfr(D.unites)+"|unités",190,true)+'</div>'+legende(sl)+'</div></div></div>';
   h+='<h3 style="margin-top:14px">Détail par produit</h3><div class="twx"><table><thead><tr><th>Produit</th><th class="n">Total</th>'+D.acts.map(a=>'<th class="n">'+esc(a.nom)+'</th>').join("")+'</tr></thead><tbody>';
   for(const k of Object.keys(CATS)){const ps=ordreCat([...S.produits.values()]).filter(p=>catOf(p)===k&&D.rows[p.id]);if(!ps.length)continue;
     h+='<tr><td colspan="'+(2+D.acts.length)+'" style="font-weight:700;color:var(--accent)">'+esc(CATS[k])+' · '+nfr(D.parCat[k]||0)+' u.</td></tr>'+ps.map(p=>{const r=D.rows[p.id];return '<tr><td>'+esc(p.nom)+'</td><td class="n"><b>'+nfr(r.tot)+'</b></td>'+D.acts.map(a=>'<td class="n">'+(r.act[a.id]?nfr(r.act[a.id]):"")+'</td>').join("")+'</tr>'}).join("")}
   h+='</tbody></table></div><p class="note">Pertes et casse : '+nfr(D.pertes)+' u. · Prêts et dons à d\'autres associations : '+nfr(D.dep)+' u. (non comptés dans les sorties).'+(D.rupt.n?' Ruptures : '+D.rupt.n+' produit'+(D.rupt.n>1?"s":"")+', '+nfr(D.rupt.j)+' jours au total, dont '+nfr(D.rupt.c)+' constatés par l\'équipe.':' Aucune rupture.')+'</p>';
   return '<div class="panel bilanp" style="margin-top:12px"><h2>Les chiffres de l\'année '+y+'</h2><p class="note">Pour le rapport d\'activité : tout le matériel distribué dans l\'année, par catégorie, par produit et par activité.</p>'+h+'</div>'}
-async function bilanPdf(){const ys=[...new Set(allMvts().filter(m=>m.type==="sortie").map(m=>new Date(m.t).getFullYear()))].sort((a,b)=>b-a),y=num(S.svyr,ys[0]||new Date().getFullYear()),D=bilanData(y),C=PDFC;
+async function bilanPdf(){const d=await bilanDoc();await savePdf(d,"stockaarud-bilan-"+num(S.svyr,new Date().getFullYear()))}
+async function bilanDoc(){const ys=[...new Set(allMvts().filter(m=>m.type==="sortie").map(m=>new Date(m.t).getFullYear()))].sort((a,b)=>b-a),y=num(S.svyr,ys[0]||new Date().getFullYear()),D=bilanData(y),C=PDFC;
   const doc=await newPdf("portrait");let yy=pdfHead(doc,"Matériel distribué en "+y,"Sorties vers les activités. Les pertes et les prêts ou dons à d'autres associations sont comptés à part.");
   const k=[["Unités distribuées",nfr(D.unites)],["Saisies de sortie",nfr(D.ms.length)],["Références",String(D.refs)]].concat(D.cout>0?[["Coût estimé",pdfTxt(eur(D.cout))]]:[]);
   const kw=186/k.length;k.forEach(([l,v],i)=>{const x=12+i*kw;doc.setFillColor(...C.BG);doc.roundedRect(x,yy,kw-4,18,2,2,"F");doc.setFont("helvetica","bold");doc.setFontSize(14);doc.setTextColor(...C.K);doc.text(pdfTxt(v),x+4,yy+9);doc.setFont("helvetica","normal");doc.setFontSize(8.5);doc.setTextColor(...C.M);doc.text(l,x+4,yy+14.5)});yy+=24;
+  {const P=bilanData(y-1);doc.setFont("helvetica","normal");doc.setFontSize(9);doc.setTextColor(...C.M);
+    if(P.unites>0){const ev=Math.round((D.unites-P.unites)/P.unites*100);doc.text(pdfTxt("Par rapport à "+(y-1)+" : "+nfr(P.unites)+" unités, soit "+(ev>=0?"+":"")+ev+" %"+(y===new Date().getFullYear()?" (année "+y+" en cours)":"")+"."),12,yy);yy+=6}
+    const PA=D.acts.map(a=>{const ms=D.ms.filter(m=>m.activite===a.id);return [a.nom,ms.reduce((x,m)=>x+num(m.qte,0),0),ms.length,ms.reduce((x,m)=>x+coutM(m),0)]}).sort((p,q)=>q[1]-p[1]);
+    if(PA.length){doc.setFont("helvetica","bold");doc.setFontSize(10);doc.setTextColor(...C.K);doc.text("Par activité",12,yy+2);yy+=5;
+      doc.setFillColor(...C.G);doc.rect(12,yy,186,6,"F");doc.setFontSize(8);doc.setTextColor(255,255,255);doc.text("Activité",14,yy+4.2);doc.text("Unités",130,yy+4.2,{align:"right"});doc.text("Sorties",160,yy+4.2,{align:"right"});doc.text("Coût estimé",196,yy+4.2,{align:"right"});yy+=6;
+      doc.setFont("helvetica","normal");doc.setTextColor(...C.K);for(const r of PA){doc.text(pdfTxt(r[0]),14,yy+4.2);doc.text(pdfTxt(nfr(r[1])),130,yy+4.2,{align:"right"});doc.text(pdfTxt(nfr(r[2])),160,yy+4.2,{align:"right"});doc.text(pdfTxt(r[3]>0?eur(r[3]):""),196,yy+4.2,{align:"right"});doc.setDrawColor(...C.L);doc.setLineWidth(0.15);doc.line(12,yy+6,198,yy+6);yy+=6}yy+=6}}
   const svgs=[...document.querySelectorAll(".bilanp .bil .chart svg")];
   if(svgs.length===2){const a=await svgPng(svgs[0],2.5),b=await svgPng(svgs[1],2.5);const w1=112,h1=w1*a.h/a.w,w2=60,h2=w2*b.h/b.w;doc.setFont("helvetica","bold");doc.setFontSize(10);doc.setTextColor(...C.K);doc.text("Unités par mois",12,yy);doc.text("Par catégorie",132,yy);yy+=3;doc.addImage(a.url,"JPEG",12,yy,w1,h1);doc.addImage(b.url,"JPEG",132,yy,w2,h2);
     let ly=yy+Math.max(h1,h2)+5;const sl=parts(Object.entries(D.parCat).map(([kk,v])=>({label:CATS[kk],v,col:CATCOL[kk]})),7);let lx=12;doc.setFont("helvetica","normal");doc.setFontSize(8.5);
-    for(const s of sl){const cv=String(getComputedStyle(document.documentElement).getPropertyValue(s.col)).trim(),col=cv.startsWith("#")?hexRgb(cv):rgbOf(cv),t=pdfTxt(s.label+" "+s.extra);const tw=doc.getTextWidth(t)+8;if(lx+tw>198){lx=12;ly+=5}doc.setFillColor(...col);doc.rect(lx,ly-2.6,3,3,"F");doc.setTextColor(...C.K);doc.text(t,lx+4.2,ly);lx+=tw}
+    for(const s of sl){const cv=withLight(()=>String(getComputedStyle(document.documentElement).getPropertyValue(s.col)).trim()),col=cv.startsWith("#")?hexRgb(cv):rgbOf(cv),t=pdfTxt(s.label+" "+s.extra);const tw=doc.getTextWidth(t)+8;if(lx+tw>198){lx=12;ly+=5}doc.setFillColor(...col);doc.rect(lx,ly-2.6,3,3,"F");doc.setTextColor(...C.K);doc.text(t,lx+4.2,ly);lx+=tw}
     yy=ly+8}
   const acts=D.acts.slice(0,5),cw=[70,22].concat(acts.map(()=>Math.min(24,94/Math.max(1,acts.length))));const head=()=>{doc.setFillColor(...C.G);doc.rect(12,yy,186,6.5,"F");doc.setFont("helvetica","bold");doc.setFontSize(8);doc.setTextColor(255,255,255);let x=14;["Produit","Total"].concat(acts.map(a=>a.nom)).forEach((t,i)=>{const tt=doc.splitTextToSize(pdfTxt(t),cw[i]-2)[0];doc.text(tt,i?x+cw[i]-3:x,yy+4.4,{align:i?"right":"left"});x+=cw[i]});yy+=6.5};
   const need=h=>{if(yy+h>282){doc.addPage();yy=pdfHead(doc,"Matériel distribué en "+y+" (suite)","");head()}};head();
@@ -1602,7 +1651,7 @@ async function bilanPdf(){const ys=[...new Set(allMvts().filter(m=>m.type==="sor
       doc.setDrawColor(...C.L);doc.setLineWidth(0.15);doc.line(12,yy+6,198,yy+6);yy+=6}}
   need(14);yy+=5;doc.setFont("helvetica","normal");doc.setFontSize(9);doc.setTextColor(...C.M);doc.text(pdfTxt("Pertes et casse : "+nfr(D.pertes)+" u. Prêts et dons à d'autres associations : "+nfr(D.dep)+" u."),12,yy);yy+=5;doc.text(pdfTxt(D.rupt.n?"Ruptures : "+D.rupt.n+" produit"+(D.rupt.n>1?"s":"")+", "+nfr(D.rupt.j)+" jours au total, dont "+nfr(D.rupt.c)+" constatés par l'équipe.":"Aucune rupture sur l'année."),12,yy);
   if(D.acts.length>5){yy+=5;doc.text("Seules les 5 premières activités ont une colonne ; le total compte toutes les activités.",12,yy)}
-  await savePdf(doc,"stockaarud-bilan-"+y)}
+  return doc}
 const hexRgb=h=>{h=h.replace("#","");if(h.length===3)h=h.split("").map(c=>c+c).join("");return [0,2,4].map(i=>parseInt(h.slice(i,i+2),16))};
 
 /* ---------- Ruptures : constatées par l'équipe ou calculées ---------- */
@@ -1641,16 +1690,16 @@ function svRuptures(){const {a,b}=periodeSV(),R=ruptures(a,b),ids=Object.keys(R.
 function rupturesOuvertes(){const out=[];const byP={};for(const m of allMvts())(byP[m.produit]=byP[m.produit]||[]).push(m);
   for(const pid in byP){let open=null;for(const m of byP[pid]){if(m.type==="rupture")open=open||m;else if(open&&m.t>open.t&&(m.type==="reception"||m.type==="entree"||(m.type==="inventaire"&&m.qte>0)))open=null}if(open&&S.produits.has(pid))out.push(open)}return out}
 
-const SV_VUES=[["conso","Consommation"],["repart","Camemberts par dossier"],["prat","Évolution des pratiques"],["coh","Cohérence des kits"],["act","Par activité"],["jours","Jours forts"],["budget","Budget"],["annee","Année / an dernier"],["meteo","Météo du stock"],["rupt","Ruptures"],["dorm","Produits dormants"],["bilan","Chiffres de l\'année"]];
+const SV_VUES=[["conso","Consommation"],["explo","Tableau croisé"],["repart","Camemberts par dossier"],["prat","Évolution des pratiques"],["coh","Cohérence des kits"],["act","Par activité"],["jours","Jours forts"],["budget","Budget"],["annee","Année / an dernier"],["meteo","Météo du stock"],["rupt","Ruptures"],["dorm","Produits dormants"],["bilan","Chiffres de l\'année"]];
 function svNav(){return '<div class="svnav" role="tablist" aria-label="Graphiques">'+SV_VUES.map(([k,l])=>'<button data-act="sv" data-v="'+k+'" aria-pressed="'+((S.sv||"conso")===k)+'">'+l+'</button>').join("")+'</div>'}
-function svView(){const v=S.sv||"conso";return v==="repart"?svRepart():v==="prat"?svPratiques():v==="coh"?svCoherence():v==="act"?svActivites():v==="jours"?svJours():v==="budget"?svBudget():v==="annee"?svAnnee():v==="meteo"?svMeteo():v==="rupt"?svRuptures():v==="dorm"?svDormants():v==="bilan"?svBilan():null}
+function svView(){const v=S.sv||"conso";return v==="explo"?svExplo():v==="repart"?svRepart():v==="prat"?svPratiques():v==="coh"?svCoherence():v==="act"?svActivites():v==="jours"?svJours():v==="budget"?svBudget():v==="annee"?svAnnee():v==="meteo"?svMeteo():v==="rupt"?svRuptures():v==="dorm"?svDormants():v==="bilan"?svBilan():null}
 
 function viewCoordo(st){
   const tabs=[["bord","Tableau de bord"],["cmd","Commandes"],["stats","Statistiques"],["prev","Prévisions"],["mvt","Mouvements"],["inv","Inventaire"],["reg","Réglages"]];
   let h=dbBanner();
   if(!coordoOK())return h+'<div class="empty">L\'espace gestion est réservé aux responsables stock.</div>';
   if(wizardNeeded())return h+viewWizard(st);
-  {const tb=([k,v])=>'<button data-act="ctab" data-v="'+k+'" aria-pressed="'+(S.ctab===k)+'">'+v+'</button>',wide=(window.innerWidth||0)>=900,main=wide?tabs:tabs.slice(0,3),extra=wide?[]:tabs.slice(3),inX=extra.some(([k])=>k===S.ctab),open=S.tabMore||inX;
+  {const tb=([k,v])=>'<button data-act="ctab" data-v="'+k+'" aria-pressed="'+(S.ctab===k)+'" title="Raccourci clavier : '+(CTABS.indexOf(k)+1)+'">'+v+'</button>',wide=(window.innerWidth||0)>=900,main=wide?tabs:tabs.slice(0,3),extra=wide?[]:tabs.slice(3),inX=extra.some(([k])=>k===S.ctab),open=S.tabMore||inX;
    h+='<nav class="subnav"><div class="main">'+main.map(tb).join("")+(wide?'':'<button data-act="tabMore" aria-expanded="'+!!open+'" aria-pressed="'+inX+'">Plus '+(open?"▴":"▾")+'</button>')+'</div>'+(open?'<div class="more">'+extra.map(tb).join("")+'</div>':'')+'</nav>'}
   if(S.ctab==="bord")h+=tabBord(st);
   if(S.ctab==="stats")h+=tabStats();
@@ -1704,6 +1753,16 @@ function schemaStocks(clickable){
   h+='</div></div></div>';
   return h;
 }
+function viewEcran(st){const ps=prodsActifs().filter(p=>st[p.id].moy>0),now=new Date(),nm=(cfg().nomStructure||"").trim()||cfg().nomStock||"Stockaarud";
+  const urg=ps.filter(p=>st[p.id].etat==="crit"||st[p.id].stock<=0).sort((a,b)=>st[a.id].autonomie-st[b.id].autonomie),bientot=ps.filter(p=>st[p.id].etat==="warn").sort((a,b)=>st[a.id].autonomie-st[b.id].autonomie);
+  const enc=S.cmds.filter(enAttente),sem=sortiesEntre(Date.now()-7*DAY,Date.now()+1,null),top=Object.entries(sumBy(sem,m=>m.produit)).sort((x,y)=>y[1]-x[1]).slice(0,6);
+  const li=p=>{const s=st[p.id];return '<li>'+badge(p)+'<span class="en">'+esc(p.nom)+'</span><span class="ej '+s.etat+'">'+(s.stock<=0?"épuisé":isFinite(s.autonomie)?Math.floor(s.autonomie)+" j":"—")+'</span></li>'};
+  return '<div class="ecran"><div class="eh"><div><h1>'+esc(nm)+'</h1><p>'+now.toLocaleDateString("fr-FR",{weekday:"long",day:"numeric",month:"long"})+' · '+now.toLocaleTimeString("fr-FR",{hour:"2-digit",minute:"2-digit"})+'</p></div><div class="row"><button class="btn" data-act="ecranFs">Plein écran</button><button class="btn" data-act="ecranQuit">Quitter</button></div></div>'
+   +'<div class="eg"><section class="ec crit"><h2>À commander tout de suite</h2>'+(urg.length?'<ul>'+urg.map(li).join("")+'</ul>':'<p class="eok">Rien d\'urgent.</p>')+'</section>'
+   +'<section class="ec warn"><h2>À prévoir</h2>'+(bientot.length?'<ul>'+bientot.slice(0,10).map(li).join("")+'</ul>':'<p class="eok">Rien à prévoir.</p>')+'</section>'
+   +'<section class="ec"><h2>Commandes attendues</h2>'+(enc.length?'<ul>'+enc.slice(0,8).map(c=>{const p=S.produits.get(c.produit)||{nom:"?"};return '<li><span class="en">'+esc(p.nom)+'</span><span class="ej">'+esc(fmtQ(p,c.qte))+'</span></li>'}).join("")+'</ul>':'<p class="eok">Aucune commande en cours.</p>')
+   +'<h2 style="margin-top:22px">Le plus sorti cette semaine</h2>'+(top.length?'<ul>'+top.map(([id,v])=>{const p=S.produits.get(id);return '<li>'+badge(p)+'<span class="en">'+esc(p.nom)+'</span><span class="ej">'+esc(fmtQ(p,v))+'</span></li>'}).join("")+'</ul>':'<p class="eok">Aucune sortie cette semaine.</p>')+'</section></div>'
+   +'<p class="ef">Mis à jour en direct · Échap ou « Quitter » pour revenir</p></div>'}
 function tabBord(st0){
   const LL=lieux();if(S.vueLieu&&!LL.some(l=>l.id===S.vueLieu))S.vueLieu=null;
   const VL=LL.length>1?S.vueLieu:null,st=VL?computeStats(VL):st0,used=VL&&VL!==(principal()||{}).id?usedAt(VL):null;
@@ -1734,6 +1793,7 @@ function tabBord(st0){
    +'</div></div>';
   h+='</div><div class="bcol">';
   h+='<div class="panel" style="margin-top:14px">'+repartition()+'<button class="link" data-act="ctab" data-v="stats">Voir les statistiques détaillées</button></div>';
+  h+='<div class="panel" style="margin-top:14px"><h2>Écran du stock</h2><p class="note">À afficher en grand sur une tablette ou un écran au local : ce qui manque, ce qui est à prévoir, les commandes attendues. Il se met à jour tout seul.</p><button class="btn" style="margin-top:8px" data-act="ecranGo">Ouvrir l\'écran du stock</button></div>';
   h+='<div class="panel" style="margin-top:14px"><h2>Exports</h2><p class="note">Pour le rapport d\'activité ou pour récupérer vos données.</p><div class="row" style="margin-top:10px"><button class="btn" data-act="exportMvts">Mouvements (CSV)</button><button class="btn" data-act="exportAnnuel">Totaux de l\'année (CSV)</button><button class="btn" data-act="exportConfig">Modèle pour un autre CAARUD</button></div></div>';
   h+='</div></div>';
   return h;
@@ -1819,8 +1879,15 @@ function openReception(c){lastFocus=document.activeElement;setTimeout(focusDialo
 
 /* Mouvements */
 function prodOpts(id){return prodsActifs().map(p=>'<option value="'+p.id+'"'+(p.id===id?" selected":"")+'>'+esc(p.nom)+'</option>').join("")}
+function lotPanel(){const acts=activitesActives(),L=lieux(),ps=ordreCat(prodsActifs()),D=S.lotDraft||{},d0=new Date();
+  const dv=D.date||new Date(d0.getTime()-d0.getTimezoneOffset()*6e4).toISOString().slice(0,10);
+  let h='<details class="panel lotp" style="margin-top:12px"'+dk("lot")+'><summary><h2 style="display:inline">Saisie en lot</h2></summary><p class="note">Pour rentrer d\'un coup des sorties notées sur papier : une maraude sans téléphone, une permanence sans réseau. Choisissez le jour et l\'activité, tapez les quantités en unités, puis enregistrez. Sur ordinateur, Entrée passe au produit suivant.</p>'
+   +'<div class="form" style="margin-top:10px"><label>Jour<input id="lotD" type="date" value="'+esc(dv)+'" max="'+esc(new Date(d0.getTime()-d0.getTimezoneOffset()*6e4).toISOString().slice(0,10))+'"></label><label>Activité<select id="lotA">'+acts.map(a=>'<option value="'+a.id+'"'+(a.id===D.act?" selected":"")+'>'+esc(a.nom)+'</option>').join("")+'</select></label>'+(L.length>1?'<label>Pris dans<select id="lotL">'+L.map(l=>'<option value="'+l.id+'"'+(l.id===(D.lieu||(principal()||{}).id)?" selected":"")+'>'+esc(l.nom)+'</option>').join("")+'</select></label>':'')+'</div>';
+  h+='<div class="lotg">'+ps.map(p=>'<label class="loti">'+badge(p)+'<span>'+esc(p.nom)+'</span><input id="lotQ-'+p.id+'" type="number" min="0" inputmode="numeric" placeholder="0" value="'+esc(D["lotQ-"+p.id]||"")+'" aria-label="'+esc(p.nom)+', unités"></label>').join("")+'</div>'
+   +'<div class="row" style="margin-top:12px"><button class="btn primary" data-act="lotSave">Enregistrer ces sorties</button><button class="btn" data-act="lotClear">Effacer</button></div></details>';
+  return h}
 function tabMvt(st){
-  let h='<div class="panel" style="margin-top:12px"><h2>Entrée hors commande</h2><p class="note">Don, matériel rendu par une asso, emprunt, cartons qui reviennent d\'une activité.</p><div class="form" style="margin-top:10px"><label>Produit<select id="enP">'+prodOpts()+'</select></label><label>Quantité<input id="enQ" type="number" min="1" inputmode="numeric"></label><label>En<select id="enM"><option value="carton">cartons</option><option value="unite">unités</option></select></label><label>Origine<select id="enO"><option value="don">Don</option><option value="retour">Retour d\'activité</option><option value="rendu">Rendu par une asso</option><option value="emprunt">Emprunt à une asso (à rendre)</option></select></label><label>Asso<select id="enA"><option value="">—</option>'+cfg().partenaires.map(a=>'<option value="'+a.id+'">'+esc(a.nom)+'</option>').join("")+'</select></label><label>Lieu<select id="enL">'+lieux().map(l=>'<option value="'+l.id+'">'+esc(l.nom)+'</option>').join("")+'</select></label><label>Péremption <span class="note">(facultatif)</span><input id="enD" type="date"></label><button class="btn primary" data-act="enAdd">Enregistrer</button></div></div>';
+  let h=lotPanel()+'<div class="panel" style="margin-top:12px"><h2>Entrée hors commande</h2><p class="note">Don, matériel rendu par une asso, emprunt, cartons qui reviennent d\'une activité.</p><div class="form" style="margin-top:10px"><label>Produit<select id="enP">'+prodOpts()+'</select></label><label>Quantité<input id="enQ" type="number" min="1" inputmode="numeric"></label><label>En<select id="enM"><option value="carton">cartons</option><option value="unite">unités</option></select></label><label>Origine<select id="enO"><option value="don">Don</option><option value="retour">Retour d\'activité</option><option value="rendu">Rendu par une asso</option><option value="emprunt">Emprunt à une asso (à rendre)</option></select></label><label>Asso<select id="enA"><option value="">—</option>'+cfg().partenaires.map(a=>'<option value="'+a.id+'">'+esc(a.nom)+'</option>').join("")+'</select></label><label>Lieu<select id="enL">'+lieux().map(l=>'<option value="'+l.id+'">'+esc(l.nom)+'</option>').join("")+'</select></label><label>Péremption <span class="note">(facultatif)</span><input id="enD" type="date"></label><button class="btn primary" data-act="enAdd">Enregistrer</button></div></div>';
   const prets=allMvts().filter(m=>(m.type==="depannage"||m.type==="entree")&&m.aRendre&&!m.rendu);
   h+='<div class="panel" style="margin-top:14px"><h2>Prêts et emprunts à rendre</h2>'+(prets.length?'<div class="list">'+prets.map(m=>{const p=S.produits.get(m.produit)||{nom:"?"};return '<div class="it"><span style="flex:1;min-width:150px"><b>'+esc(p.nom)+'</b> · '+esc(fmtQ(p,m.qte))+'<br><span class="note">'+(m.type==="depannage"?"Prêté à ":"Emprunté à ")+esc(assoNom(m))+' le '+fmtDate(m.t)+'</span></span><button class="btn small" data-act="rendu" data-id="'+m.id+'">'+(m.type==="depannage"?"Rendu par l\'asso":"Rendu à l\'asso")+'</button></div>'}).join("")+'</div>':'<div class="empty">Rien à rendre.</div>')+'</div>';
   if(S.sigs.length)h+='<div class="panel" style="margin-top:14px"><h2>Signalements de l\'équipe</h2><div class="list">'+S.sigs.map(s=>'<div class="it"><span style="flex:1">Produit cherché : « '+esc(s.texte)+' »</span><span class="note">'+fmtDT(s.t)+'</span><button class="btn small" data-act="delSig" data-id="'+s.id+'">Traité</button></div>').join("")+'</div></div>';
@@ -1965,11 +2032,22 @@ if(!matchMedia("(prefers-reduced-motion: reduce)").matches)document.addEventList
 (()=>{const set=()=>{const t=document.querySelector(".top"),n=document.querySelector(".subnav");document.documentElement.style.setProperty("--hdrH",(t?t.getBoundingClientRect().height:64)+"px");document.documentElement.style.setProperty("--subH",(n?n.getBoundingClientRect().height+4:52)+"px")};
  const go=()=>{set();if(window.ResizeObserver){const ro=new ResizeObserver(set);const t=document.querySelector(".top");if(t)ro.observe(t);new MutationObserver(set).observe(document.getElementById("app")||document.body,{childList:true})}};
  document.readyState==="loading"?document.addEventListener("DOMContentLoaded",go):go();addEventListener("resize",set)})();
+function matTable(all){all=[...all].sort((a,b)=>(b.actif!==false)-(a.actif!==false)||a.nom.localeCompare(b.nom,"fr"));const F=cfg().fournisseurs||[],D=S.matDraft||{},v=(f,p,def)=>{const k="me"+f+"-"+p.id;return k in D?D[k]:def};
+  return '<p class="note">Modifiez directement les cases, comme dans un tableur, puis enregistrez. Entrée passe à la ligne suivante.</p><div class="tw mt"><table><thead><tr><th>Actif</th><th>Produit</th><th>Catégorie</th><th class="n">Par carton</th><th class="n">Par boîte</th><th class="n">Prix u. (€)</th><th>Fournisseur</th><th class="n">Sécurité (j)</th></tr></thead><tbody>'
+   +all.map(p=>'<tr><td><input type="checkbox" id="meA-'+p.id+'"'+(v("A",p,p.actif!==false)?" checked":"")+' aria-label="Actif"></td><td><input id="meN-'+p.id+'" value="'+esc(v("N",p,p.nom))+'" aria-label="Nom" style="min-width:200px"></td>'
+    +'<td><select id="meC-'+p.id+'" aria-label="Catégorie">'+Object.keys(CATS).map(k=>'<option value="'+k+'"'+(k===v("C",p,catOf(p))?" selected":"")+'>'+esc(CATS[k])+'</option>').join("")+'</select></td>'
+    +'<td class="n"><input id="meP-'+p.id+'" type="number" min="1" value="'+esc(v("P",p,p.parCarton||1))+'" style="width:90px"></td><td class="n"><input id="meB-'+p.id+'" type="number" min="0" value="'+esc(v("B",p,p.parBoite||""))+'" style="width:80px"></td>'
+    +'<td class="n"><input id="meX-'+p.id+'" type="number" min="0" step="0.01" value="'+esc(v("X",p,p.prix===""||p.prix==null?"":p.prix))+'" style="width:90px"></td>'
+    +'<td><select id="meF-'+p.id+'"><option value="">—</option>'+F.map(f=>'<option value="'+f.id+'"'+(f.id===v("F",p,p.fournisseurId||"")?" selected":"")+'>'+esc(f.nom)+'</option>').join("")+'</select></td>'
+    +'<td class="n"><input id="meS-'+p.id+'" type="number" min="0" value="'+esc(v("S",p,p.securiteJours??7))+'" style="width:70px"></td></tr>').join("")+'</tbody></table></div>'
+   +'<div class="row" style="margin-top:10px"><button class="btn primary" data-act="matSave">Enregistrer les modifications</button><button class="btn" data-act="matEdit">Annuler</button></div>'}
 function catalogue(){
   const all=[...S.produits.values()].sort((a,b)=>a.nom.localeCompare(b.nom,"fr"));
   const have=new Set(all.map(p=>norm(p.nom)));
   const base=BASE_RDR.filter(b=>!have.has(norm(b[0])));
-  let h='<div class="panel" style="margin-top:14px"><h2>Matériel</h2><p class="note">Touche une ligne pour modifier la contenance, le fournisseur, le délai, le prix, les synonymes ou la photo.</p>';
+  let h='<div class="panel" style="margin-top:14px">'+(all.length?'<button class="btn small pbtn" data-act="matEdit">'+(S.matEdit?"Revenir à la liste":"Modifier en tableau")+'</button>':'')+'<h2>Matériel</h2>';
+  if(S.matEdit&&all.length)return h+matTable(all)+'</div>';
+  h+='<p class="note">Touche une ligne pour modifier la contenance, le fournisseur, le délai, le prix, les synonymes ou la photo. Sur ordinateur, « Modifier en tableau » permet de tout changer d\'un coup.</p>';
   h+=all.length?'<div class="tw"><table class="resp"><thead><tr><th>Produit</th><th>Catégorie</th><th class="n">Par carton</th><th>Fournisseur</th><th class="n">Délai</th><th class="n">Prix u.</th><th></th></tr></thead><tbody>'+all.map(p=>'<tr><td><div class="row" style="flex-wrap:nowrap;min-width:0">'+badge(p)+'<span style="min-width:0">'+esc(p.nom)+(p.aVerifier?' <span class="pill warn">à vérifier</span>':'')+(p.essentiel?' <span class="pill ess">essentiel</span>':'')+'</span></div></td><td>'+esc(CATS[catOf(p)])+'</td><td class="n">'+(p.parCarton>1?p.parCarton+(p.parBoite>1&&p.parBoite<p.parCarton?" ("+Math.round(p.parCarton/p.parBoite*10)/10+" × "+p.parBoite+")":""):(p.parBoite>1?"boîte de "+p.parBoite:"à l\'unité"))+'</td><td>'+esc(fournNom(p)||"—")+'</td><td class="n">'+delaiOf(p)+' j</td><td class="n">'+(p.prix?num(p.prix).toFixed(2)+" €":"—")+'</td><td><button class="btn small" data-act="editProd" data-id="'+p.id+'">'+(p.actif===false?"Inactif · modifier":"Modifier")+'</button></td></tr>').join("")+'</tbody></table></div>':'<div class="empty">Aucun produit. Active ceux que vous utilisez dans la base RdR ci-dessous.</div>';
   h+='<div class="row" style="margin-top:10px"><button class="btn" data-act="newProd">Ajouter une référence</button>'+(all.length?'<button class="btn" data-act="listePdf">'+PRINT_ICO+'Imprimer la liste (PDF)</button><button class="btn" data-act="matCsv">Télécharger la liste (CSV)</button>':'')+'<label class="btn">Mettre à jour depuis un CSV<input type="file" accept=".csv,text/csv" id="impCsv2" hidden></label></div><p class="note" style="margin-top:6px">Le CSV a les colonnes : nom ; catégorie ; unités par carton ; prix unitaire ; fournisseur ; délai. Téléchargez la liste, modifiez-la dans un tableur, puis importez-la : l\'appli montre les changements avant de les appliquer.</p>';
   if(base.length)h+='<details style="margin-top:14px"'+(all.length?"":" open")+'><summary>Base RdR : '+base.length+' références à activer</summary>'+Object.keys(CATS).filter(k=>base.some(b=>b[1]===k)).map(k=>'<div class="label">'+CATS[k]+'</div><div class="chips">'+base.filter(b=>b[1]===k).map(b=>'<label class="chip" style="display:inline-flex;gap:8px;align-items:center"><input type="checkbox" class="baseChk" value="'+esc(b[0])+'" style="width:18px;min-height:18px">'+esc(b[0])+'</label>').join("")+'</div>').join("")+'<button class="btn primary" style="margin-top:12px" data-act="addBase">Activer la sélection</button><p class="note">Contenance par défaut : à l\'unité. Indique ensuite combien d\'unités contient un carton.</p></details>';
@@ -2002,6 +2080,15 @@ function importPreview(){
   return '<div style="margin-top:14px"><h3>Changements proposés par le catalogue</h3><p class="note">Coche ce que tu veux appliquer.</p><div class="list">'+S.importRows.map((r,i)=>'<label class="it"><input type="checkbox" class="impChk" data-i="'+i+'" checked style="width:20px;min-height:20px"><span style="flex:1"><b>'+esc(r.nom)+'</b> <span class="pill '+(r.ex?"warn":"good")+'">'+(r.ex?"modifié":"nouveau")+'</span><br><span class="note">'+esc(r.diff)+'</span></span></label>').join("")+'</div><div class="row" style="margin-top:10px"><button class="btn primary" data-act="impApply">Appliquer</button><button class="btn" data-act="impCancel">Ignorer</button></div></div>';
 }
 
+/* ---------- Raccourcis clavier (ordinateur) ---------- */
+const CTABS=["bord","cmd","stats","prev","mvt","inv","reg"];
+document.addEventListener("keydown",e=>{if(e.ctrlKey||e.metaKey||e.altKey)return;const a=document.activeElement,typing=a&&(/^(INPUT|TEXTAREA|SELECT)$/.test(a.tagName)||a.isContentEditable);
+  if(e.key==="Enter"&&a&&/^(invU|invC|invB)$/.test(a.id)){e.preventDefault();const ok=document.querySelector('[data-act="invOk"]');if(ok)ok.click();return}
+  if(e.key==="Enter"&&a&&/^(iq[CU]|lotQ|me[A-Z])-/.test(a.id)){e.preventDefault();const L=[...document.querySelectorAll("#app input[id^='"+a.id.split("-")[0]+"-']")],i=L.indexOf(a);if(L[i+1]){L[i+1].focus();L[i+1].select&&L[i+1].select()}return}
+  if(typing||document.querySelector("#layer [role=dialog]"))return;
+  if(S.view==="ecran"&&e.key==="Escape"){S.view="coordo";render();return}
+  if(S.view==="coordo"&&/^[1-7]$/.test(e.key)&&coordoOK()&&!wizardNeeded()){S.ctab=CTABS[+e.key-1];S.tabMore=false;render();window.scrollTo(0,0);e.preventDefault()}});
+
 /* ---------- Info-bulles des graphiques ---------- */
 function ckTip(){let t=document.getElementById("ckTip");if(!t){t=document.createElement("div");t.id="ckTip";t.className="cktip";t.hidden=true;document.body.appendChild(t)}return t}
 function ckHide(){const t=document.getElementById("ckTip");if(t)t.hidden=true;document.querySelectorAll(".ckguide").forEach(g=>g.remove())}
@@ -2028,7 +2115,9 @@ function strip(o){const {id,...r}=o;return r}
 function slug(s){return norm(s).replace(/[^a-z0-9]+/g,"-").replace(/^-|-$/g,"").slice(0,40)||uid()}
 function val(id){const e=document.getElementById(id);return e?e.value:""}
 async function downloadBlob(name,blob){if(!S.dl){toast("Le téléchargement n'est pas disponible dans cette vue");return}try{await S.dl.save({filename:name,data:blob})}catch(e){if(e&&e.code!=="dismissed"&&e.code!=="declined")toast("Téléchargement annulé")}}
-document.addEventListener("input",e=>{const t=e.target;if(t&&t.id&&/^iq[CU]-/.test(t.id)){S.invDraft=S.invDraft||{};S.invDraft[t.id]=t.value}});
+document.addEventListener("input",e=>{const t=e.target;if(t&&t.id&&/^lot/.test(t.id)){S.lotDraft=S.lotDraft||{};if(t.id==="lotD")S.lotDraft.date=t.value;else if(t.id==="lotA")S.lotDraft.act=t.value;else if(t.id==="lotL")S.lotDraft.lieu=t.value;else S.lotDraft[t.id]=t.value}
+  if(t&&t.id&&/^me[A-Z]-/.test(t.id)){S.matDraft=S.matDraft||{};S.matDraft[t.id]=t.type==="checkbox"?t.checked:t.value}
+  if(t&&t.id&&/^iq[CU]-/.test(t.id)){S.invDraft=S.invDraft||{};S.invDraft[t.id]=t.value}});
 async function saveInvRapide(){const st=computeStats(),sess="inv"+uid();let n=0;S.lastSess=sess;for(const p of prodsActifs()){const c=document.getElementById("iqC-"+p.id),u=document.getElementById("iqU-"+p.id);const cv=c?c.value.trim():"",uv=u?u.value.trim():"";if(cv===""&&uv==="")continue;
   const q=Math.max(0,Math.round(num(cv,0)*(p.parCarton>1?p.parCarton:1)+num(uv,0)));await write("set","mouvements/"+uid(),{t:Date.now(),type:"inventaire",produit:p.id,qte:q,lieu:S.invLieu||(principal()||{}).id,theorique:st[p.id].byLieu[S.invLieu||(principal()||{}).id]||0,session:sess});n++}
   if(n)S.invDraft={};
@@ -2067,7 +2156,7 @@ function statData(){
 const sum=a=>a.reduce((x,y)=>x+y,0);
 const fmtV=v=>S.stat.measure==="e"?eur(v):Math.round(v).toLocaleString("fr-FR");
 let STAT=null,CW=640;
-const SV_SCOPED=new Set(["conso","repart","prat","coh","jours","annee"]);
+const SV_SCOPED=new Set(["explo","conso","repart","prat","coh","jours","annee"]);
 function scopeIds(){const ok=new Set(activitesActives().map(a=>a.id));return (S.svas||[]).filter(id=>ok.has(id))}
 function scopeNames(){return scopeIds().map(actNom).join(" + ")}
 function actScopeBar(){const acts=cfg().activites.filter(a=>!a.archive);if(!acts.length)return "";const v=S.sv||"conso",cur=scopeIds();
@@ -2310,6 +2399,7 @@ document.addEventListener("change",async e=>{
   const t=e.target;
   if(t.id==="chartProd"){S.chartProd=t.value;render()}
   if(t.id==="svY"){S.svy=t.value;render()}
+  if(t.id==="xR"){S.xr=t.value;if(S.xc===t.value)S.xc="aucune";render()}if(t.id==="xC"){S.xc=t.value;render()}if(t.id==="xM"){S.xm=t.value;render()}
   if(t.id==="pvProd"){S.prev.prod=t.value;S.prev.ov=null;render()}
   if(t.id&&t.id.startsWith("fr-")){const fid=t.id.slice(3);const F=(cfg().fournisseurs||[]).map(f=>f.id===fid?{...f,nom:val("fn-"+f.id)||f.nom,delai:num(val("fd-"+f.id),7),rythme:t.value,n:f.n||2,ancre:f.ancre||today(),jour:f.jour||1}:f);await saveConfig({fournisseurs:F})}
   if(t.id==="pvD"||t.id==="pvAuto"||(t.id==="pvQ"&&!pvQT)){const PV=PVS.pv,sim=PV&&PV.sim;if(sim){const div=PV.div;const ov=S.prev.ov||{};ov.q=Math.max(0,num(val("pvQ")))*div;const dd=val("pvD");ov.d=dd?Math.max(0,Math.min(H_PREV-1,Math.round((new Date(dd+"T12:00")-new Date(today()+"T12:00"))/DAY))):0;ov.auto=document.getElementById("pvAuto").checked;ov.prod=S.prev.prod;S.prev.ov=ov;render()}}
@@ -2382,6 +2472,25 @@ document.addEventListener("click",async e=>{
   case "delCode":if(b.dataset.sure!=="1"){b.dataset.sure="1";b.textContent="Confirmer la suppression";break}await write("delete","secret/coordo");S.secret=null;toast("Code supprimé");render();break;
   case "lockDevice":try{localStorage.removeItem(NS+"coordoKey")}catch(_){}S.unlockKey=null;S.view="equipe";ls.set("view","equipe");toast("Espace gestion verrouillé sur cet appareil");render();break;
   case "ctab":S.ctab=b.dataset.v;S.tabMore=false;render();break;
+  case "bilanExp":{const y=num(S.svyr,new Date().getFullYear()),D=bilanData(y),t="Matériel distribué en "+y,p=document.querySelector(".bilanp");
+    openExport({titre:t,nom:"stockaarud-bilan-"+y,pdf:()=>bilanDoc(),csv:()=>tablesCsv(t,"",p?panelTables(p).filter(x=>!x.fmt||true):[]),texte:()=>t+"\n"+nfr(D.unites)+" unités distribuées en "+nfr(D.ms.length)+" sorties, "+D.refs+" références"+(D.cout>0?", coût estimé "+eur(D.cout):"")+".\n"+Object.entries(D.parCat).sort((a,b)=>b[1]-a[1]).map(([k,v])=>"- "+CATS[k]+" : "+nfr(v)+" u.").join("\n")+"\n\nEnvoyé depuis Stockaarud"});break}
+  case "ecranGo":S.view="ecran";window.scrollTo(0,0);try{if(navigator.wakeLock)S.wake=await navigator.wakeLock.request("screen")}catch(err){}clearInterval(S.ecranT);S.ecranT=setInterval(()=>{if(S.view==="ecran")render();else clearInterval(S.ecranT)},30000);render();break;
+  case "ecranFs":try{if(document.fullscreenElement)await document.exitFullscreen();else await document.documentElement.requestFullscreen()}catch(err){toast("Plein écran indisponible ici")}break;
+  case "ecranQuit":S.view="coordo";try{if(document.fullscreenElement)await document.exitFullscreen()}catch(err){}try{S.wake&&S.wake.release()}catch(err){}clearInterval(S.ecranT);render();break;
+  case "matEdit":S.matEdit=!S.matEdit;S.matDraft={};render();break;
+  case "matSave":{let n=0;for(const p of S.produits.values()){const g=f=>document.getElementById("me"+f+"-"+p.id);if(!g("N"))continue;
+      const d={nom:g("N").value.trim()||p.nom,actif:g("A").checked,categorie:g("C").value,parCarton:Math.max(1,Math.round(num(g("P").value,1))),parBoite:Math.round(num(g("B").value,0))>1?Math.round(num(g("B").value,0)):"",prix:g("X").value===""?"":num(g("X").value),fournisseurId:g("F").value,securiteJours:Math.max(0,num(g("S").value,7))};
+      const cur={nom:p.nom,actif:p.actif!==false,categorie:catOf(p),parCarton:p.parCarton||1,parBoite:p.parBoite>1?p.parBoite:"",prix:p.prix===""||p.prix==null?"":num(p.prix),fournisseurId:p.fournisseurId||"",securiteJours:p.securiteJours??7};
+      if(Object.keys(d).some(k=>String(d[k])!==String(cur[k]))){const {id,...rest}=p;await write("set","produits/"+p.id,{...rest,...d});n++}}
+    S.matEdit=false;S.matDraft={};toast(n?n+" produit"+(n>1?"s":"")+" modifié"+(n>1?"s":""):"Aucun changement");render();break}
+  case "lotClear":S.lotDraft={date:(S.lotDraft||{}).date,act:(S.lotDraft||{}).act,lieu:(S.lotDraft||{}).lieu};render();break;
+  case "lotSave":{const D=S.lotDraft||{},ds=val("lotD")||D.date,act=val("lotA"),lieu=val("lotL")||(principal()||{}).id;if(!ds){toast("Choisis le jour");break}
+    const t0=new Date(ds+"T12:00:00").getTime();if(!(t0>0)||t0>Date.now()+DAY){toast("Ce jour n'est pas valable");break}
+    const L=prodsActifs().map(p=>[p,Math.round(num(val("lotQ-"+p.id),0))]).filter(x=>x[1]>0);if(!L.length){toast("Tape au moins une quantité");break}
+    if(b.dataset.sure!=="1"){b.dataset.sure="1";b.textContent="Confirmer : "+L.length+" sortie"+(L.length>1?"s":"")+" le "+new Date(t0).toLocaleDateString("fr-FR")+" pour "+actNom(act);break}
+    let k=0;for(const [p,q] of L){await write("set","mouvements/"+uid(),{t:t0+(k++)*1000,type:"sortie",produit:p.id,qte:q,lieu,activite:act,lot:true})}
+    S.lotDraft={date:ds,act,lieu};toast(L.length+" sortie"+(L.length>1?"s":"")+" enregistrée"+(L.length>1?"s":"")+" au "+new Date(t0).toLocaleDateString("fr-FR"));render();break}
+  case "xSwap":if((S.xc||"mois")!=="aucune"){const r0=S.xr||"categorie";S.xr=S.xc||"mois";S.xc=r0;render()}break;
   case "tabMore":S.tabMore=!S.tabMore;render();break;
   case "lieu":S.lieu=id;ls.set("lieu",id);render();break;
   case "activite":setActivite(id,0);S.actOpen=false;render();break;
