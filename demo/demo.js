@@ -9,7 +9,7 @@
   /* Deux CAARUD fictifs, pour essayer le passage de l'un à l'autre */
   const BASES = [{ ref: "nord", nom: "CAARUD Démo Nord" }, { ref: "sud", nom: "CAARUD Démo Sud" }];
   const base = BASES.some(b => b.ref === localStorage.getItem(BASE_KEY)) ? localStorage.getItem(BASE_KEY) : "nord";
-  const KEY = base === "nord" ? "stockaarud-demo-v4" : "stockaarud-demo-v4-" + base;
+  const KEY = base === "nord" ? "stockaarud-demo-v5" : "stockaarud-demo-v5-" + base;
   window.STK_NS = base === "nord" ? "stk:" : "stk@demo-" + base + ":";
   const store = new Map();
   const startOfDay = (t) => { const d = new Date(t); d.setHours(0, 0, 0, 0); return d.getTime(); };
