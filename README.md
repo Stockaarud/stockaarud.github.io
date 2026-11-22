@@ -3,8 +3,8 @@
 Le site de présentation de [Stockaarud](https://github.com/Stockaarud/stockaarud) : la page d'accueil avec le film, et le guide d'installation.
 
 - `index.html` : l'accueil
-- `installer.html` : le guide d'installation pas à pas
-- `guide.html` : le guide utilisateur
+- `installer.html` : une redirection vers le volet Installation de `guide.html`
+- `guide.html` : le guide, en trois volets (installation, équipe, responsable stock)
 - `flyer/fiche-equipe.html` : la fiche équipe d'une page
 - `docs/` : les PDF (guide utilisateur, guide d'installation, fiche équipe), exportés de ces trois pages, et le logo
 - `documents.html` : tous les documents à télécharger (flyers, affiche, guide PDF, vidéos, logo dans `docs/`)

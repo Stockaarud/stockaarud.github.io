@@ -3,8 +3,8 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Le guide d’utilisation de Stockaarud</title>
-<meta name="description" content="Tout ce que fait Stockaarud, écran par écran : noter les sorties, suivre l’autonomie du stock, commander, faire l’inventaire et sortir les statistiques.">
+<title>Le guide Stockaarud : installer et utiliser</title>
+<meta name="description" content="Installer Stockaarud en quinze minutes, puis tout ce que fait l’appli, écran par écran : noter les sorties, suivre l’autonomie du stock, commander, faire l’inventaire et sortir les statistiques.">
 <meta name="theme-color" content="#1f4d3a">
 <meta property="og:type" content="article">
 <meta property="og:locale" content="fr_FR">
@@ -28,7 +28,6 @@
       <a class="wordmark" href="./" aria-label="Stockaarud, accueil"><img src="img/icon.png" width="40" height="40" alt=""><img class="wm" src="img/wordmark.png" width="1133" height="115" alt=""></a>
       <ul class="nav-links">
         <li class="nav-link"><a href="./">Accueil</a></li>
-        <li class="nav-link"><a href="installer.html">Installer</a></li>
         <li class="nav-link"><a href="guide.html" aria-current="page">Guide</a></li>
         <li class="nav-link"><a href="demo/" target="_blank" rel="noopener">Démo</a></li>
         <li class="nav-link"><a href="documents.html">Documents</a></li>
@@ -41,7 +40,6 @@
         <div class="nav-drop sheet">
           <ul>
             <li><a href="./">Accueil</a></li>
-            <li><a href="installer.html">Installer</a></li>
             <li><a href="guide.html" aria-current="page">Guide</a></li>
             <li><a href="demo/" target="_blank" rel="noopener">Démo</a></li>
             <li><a href="questions.html">Questions</a></li>
@@ -60,18 +58,18 @@
   <section class="doc-hero" aria-labelledby="titre">
     <div class="container doc-hero-grid">
       <div class="doc-hero-text">
-      <h1 id="titre" class="h1-wide">Le guide utilisateur</h1>
-      <p class="lead">Tout ce que fait Stockaarud, écran par écran, et à quoi sert chaque chiffre : pour l’équipe qui note les sorties, pour le responsable stock qui commande et suit les statistiques.</p>
+      <h1 id="titre" class="h1-wide">Le guide</h1>
+      <p class="lead">L’installation, puis tout ce que fait Stockaarud, écran par écran : pour l’équipe qui note les sorties, pour le responsable stock qui commande et suit les statistiques.</p>
       <div class="actions">
-        <a class="btn btn--primary" href="docs/guide-utilisateur-stockaarud.pdf" download>Le guide utilisateur en PDF</a>
+        <a class="btn btn--primary" href="#installation">Installer pour mon CAARUD</a>
         <a class="btn btn--secondary" href="demo/" target="_blank" rel="noopener">Essayer dans la démo</a>
       </div>
       </div>
       <div class="sheet sheet--fluoro need screen-only" style="--r: 2deg">
-        <p class="need-t">Trois documents</p>
+        <p class="need-t">À imprimer</p>
         <ul>
-          <li>Ce guide utilisateur</li>
-          <li><a href="installer.html">Le guide d’installation</a></li>
+          <li><a href="docs/guide-utilisateur-stockaarud.pdf">Le guide utilisateur, en PDF</a></li>
+          <li><a href="docs/guide-installation-stockaarud.pdf">Le guide d’installation, en PDF</a></li>
           <li><a href="docs/fiche-equipe-stockaarud.pdf">La fiche équipe, une page</a></li>
         </ul>
       </div>
@@ -81,9 +79,108 @@
   <div class="container guide">
 
       <div class="who" role="tablist" aria-label="Le guide pour">
-        <button class="tab who-btn" type="button" role="tab" id="tab-equipe" aria-controls="equipe" aria-selected="true" tabindex="0"><span class="tab-t"><b>L’équipe</b>Noter les sorties, depuis son téléphone.</span></button>
-        <button class="tab who-btn" type="button" role="tab" id="tab-gestion" aria-controls="gestion" aria-selected="false" tabindex="-1"><span class="tab-t"><b>Le responsable stock</b>Commander, suivre, faire l’inventaire.</span></button>
+        <button class="tab who-btn" type="button" role="tab" id="tab-installation" aria-controls="installation" aria-selected="true" tabindex="0"><span class="tab-t"><b>L’installation</b>Une fois, en quinze minutes.</span></button>
+        <button class="tab who-btn" type="button" role="tab" id="tab-equipe" aria-controls="equipe" aria-selected="false" tabindex="-1"><span class="tab-t"><b>L’équipe</b>Noter les sorties.</span></button>
+        <button class="tab who-btn" type="button" role="tab" id="tab-gestion" aria-controls="gestion" aria-selected="false" tabindex="-1"><span class="tab-t"><b>Le responsable stock</b>Commander, suivre, compter.</span></button>
       </div>
+
+      <section class="guide-part who-pane" id="installation" role="tabpanel" aria-labelledby="tab-installation">
+        <h2 id="t-installation" class="doc-h2 part-h">L’installation</h2>
+        <p class="part-lead">Quinze minutes sur un ordinateur, un compte Supabase gratuit, rien à télécharger, aucun mot de passe à retenir. À faire une seule fois, par le responsable stock.</p>
+      <section class="qsheet qsheet--top screen-only" id="essai" aria-labelledby="t-essai">
+        <h2 id="t-essai" class="doc-h2">D’abord essayer, sans compte</h2>
+        <p>Ouvrez <a href="https://stockaarud.github.io/stockaarud/" target="_blank" rel="noopener">l’appli</a> et choisissez <strong>Essayer tout de suite, sans compte</strong>. L’installation guidée démarre aussitôt, avec votre vrai matériel.</p>
+        <p>Les limites : le stock est gardé sur un seul appareil, l’équipe ne peut pas encore noter depuis ses téléphones, et tout est perdu si l’appareil casse ou si l’historique du navigateur est effacé.</p>
+        <p>Quand l’essai est concluant, <strong>Passer en ligne</strong> vous fait suivre les étapes ci-dessous : tout ce que vous avez saisi est repris.</p>
+      </section>
+
+      <ol class="steps">
+        <li class="step" id="base">
+          <h2>Créer le projet Supabase</h2>
+          <div class="step-body">
+            <ol>
+              <li>Créez un compte sur <a href="https://supabase.com">supabase.com</a>.</li>
+              <li><strong>New project</strong> : nom <code>stockaarud</code>, région <strong>Europe (Paris)</strong>.</li>
+            </ol>
+          </div>
+          <p><span class="fill" data-fill="video-supabase">Vidéo de cette étape à venir</span></p>
+        </li>
+
+        <li class="step" id="preparer">
+          <h2>Installer les tables</h2>
+          <div class="step-body">
+            <p>Ouvrez <a href="https://stockaarud.github.io/stockaarud/" target="_blank" rel="noopener">l’appli</a> sur l’ordinateur : l’écran <strong>Installer Stockaarud pour mon CAARUD</strong> a un bouton pour chaque étape.</p>
+            <ol>
+              <li><strong>Copier le script</strong>, puis <strong>Ouvrir l’éditeur SQL</strong>.</li>
+              <li>Collez, cliquez sur <strong>Run</strong>.</li>
+              <li>Notez le <strong>code d’installation</strong> affiché en bas : il vous fait entrer dans l’appli.</li>
+            </ol>
+          </div>
+          <figure class="sheet shot shot--setup" style="--r: 1.2deg"><div data-slot="brancher" data-kind="product" data-alt="L’écran d’installation de l’appli"><img src="img/setup1.jpg" width="780" height="1688" alt="Écran Installer Stockaarud pour mon CAARUD : quatre étapes, chacune avec son bouton vers Supabase." loading="lazy"></div></figure>
+        </li>
+
+        <li class="step" id="compte">
+          <h2>Autoriser les connexions par code</h2>
+          <div class="step-body">
+            <p><strong>Ouvrir le réglage</strong>, activez <strong>Allow anonymous sign-ins</strong>, puis <strong>Save</strong>.</p>
+            <p>Ce réglage permet à l’équipe d’entrer avec un QR code, sans compte. C’est le seul à faire à la main.</p>
+          </div>
+        </li>
+
+        <li class="step" id="brancher">
+          <h2>Brancher l’appli sur votre base</h2>
+          <div class="step-body">
+            <p><strong>Ouvrir la page des clés</strong>, copiez la clé <strong>anon public</strong> (onglet « Legacy API keys »).</p>
+            <p>Collez-la dans l’appli avec le code d’installation, puis <strong>Installer</strong>.</p>
+            <p class="sheet sheet--fluoro warn" style="--r: -0.8deg">Jamais la clé <code>service_role</code> : elle donne tous les droits.</p>
+          </div>
+          <figure class="sheet shot shot--setup" style="--r: -1deg"><div data-slot="compte" data-kind="product" data-alt="La clé et le code d’installation remplis"><img src="img/setup2.jpg" width="780" height="1688" alt="La clé anon public et le code d’installation remplis, prêts pour le bouton Installer." loading="lazy"></div></figure>
+        </li>
+
+        <li class="step" id="guidee">
+          <h2>Suivre l’installation guidée</h2>
+          <div class="step-body">
+            <p>Cinq écrans : votre structure, vos activités, votre matériel, l’inventaire de départ (possible plus tard), puis l’invitation de l’équipe.</p>
+          </div>
+          <figure class="sheet shot shot--vid screen-only" style="--r: 1deg"><video controls muted playsinline preload="none" poster="video/tuto-guidee.jpg" width="600" height="1300" aria-label="Vidéo, 32 s : les cinq écrans de l’installation guidée"><source src="video/tuto-guidee.mp4" type="video/mp4"></video><figcaption>Vidéo, 32 s : les cinq écrans de l’installation guidée</figcaption></figure>
+          <div class="trio print-only">
+            <figure class="sheet shot"><div class="phone-ratio" data-slot="guidee-1" data-kind="product" data-alt="Étape Votre structure"><img src="img/w1.jpg" width="780" height="1688" alt="Étape 1, Votre structure : le nom du stock principal." loading="lazy"></div><figcaption>Votre structure</figcaption></figure>
+            <figure class="sheet shot"><div class="phone-ratio" data-slot="guidee-2" data-kind="product" data-alt="Étape Vos activités"><img src="img/w2.jpg" width="780" height="1688" alt="Étape 2, Vos activités : Accueil, Maraude, Festif, Permanence au local." loading="lazy"></div><figcaption>Vos activités</figcaption></figure>
+            <figure class="sheet shot"><div class="phone-ratio" data-slot="guidee-3" data-kind="product" data-alt="Étape Votre matériel"><img src="img/w3.jpg" width="780" height="1688" alt="Étape 3, Votre matériel : le catalogue de départ rangé par catégorie." loading="lazy"></div><figcaption>Votre matériel</figcaption></figure>
+          </div>
+        </li>
+
+        <li class="step" id="inviter">
+          <h2>Inviter l’équipe</h2>
+          <div class="step-body">
+            <p>L’appli donne un QR code, un lien, un e-mail tout prêt et la fiche équipe en PDF.</p>
+            <p>L’adresse de votre base voyage dans le lien : les téléphones de l’équipe se branchent sans rien taper.</p>
+            <p>Pour le local, imprimez <a href="flyer/affiche-qr-stockaarud.pdf">l’affiche QR code</a> : on la scanne en venant chercher du matériel, et l’appli s’ouvre sans rien installer. L’appli en propose aussi une version au nom de votre CAARUD, dans Réglages, Inviter l’équipe.</p>
+          </div>
+          <figure class="sheet shot shot--vid screen-only" style="--r: -1.2deg"><video controls muted playsinline preload="none" poster="video/tuto-inviter.jpg" width="600" height="1300" aria-label="Vidéo, 12 s : créer le lien et le QR code de l’équipe"><source src="video/tuto-inviter.mp4" type="video/mp4"></video><figcaption>Vidéo, 12 s : créer le lien et le QR code de l’équipe</figcaption></figure>
+          <figure class="sheet shot shot--setup print-only" style="--r: 1.5deg"><div data-slot="inviter" data-kind="product" data-alt="L’écran Inviter l’équipe, ou la vidéo de cette étape"><img src="img/inv.jpg" width="780" height="1688" alt="Écran Inviter l’équipe avec le QR code et le lien." loading="lazy"></div></figure>
+        </li>
+      </ol>
+
+      <div class="sheet sheet--wall done screen-only">
+        <p class="done-t">C’est installé.</p>
+        <p>Votre équipe peut noter sa première sortie.</p>
+        <div class="actions"><a class="btn btn--primary" href="https://stockaarud.github.io/stockaarud/" target="_blank" rel="noopener">Ouvrir l’appli</a><a class="btn btn--secondary" href="#equipe">Lire la suite du guide</a></div>
+        <p>Un souci ? <a href="./#contact">Écrivez-nous</a>.</p>
+      </div>
+
+      <section class="qsheet qsheet--top" id="savoir" aria-labelledby="bon">
+        <h2 id="bon" class="doc-h2">Bon à savoir</h2>
+        <ul class="rows">
+          <li><h3>Hors connexion</h3><p>Les saisies restent sur le téléphone et partent dès le retour du réseau.</p></li>
+          <li><h3>Pause du projet</h3><p>Supabase met en pause un projet gratuit resté 7 jours sans activité. Cliquez sur <strong>Restore project</strong> : rien n’est perdu.</p></li>
+          <li><h3>Sauvegardes</h3><p>Supabase gratuit ne garde pas de copie. Téléchargez la sauvegarde après chaque inventaire : l’appli vous le rappelle.</p></li>
+          <li><h3>Accès perdu</h3><p>Dans Supabase, <strong>SQL Editor</strong>, tapez <code>select public.code_secours();</code> puis <strong>Run</strong> : vous obtenez un nouveau code de responsable stock.</p></li>
+          <li><h3>Mises à jour</h3><p>Elles arrivent seules : les téléphones prennent la nouvelle version à la prochaine ouverture.</p></li>
+          <li><h3>Règles de la base</h3><p>Le script d’installation peut être relancé sans risque, il ne supprime rien. Relancez-le de temps en temps dans <strong>SQL Editor</strong> : il apporte les protections ajoutées depuis, par exemple « l’équipe ne modifie que ses propres saisies ».</p></li>
+        </ul>
+      </section>
+      </section>
 
       <section class="guide-part who-pane" id="equipe" role="tabpanel" aria-labelledby="tab-equipe">
         <h2 id="t-equipe" class="doc-h2 part-h">L’équipe</h2>
@@ -92,7 +189,7 @@
         <li class="step" id="sortie">
           <h2>Noter une sortie</h2>
           <div class="step-body">
-            <p>Trois touches, debout au stock ou en maraude.</p>
+            <p>Trois clics, debout au stock ou en maraude.</p>
             <ol>
               <li><strong>Où ?</strong> L’activité : accueil, maraude, festif… Elle reste choisie toute la journée.</li>
               <li><strong>Quoi ?</strong> Le produit. Les plus utilisés pour cette activité sont en haut, et la recherche comprend « capotes » ou « paille ».</li>
@@ -354,7 +451,7 @@
       <div class="sheet sheet--wall done screen-only">
         <p class="done-t">À vous d’essayer.</p>
         <p>La démo a un an de données fictives : rien à installer, rien n’est envoyé.</p>
-        <div class="actions"><a class="btn btn--primary" href="demo/" target="_blank" rel="noopener">Ouvrir la démo</a><a class="btn btn--secondary" href="installer.html">Installer pour mon CAARUD</a></div>
+        <div class="actions"><a class="btn btn--primary" href="demo/" target="_blank" rel="noopener">Ouvrir la démo</a><a class="btn btn--secondary" href="#installation">Installer pour mon CAARUD</a></div>
       </div>
   </div>
 </main>
@@ -366,7 +463,7 @@
         <li><a href="./">Accueil</a></li>
         <li><a href="demo/" target="_blank" rel="noopener">Essayer la démo</a></li>
         <li><a href="questions.html">Qui, vos données, vos questions</a></li>
-        <li><a href="https://wa.me/?text=Le%20guide%20pour%20installer%20Stockaarud%20dans%20ton%20CAARUD%20%28gratuit%2C%2015%20minutes%29%20%3A%20https%3A//stockaarud.github.io/installer.html" target="_blank" rel="noopener">Partager sur WhatsApp</a></li>
+        <li><a href="https://wa.me/?text=Le%20guide%20pour%20installer%20Stockaarud%20dans%20ton%20CAARUD%20%28gratuit%2C%2015%20minutes%29%20%3A%20https%3A//stockaarud.github.io/guide.html%23installation" target="_blank" rel="noopener">Partager sur WhatsApp</a></li>
         <li><a href="https://stockaarud.github.io/stockaarud/" target="_blank" rel="noopener">Ouvrir l’appli</a></li>
         <li><a href="guide.html">Le guide d’utilisation</a></li>
         <li><a href="docs/guide-utilisateur-stockaarud.pdf">Le guide utilisateur (PDF)</a></li>

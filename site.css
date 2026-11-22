@@ -447,8 +447,19 @@ html { scroll-padding-top: calc(var(--space-3xl) + var(--space-lg)); }
 @media (max-width: 60rem) { .flyer.flyer--full { grid-column: 1 / -1; grid-template-columns: minmax(0, 1fr); } }
 #essai { margin-bottom: var(--space-xl); } #essai p { margin: var(--space-md) 0 0; max-width: 70ch; }
 /* Page Documents */
-.logos { display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-lg) var(--space-2xl); margin: var(--space-lg) 0 0; }
-.logos img { height: 72px; width: auto; max-width: 100%; }
-.rows--dl dd small { color: var(--color-ink-2, inherit); white-space: nowrap; }
+.dgrid { list-style: none; margin: var(--space-lg) 0 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(11rem, 1fr)); gap: var(--space-xl) var(--space-lg); }
+.dcard { display: grid; gap: var(--space-sm); align-content: start; }
+.dthumb { display: grid; place-items: center; aspect-ratio: 4 / 5; background: var(--color-paper); outline: 1px solid var(--color-rule-2); overflow: hidden; }
+.dthumb { padding: var(--space-sm); } .dthumb img { width: 100%; height: 100%; object-fit: contain; filter: drop-shadow(0 2px 4px rgb(40 25 10 / .25)); }
+.dcard--logo .dthumb { padding: var(--space-lg); } .dcard--logo .dthumb img { filter: none; }
+.dcard h3 { font-size: var(--text-title); line-height: 1.2; margin: 0; }
+.dcard p { margin: var(--space-2xs, 2px) 0 0; }
+.dlinks { line-height: 1.7; }
+.dlinks small { white-space: nowrap; }
+@media (max-width: 30rem) { .dgrid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--space-lg) var(--space-md); } }
 /* Impression du guide : une longue étape peut passer sur deux pages, mais pas une ligne de tableau ni une capture */
 @media print { .steps .step--full { break-inside: auto; } .part-lead, .step h2 { break-inside: avoid; break-after: avoid; } .step .shot, .step-body > p { break-inside: avoid; } .step .shot { align-self: start; } p { orphans: 3; widows: 3; } }
+/* Guide : trois volets (installation, équipe, responsable stock) */
+.guide .who { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+@media (max-width: 44rem) { .guide .who { gap: var(--space-xs); } .guide .who-btn { padding: var(--space-sm) var(--space-xs); text-align: center; } .guide .who-btn .tab-t { font-size: 0; } .guide .who-btn .tab-t b { font-size: 1.05rem; line-height: 1.05; display: block; } .guide .who-btn { display: grid; place-items: center; grid-template-columns: minmax(0, 1fr); } }
+@media print { #installation { break-before: page; margin-top: 0; } .pdf-install #installation { break-before: auto; } .pdf-install #installation > .part-h, .pdf-install #installation > .part-lead { display: none; } .pdf-usage #installation, .pdf-install #equipe, .pdf-install #gestion, .pdf-install #roles { display: none !important; } }
