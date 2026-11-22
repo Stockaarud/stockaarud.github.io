@@ -693,7 +693,7 @@ async function start(){
   let got=0;const need=4;const timer=setTimeout(()=>{if(S.dbState==="loading"){S.dbState="slow";render()}},10000);
   const ok=snap=>{if(!snap.metadata.fromCache&&++got>=need){S.dbState="ok";clearTimeout(timer)}};
   const err=e=>{clearTimeout(timer);S.dbState="error";render()};
-  db.doc("config/main").onSnapshot(s=>{S.config=s.exists?{...DEF_CONFIG,...s.data()}:null;if(!s.metadata.fromCache)ok(s);render()},err);
+  db.doc("config/main").onSnapshot(s=>{S.cfgExists=s.exists;S.config=s.exists?{...DEF_CONFIG,...s.data()}:null;if(!s.metadata.fromCache)ok(s);render()},err);
   db.collection("produits").onSnapshot(q=>{S.produits=new Map(q.docs.map(d=>[d.id,{id:d.id,...d.data()}]));ok(q);render()},err);
   db.collection("mouvements").onSnapshot(q=>{S.mvts=q.docs.map(d=>({id:d.id,...d.data()}));ok(q);render();flush()},err);
   db.collection("commandes").onSnapshot(q=>{S.cmds=q.docs.map(d=>({id:d.id,...d.data()})).sort((a,b)=>b.t-a.t);ok(q);render()},err);
@@ -1818,6 +1818,9 @@ function alertsList(st){
     if(s.stock>0&&s.lastOut&&s.lastOut<now-60*DAY)out.push(["info",'<b>'+esc(p.nom)+'</b> : plus aucune sortie depuis le '+fmtDate(s.lastOut)+'.']);
     if(s.ecart&&s.ecart.t>now-30*DAY&&s.ecart.theo>0&&Math.abs(s.ecart.qte-s.ecart.theo)/s.ecart.theo>0.1)out.push(["info",'<b>'+esc(p.nom)+'</b> : écart d\'inventaire de '+Math.round(s.ecart.qte-s.ecart.theo)+' u. le '+fmtDate(s.ecart.t)+'.']);
   }
+  // une même livraison saisie deux fois (deux appareils en même temps, ou un appareil hors ligne)
+  {const rc={};for(const m of allMvts())if(m.type==="reception"&&m.commande&&m.t>=now-60*DAY)(rc[m.commande]=rc[m.commande]||[]).push(m);
+   for(const c of S.cmds){const R=rc[c.id];if(!R||R.length<2)continue;const tot=R.reduce((x,m)=>x+num(m.qte,0),0),p=S.produits.get(c.produit);if(p&&tot>c.qte*1.05)out.push(["warn",'<b>'+esc(p.nom)+'</b> : '+esc(fmtQ(p,tot))+' réceptionnées pour '+esc(fmtQ(p,c.qte))+' commandées le '+fmtDate(c.t)+'. Si la livraison a été saisie deux fois, supprime une des lignes dans l\'onglet Mouvements.'])}}
   const pertes=allMvts().filter(m=>m.type==="perte"&&m.t>=now-30*DAY);
   if(pertes.length){let c=0;for(const m of pertes){const p=S.produits.get(m.produit);c+=m.qte*num(p&&p.prix)}out.push(["info",pertes.length+' perte'+(pertes.length>1?"s":"")+' ou casse'+(pertes.length>1?"s":"")+' enregistrée'+(pertes.length>1?"s":"")+' ce mois-ci'+(c>0?" ("+eur(c)+")":"")+' : détail dans l\'onglet Mouvements.'])}
   const prets=allMvts().filter(m=>(m.type==="depannage"||m.type==="entree")&&m.aRendre&&!m.rendu);
@@ -2201,7 +2204,8 @@ document.addEventListener("pointerdown",e=>{if(e.target.closest&&e.target.closes
 addEventListener("scroll",ckHide,{passive:true});
 
 /* ---------- Actions ---------- */
-async function saveConfig(patch){const c={...cfg(),...patch};S.config=c;render();const {...data}=c;await write("set","config/main",data)}
+/* On n'envoie que les réglages modifiés : deux responsables stock (ou un appareil resté hors ligne) n'écrasent plus les changements de l'autre. */
+async function saveConfig(patch){const c={...cfg(),...patch},ex=S.cfgExists;S.config=c;render();if(ex)await write("update","config/main",{...patch});else{S.cfgExists=true;await write("set","config/main",{...c})}}
 async function shrinkImage(file){
   let src;try{src=await createImageBitmap(file,{imageOrientation:"from-image"})}catch(e){src=await new Promise((ok,ko)=>{const i=new Image();i.onload=()=>ok(i);i.onerror=ko;i.src=URL.createObjectURL(file)})}
   const w=src.width,h=src.height,side=Math.min(w,h),out=Math.min(360,side),c=document.createElement("canvas");c.width=c.height=out;
@@ -2579,7 +2583,7 @@ document.addEventListener("click",async e=>{
   case "matSave":{let n=0;for(const p of S.produits.values()){const g=f=>document.getElementById("me"+f+"-"+p.id);if(!g("N"))continue;
       const d={nom:g("N").value.trim()||p.nom,actif:g("A").checked,categorie:g("C").value,parCarton:Math.max(1,Math.round(num(g("P").value,1))),parBoite:Math.round(num(g("B").value,0))>1?Math.round(num(g("B").value,0)):"",prix:g("X").value===""?"":num(g("X").value),fournisseurId:g("F").value,securiteJours:Math.max(0,num(g("S").value,7))};
       const cur={nom:p.nom,actif:p.actif!==false,categorie:catOf(p),parCarton:p.parCarton||1,parBoite:p.parBoite>1?p.parBoite:"",prix:p.prix===""||p.prix==null?"":num(p.prix),fournisseurId:p.fournisseurId||"",securiteJours:p.securiteJours??7};
-      if(Object.keys(d).some(k=>String(d[k])!==String(cur[k]))){const {id,...rest}=p;await write("set","produits/"+p.id,{...rest,...d});n++}}
+      const ch={};for(const k of Object.keys(d))if(String(d[k])!==String(cur[k]))ch[k]=d[k];if(Object.keys(ch).length){await write("update","produits/"+p.id,ch);n++}}
     S.matEdit=false;S.matDraft={};toast(n?n+" produit"+(n>1?"s":"")+" modifié"+(n>1?"s":""):"Aucun changement");render();break}
   case "lotClear":S.lotDraft={date:(S.lotDraft||{}).date,act:(S.lotDraft||{}).act,lieu:(S.lotDraft||{}).lieu};render();break;
   case "lotSave":{const D=S.lotDraft||{},ds=val("lotD")||D.date,act=val("lotA"),lieu=val("lotL")||(principal()||{}).id;if(!ds){toast("Choisis le jour");break}
@@ -2742,7 +2746,9 @@ document.addEventListener("click",async e=>{
     if(p.photo&&!p._removePhoto){data.photo=p.photo;if(p.photoId)data.photoId=p.photoId}
     if(p._blob&&S.assets){try{const r=await S.assets.upload(p._blob);data.photo=r.url;data.photoId=r.id;if(p.photoId&&p.photoId!==r.id)S.assets.delete(p.photoId).catch(()=>{})}catch(err){toast("Photo non enregistrée : "+(err&&err.code||"erreur"))}}
     else if(p._removePhoto&&p.photoId&&S.assets){S.assets.delete(p.photoId).catch(()=>{})}
-    $("#layer").innerHTML="";await write("set","produits/"+(p.id||slug(nom)),data);toast("Enregistré");break}
+    $("#layer").innerHTML="";const ex0=p.id&&S.produits.get(p.id);
+    if(ex0){const ch={};for(const k of Object.keys(data))if(JSON.stringify(data[k]??"")!==JSON.stringify(ex0[k]??""))ch[k]=data[k];for(const k of ["photo","photoId","icone"])if(ex0[k]&&!(k in data))ch[k]="";if(Object.keys(ch).length)await write("update","produits/"+p.id,ch)}
+    else await write("set","produits/"+(p.id||slug(nom)),data);toast("Enregistré");break}
   case "impApply":{const chk=new Set([...document.querySelectorAll(".impChk:checked")].map(x=>+x.dataset.i));const F=(cfg().fournisseurs||[]).map(f=>({...f}));let newF=false;
     for(const [i,r] of S.importRows.entries())if(chk.has(i)){const d={...r.data};let fid="";
       if(d.fournisseur){let f=F.find(x=>norm(x.nom)===norm(d.fournisseur));if(!f){f={id:uid(),nom:d.fournisseur,delai:num(d.delai,7)};F.push(f);newF=true}else if(String(d.delai)!==""&&num(d.delai)!==num(f.delai)){f.delai=num(d.delai);newF=true}fid=f.id}
