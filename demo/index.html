@@ -626,29 +626,43 @@ function passagesEff(){const A=terrainAll().filter(x=>x.type==="passage"),imp=ne
 function passagesJour(act){const d=today();return passagesEff().filter(x=>x.activite===act&&x.jour===d).reduce((a,x)=>a+num(x.qte,0),0)}
 /* Reprendre un historique tenu ailleurs (Excel) : des sorties passées, par mois ou par jour */
 function histoDebut(){const A=S.mvts.filter(m=>!m.histo&&!m.exemple);return A.length?Math.min(...A.map(m=>m.t)):Date.now()}
-function histoModele(){const y=new Date().getFullYear()-1,P=ordreCat(prodsActifs()),L=[["date","produit","activité","quantité"]];for(let m=0;m<12;m++)for(const p of P)L.push([String(m+1).padStart(2,"0")+"/"+y,p.nom,"",""]);return L.map(r=>r.map(csvCell).join(";")).join("\r\n")}
+const MOIS_K=["jan","fev","mar","avr","mai","juin","juil","aou","sep","oct","nov","dec"];
+const moisDe=h=>{const n=norm(h).replace(/[^a-z0-9]/g,"");if(/^\d{1,2}$/.test(n)&&+n>=1&&+n<=12)return +n-1;if(n.startsWith("juil"))return 6;if(n.startsWith("juin"))return 5;return MOIS_K.findIndex(k=>n.startsWith(k))};
+function histoModele(){const y0=new Date().getFullYear(),P=ordreCat(prodsActifs()),A=activitesActives(),L=[["année","produit","activité","prix unitaire","janv.","févr.","mars","avr.","mai","juin","juil.","août","sept.","oct.","nov.","déc."]],vide=new Array(12).fill("");
+  for(const y of [y0-1,y0-2]){for(const a of A)L.push([y,"Passages",a.nom,""].concat(vide));for(const p of P)L.push([y,p.nom,"",""].concat(vide))}
+  return L.map(r=>r.map(csvCell).join(";")).join("\r\n")}
 function histoLire(txt){const lines=txt.replace(/^\uFEFF/,"").split(/\r?\n/).filter(l=>l.trim());if(lines.length<2)return {err:"Le fichier est vide."};const sep=lines[0].includes(";")?";":lines[0].includes("\t")?"\t":",",cut=l=>l.split(sep).map(x=>x.trim().replace(/^"|"$/g,""));
-  const H=cut(lines[0]).map(norm),ci=n=>H.findIndex(h=>h.startsWith(n)),iD=ci("date")>=0?ci("date"):ci("mois"),iP=ci("produit"),iA=ci("activit"),iQ=ci("quantit");
-  if(iD<0||iP<0||iQ<0)return {err:"Il faut au moins les colonnes date, produit et quantité. Repars du modèle."};
-  const A=activitesActives(),P=[...S.produits.values()],lim=histoDebut(),rows=[],inconnus=new Set(),actInc=new Set(),bad=[];let tard=0;
+  const H0=cut(lines[0]),H=H0.map(norm),ci=n=>H.findIndex(h=>h.startsWith(n)),iD=ci("date")>=0?ci("date"):ci("mois"),iP=ci("produit"),iA=ci("activit"),iQ=ci("quantit"),iY=ci("an"),iX=ci("prix");
+  const A=activitesActives(),P=[...S.produits.values()],lim=histoDebut(),rows=[],pass=[],inconnus=new Set(),actInc=new Set(),bad=[];let tard=0;
+  const trouveP=n=>P.find(x=>norm(x.nom)===norm(n||""))||P.find(x=>(x.synonymes||[]).some(y=>norm(y)===norm(n||"")));
+  const MC=H0.map((h,k)=>k===iY||k===iP||k===iA||k===iX?-1:moisDe(h));
+  if(iY>=0&&iP>=0&&MC.filter(m=>m>=0).length>=6){ // tableau : une ligne par produit, une colonne par mois
+    for(const l of lines.slice(1)){const c=cut(l),y=Math.round(num(c[iY],NaN));if(!(y>1990&&y<2200)){if(c.some((v,k)=>MC[k]>=0&&num(v,0)>0))bad.push(c[iY]||"(année vide)");continue}
+      const nomP=c[iP]||"",estPass=norm(nomP).startsWith("passage");let act="";if(iA>=0&&c[iA]){const a=A.find(x=>norm(x.nom)===norm(c[iA]));if(a)act=a.id;else actInc.add(c[iA])}
+      const p=estPass?null:trouveP(nomP),pu=iX>=0&&c[iX]!==undefined&&c[iX]!==""?num(c[iX],0):0;let vu=false;
+      MC.forEach((mo,k)=>{if(mo<0)return;const q=Math.round(num(c[k],NaN));if(!(q>0))return;vu=true;const iso=y+"-"+String(mo+1).padStart(2,"0")+"-15",t=new Date(iso+"T12:00:00").getTime();if(t>=lim){tard++;return}
+        if(estPass){if(act)pass.push({iso,t,act,q})}else if(p)rows.push({iso,t,prod:p.id,act,q,pu})});
+      if(vu&&!estPass&&!p)inconnus.add(nomP||"(vide)");if(vu&&estPass&&!act)actInc.add("Passages sans activité")}
+  }else{
+  if(iD<0||iP<0||iQ<0)return {err:"Fichier non reconnu : repars du modèle (année, produit, puis une colonne par mois)."};
   for(const l of lines.slice(1)){const c=cut(l),q=Math.round(num(c[iQ],NaN));if(!(q>0))continue;const ds=c[iD]||"";let iso=null,m;
     if(m=/^(\d{1,2})[\/.-](\d{1,2})[\/.-](\d{4})$/.exec(ds))iso=m[3]+"-"+m[2].padStart(2,"0")+"-"+m[1].padStart(2,"0");else if(m=/^(\d{1,2})[\/.-](\d{4})$/.exec(ds))iso=m[2]+"-"+m[1].padStart(2,"0")+"-15";else if(m=/^(\d{4})-(\d{2})(?:-(\d{2}))?$/.exec(ds))iso=m[1]+"-"+m[2]+"-"+(m[3]||"15");
     const t=iso?new Date(iso+"T12:00:00").getTime():NaN;if(!(t>0)){bad.push(ds);continue}if(t>=lim){tard++;continue}
     const p=P.find(x=>norm(x.nom)===norm(c[iP]||""))||P.find(x=>(x.synonymes||[]).some(y=>norm(y)===norm(c[iP]||"")));if(!p){inconnus.add(c[iP]||"(vide)");continue}
     let act="";if(iA>=0&&c[iA]){const a=A.find(x=>norm(x.nom)===norm(c[iA]));if(a)act=a.id;else actInc.add(c[iA])}
-    rows.push({iso,t,prod:p.id,act,q})}
-  const parAn={};for(const r of rows){const y=r.iso.slice(0,4);parAn[y]=(parAn[y]||0)+r.q}
-  return {rows,parAn,inconnus:[...inconnus],actInc:[...actInc],bad,tard,lim}}
-function histoPanel(){const n=S.mvts.filter(m=>m.histo).length,I=S.histoImp;
+    rows.push({iso,t,prod:p.id,act,q,pu:iX>=0&&c[iX]?num(c[iX],0):0})}}
+  const parAn={},passAn={};for(const r of rows){const y=r.iso.slice(0,4);parAn[y]=(parAn[y]||0)+r.q}for(const r of pass){const y=r.iso.slice(0,4);passAn[y]=(passAn[y]||0)+r.q}
+  return {rows,pass,parAn,passAn,avecPrix:rows.filter(r=>r.pu>0).length,inconnus:[...inconnus],actInc:[...actInc],bad,tard,lim}}
+function histoPanel(){const n=S.mvts.filter(m=>m.histo).length+(S.terrain||[]).filter(m=>m.histo).length,I=S.histoImp;
   let h='<div class="panel" style="margin-top:14px"><h2>Reprendre un historique</h2><p class="note">Tu suivais le stock dans un tableur ? Importe les sorties des années précédentes pour avoir tout de suite des statistiques, la comparaison avec l\'an dernier et un budget prévisionnel fiable. Le stock actuel n\'est pas touché : seules les dates d\'avant ton démarrage sur Stockaarud sont reprises.</p>'
    +'<div class="row" style="margin-top:8px"><button class="btn" data-act="histoModele">Télécharger le modèle (CSV)</button><label class="btn primary">Importer l\'historique<input type="file" accept=".csv,.txt,text/csv" id="histoCsv" hidden></label>'+(n?'<button class="btn danger" data-act="histoDel">Supprimer l\'historique importé ('+nfr(n)+')</button>':'')+'</div>'
-   +'<p class="note" style="margin-top:6px">Quatre colonnes : <b>date</b> (un jour, 15/03/2024, ou un mois, 03/2024), <b>produit</b> (le même nom que dans Matériel), <b>activité</b> (facultatif), <b>quantité</b> en unités. Le modèle liste tes produits pour chaque mois de l\'an dernier : remplis ce que tu as, supprime ou laisse vide le reste, ajoute des lignes pour d\'autres années. Dans Excel : Fichier, Enregistrer sous, format CSV.</p>';
-  if(I)h+='<div class="narr" style="margin-top:10px">'+(I.err?'<b>Fichier non reconnu</b><p>'+esc(I.err)+'</p><button class="btn small" data-act="histoNo">Fermer</button>':'<b>'+nfr(I.rows.length)+' lignes reconnues</b><p>'+(Object.keys(I.parAn).sort().map(y=>y+" : "+nfr(I.parAn[y])+" unités").join(" · ")||"Aucune ligne à importer.")+'</p>'
+   +'<p class="note" style="margin-top:6px"><b>D\'abord</b>, vérifie que tout ton matériel est dans Réglages, rubrique Matériel, avec les bons noms : le modèle reprend ces noms, tu n\'as plus qu\'à remplir les chiffres.</p><p class="note">Le modèle est un tableau : une ligne par produit, une colonne par mois, pour les deux dernières années. En tête de chaque année, une ligne « Passages » par activité pour le nombre de personnes (facultatif). La colonne <b>prix unitaire</b> est facultative : le prix de cette année-là, sinon le prix actuel est utilisé. La colonne <b>activité</b> aussi : pour détailler un produit par activité, recopie sa ligne. Pour une autre année, recopie un bloc et change l\'année. Dans Excel : Fichier, Enregistrer sous, format CSV.</p>';
+  if(I)h+='<div class="narr" style="margin-top:10px">'+(I.err?'<b>Fichier non reconnu</b><p>'+esc(I.err)+'</p><button class="btn small" data-act="histoNo">Fermer</button>':'<b>'+nfr(I.rows.length)+' chiffres de sorties'+(I.pass.length?' et '+nfr(I.pass.length)+' de passages':'')+' reconnus</b><p>'+(Object.keys(I.parAn).sort().map(y=>y+" : "+nfr(I.parAn[y])+" unités"+(I.passAn[y]?", "+nfr(I.passAn[y])+" passages":"")).join(" · ")||"Aucune sortie à importer.")+'</p>'+(I.avecPrix?'<p>'+nfr(I.avecPrix)+' chiffres avec le prix de l\'époque.</p>':'')
     +(I.inconnus.length?'<p><b>Produits non reconnus ('+I.inconnus.length+')</b>, lignes ignorées : '+esc(I.inconnus.slice(0,12).join(", "))+(I.inconnus.length>12?"…":"")+'. Corrige le nom dans le fichier, ou ajoute le produit dans Matériel, puis réimporte.</p>':'')
     +(I.actInc.length?'<p>Activités non reconnues, importées sans activité : '+esc(I.actInc.slice(0,8).join(", "))+'.</p>':'')
     +(I.tard?'<p>'+nfr(I.tard)+' ligne'+(I.tard>1?"s":"")+' ignorée'+(I.tard>1?"s":"")+' : date postérieure au démarrage sur Stockaarud ('+new Date(I.lim).toLocaleDateString("fr-FR")+').</p>':'')
     +(I.bad.length?'<p>Dates non comprises : '+esc(I.bad.slice(0,5).join(", "))+'.</p>':'')
-    +'<div class="row" style="margin-top:8px">'+(I.rows.length?'<button class="btn primary" data-act="histoOk">Importer ces '+nfr(I.rows.length)+' lignes</button>':'')+'<button class="btn" data-act="histoNo">Annuler</button></div>')+'</div>';
+    +'<div class="row" style="margin-top:8px">'+(I.rows.length||I.pass.length?'<button class="btn primary" data-act="histoOk">Importer</button>':'')+'<button class="btn" data-act="histoNo">Annuler</button></div>')+'</div>';
   return h+'</div>'}
 /* Modèle CSV à compléter : une ligne par jour, une colonne par activité */
 function passModele(){const A=activitesActives(),d=new Date(),y=d.getFullYear(),m=d.getMonth(),n=new Date(y,m+1,0).getDate(),L=[["date"].concat(A.map(a=>a.nom))];
@@ -661,7 +675,7 @@ function passLire(txt){const lines=txt.replace(/^\uFEFF/,"").split(/\r?\n/).filt
     cols.forEach((a,i)=>{const v=c[i+1];if(!a||v===undefined||v==="")return;const n=Math.round(num(v,NaN));if(!(n>=0))return;rows.push({jour:iso,act:a.id,nom:a.nom,n})})}
   return {rows,inconnues,bad,jours:new Set(rows.map(r=>r.jour)).size,total:rows.reduce((a,r)=>a+r.n,0)}}
 /* Unités par passage : on ne compare que les jours (et les activités) où un nombre de passages est connu */
-function parPassage(a,b,act){const P=passagesEff().filter(x=>x.t>=a&&x.t<b&&(!act||x.activite===act)&&num(x.qte,0)>0);if(!P.length)return null;const K=new Set(P.map(x=>x.jour+"|"+x.activite)),np=P.reduce((s2,x)=>s2+num(x.qte,0),0),u=sortiesEntre(a,b,act||null).filter(m=>K.has(jourLocal(m.t)+"|"+m.activite)).reduce((x,m)=>x+num(m.qte,0),0);return {np,u,r:Math.round(u/np*10)/10,nj:new Set(P.map(x=>x.jour)).size}}
+function parPassage(a,b,act){const P=passagesEff().filter(x=>x.t>=a&&x.t<b&&(!act||x.activite===act)&&num(x.qte,0)>0);if(!P.length)return null;const K=new Set(P.map(x=>x.jour+"|"+(x.activite||""))),np=P.reduce((s2,x)=>s2+num(x.qte,0),0),u=sortiesEntre(a,b,act||null).filter(m=>K.has(jourLocal(m.t)+"|"+(m.activite||""))).reduce((x,m)=>x+num(m.qte,0),0);return {np,u,r:Math.round(u/np*10)/10,nj:new Set(P.map(x=>x.jour)).size}}
 function passagesEntre(a,b,act){return passagesEff().filter(x=>x.t>=a&&x.t<b&&(!act||x.activite===act)).reduce((s2,x)=>s2+num(x.qte,0),0)}
 S.passN={};
 const passMine=act=>{const id=passId(act);return id in S.passN?S.passN[id]:(terrainAll().find(x=>x.id===id)||{}).qte||0};
@@ -1749,7 +1763,7 @@ function svJours(){const W=12,now=new Date();now.setHours(0,0,0,0);const lundi=n
   return pan("Les jours forts","Nombre de sorties de stock notées chaque jour, sur les 12 dernières semaines. Cinq teintes, du plus clair (les jours les plus calmes) au plus foncé (les plus chargés). Touche une case pour voir le chiffre.",'<div class="chart" style="margin-top:10px">'+s+'</div>'+echelle+'<h3 style="margin-top:14px">En moyenne par jour de la semaine</h3><div class="chart">'+barresH(moy.map((v,j)=>({label:JOURS_C[j],v:Math.round(v*10)/10,col:"--c1"})),v=>String(v).replace(".",",")+" sorties",{lw:60})+'</div>'+legende([{label:"Sorties notées en moyenne ce jour-là, sur 12 semaines",col:"--c1"}]))}
 
 // 6. Budget
-const coutM=m=>{const p=S.produits.get(m.produit);return num(m.qte,0)*num(p&&p.prix,0)};
+const coutM=m=>{const p=S.produits.get(m.produit);return num(m.qte,0)*(num(m.pu,0)>0?num(m.pu):num(p&&p.prix,0))};
 function svBudget(){const y=new Date().getFullYear(),bud=num(cfg().budget,0),M=Array.from({length:12},(_,i)=>({a:moisDebut(y,i),b:moisDebut(y,i+1)}));const cm=new Date().getMonth();
   let cum=0;const reel=M.map((mo,i)=>{if(i>cm)return null;cum+=sortiesEntre(mo.a,mo.b).reduce((x,m)=>x+coutM(m),0);return Math.round(cum)});
   const ser=[{label:"Dépensé (cumul)",col:"--c1",vals:reel}];if(bud>0)ser.push({label:"Rythme prévu (budget ÷ 12 chaque mois)",col:"--muted",dash:"6 5",w:2,vals:M.map((_,i)=>Math.round(bud*(i+1)/12))});
@@ -2713,10 +2727,11 @@ document.addEventListener("click",async e=>{
   case "histoModele":await download("stockaarud-historique-modele.csv",histoModele(),"text/csv");break;
   case "histoNo":S.histoImp=null;render();break;
   case "histoOk":{const I=S.histoImp;if(!I||!I.rows)break;S.histoImp=null;const lieu=(principal()||{}).id,agg={};for(const r of I.rows){const k=r.iso+"|"+r.prod+"|"+r.act;agg[k]=agg[k]||{...r,q:0};agg[k].q+=r.q}
-    const L=Object.values(agg);$("#layer").innerHTML='<div class="sheet-back"><div class="sheet" role="dialog" aria-modal="true" aria-label="Import"><h2>Import de l\'historique…</h2><p id="hiP" class="note" style="margin:0">0 / '+L.length+'</p></div></div>';
-    let i=0;for(const r of L){const m={t:r.t,type:"sortie",produit:r.prod,qte:r.q,lieu,histo:true};if(r.act)m.activite=r.act;await write("set","mouvements/his-"+r.iso+"-"+r.prod+(r.act?"-"+r.act:""),m);i++;if(i%10===0||i===L.length){const el=document.getElementById("hiP");if(el)el.textContent=i+" / "+L.length}}
-    $("#layer").innerHTML="";toast(nfr(L.length)+" lignes d'historique importées");render();break}
-  case "histoDel":if(b.dataset.sure!=="1"){b.dataset.sure="1";b.textContent="Confirmer la suppression";break}{const L=S.mvts.filter(m=>m.histo);for(const m of L)await write("delete","mouvements/"+m.id);toast("Historique importé supprimé");render();break}
+    const L=Object.values(agg).concat((I.pass||[]).map(r=>({...r,passage:true})));$("#layer").innerHTML='<div class="sheet-back"><div class="sheet" role="dialog" aria-modal="true" aria-label="Import"><h2>Import de l\'historique…</h2><p id="hiP" class="note" style="margin:0">0 / '+L.length+'</p></div></div>';
+    let i=0;for(const r of L){if(r.passage)await write("set","mouvements/pas-imp-"+r.iso+"-"+r.act,{t:new Date(r.iso+"T00:00:01").getTime(),type:"passage",activite:r.act,qte:r.q,jour:r.iso,importe:true,histo:true});
+      else{const m={t:r.t,type:"sortie",produit:r.prod,qte:r.q,lieu,histo:true};if(r.act)m.activite=r.act;if(r.pu>0)m.pu=r.pu;await write("set","mouvements/his-"+r.iso+"-"+r.prod+(r.act?"-"+r.act:""),m)}i++;if(i%10===0||i===L.length){const el=document.getElementById("hiP");if(el)el.textContent=i+" / "+L.length}}
+    $("#layer").innerHTML="";toast(nfr(L.length)+" chiffres d'historique importés");render();break}
+  case "histoDel":if(b.dataset.sure!=="1"){b.dataset.sure="1";b.textContent="Confirmer la suppression";break}{const L=S.mvts.filter(m=>m.histo).concat((S.terrain||[]).filter(m=>m.histo));for(const m of L)await write("delete","mouvements/"+m.id);toast("Historique importé supprimé");render();break}
   case "passModele":await download("stockaarud-passages-modele.csv",passModele(),"text/csv");break;
   case "passImpNo":S.passImp=null;render();break;
   case "passImpOk":{const I=S.passImp;if(!I||!I.rows)break;S.passImp=null;let n=0;for(const r of I.rows){await write("set","mouvements/pas-imp-"+r.jour+"-"+r.act,{t:new Date(r.jour+"T00:00:01").getTime(),type:"passage",activite:r.act,qte:r.n,jour:r.jour,importe:true});n++}toast(n+" chiffre"+(n>1?"s":"")+" de passages enregistré"+(n>1?"s":""));render();break}
