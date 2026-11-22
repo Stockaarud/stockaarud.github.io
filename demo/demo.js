@@ -17,7 +17,7 @@
   const shiftIso = (d, ms) => new Date(Date.parse(d) + ms).toISOString().slice(0, 10);
   function persist() {
     const o = {}; for (const [c, m] of store) o[c] = Object.fromEntries(m);
-    try { localStorage.setItem(KEY, JSON.stringify({ anchorDay: startOfDay(Date.now()), data: o })); } catch (e) { console.warn("Démo : stockage local plein", e); if (!window.__demoFull) { window.__demoFull = true; setTimeout(() => alert("La démo n'a plus de place pour enregistrer sur ce navigateur : ce que vous saisissez ne sera pas gardé après fermeture. « Remettre à zéro » libère de la place."), 50); } }
+    try { localStorage.setItem(KEY, JSON.stringify({ anchorDay: startOfDay(Date.now()), data: o })); } catch (e) { console.warn("Démo : stockage local plein", e); if (!window.__demoFull) { window.__demoFull = true; setTimeout(() => alert("La démo n'a plus de place pour enregistrer sur ce navigateur : ce que tu saisis ne sera pas gardé après fermeture. « Remettre à zéro » libère de la place."), 50); } }
   }
   let tm = null; const save = () => { clearTimeout(tm); tm = setTimeout(() => { tm = null; persist(); }, 300); };
   // ne rien perdre si la page se ferme ou se recharge juste après une saisie
@@ -137,7 +137,7 @@
 <span class="dm-seg" role="group" aria-label="Se connecter comme"><button type="button" data-r="equipe" aria-pressed="${role === "equipe"}">Équipe</button><button type="button" data-r="coordo" aria-pressed="${role === "coordo"}">Responsable stock</button></span>
 <button type="button" class="dm-reset">Remettre à zéro</button>`;
     bar.querySelectorAll("[data-r]").forEach((b) => b.addEventListener("click", () => { if (b.dataset.r === role) return; flushNow(); localStorage.setItem(ROLE_KEY, b.dataset.r); location.reload(); }));
-    bar.querySelector(".dm-reset").addEventListener("click", () => { if (confirm("Remettre la démo à zéro ? Ce que vous avez saisi sera effacé.")) reset(); });
+    bar.querySelector(".dm-reset").addEventListener("click", () => { if (confirm("Remettre la démo à zéro ? Ce que tu as saisi sera effacé.")) reset(); });
     document.body.prepend(bar);
   }
   if (document.body) banner(); else document.addEventListener("DOMContentLoaded", banner);
