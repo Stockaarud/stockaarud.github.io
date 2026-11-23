@@ -532,6 +532,18 @@ details.panel.fold[open]>summary::after{transform:rotate(-135deg);margin-bottom:
 .xctl select{width:100%!important;min-width:0;font-size:14px;min-height:40px;padding:6px 26px 6px 8px;text-overflow:ellipsis}
 .xctl .btn.small{min-height:40px;padding-inline:10px}
 @media (max-width:520px){.xctl .xinv{display:none}}
+
+/* Carrousel des activités dès le départ, avec les miniatures */
+.actbar{align-items:stretch}.actbar .actarr{align-self:center}
+.actbar.none{border-style:dashed;border-color:var(--line);background:var(--surface)}
+.actnone{font:700 17px var(--body);color:var(--muted)}
+.actminis{display:flex;align-items:center;gap:5px;overflow-x:auto;max-width:100%;padding:3px 2px;scrollbar-width:none}.actminis::-webkit-scrollbar{display:none}
+.actmini{flex:none;width:32px;height:32px;padding:2px;border:0;border-radius:9px;background:none;cursor:pointer;display:grid;place-items:center;opacity:.8;transition:width .2s,height .2s,opacity .2s,box-shadow .2s}
+.actmini .ami{width:100%;height:100%;display:block}.actmini .ami.emo{font-size:20px;line-height:28px;text-align:center}
+.actmini .ami.lt{display:grid;place-items:center;border-radius:8px;background:var(--surface-2);font:800 14px var(--display);color:var(--fg)}
+.actmini.on{width:44px;height:44px;opacity:1;background:var(--surface);box-shadow:0 0 0 2.5px var(--mc,var(--accent))}
+.actbar.none .actmini{opacity:1}
+.actmini:focus-visible{outline:2px solid var(--fg);outline-offset:2px}
 </style>
 </head>
 <body>
@@ -611,6 +623,13 @@ pharmacie:{l:"Pharmacie",s:`<g ${ast}><g transform="rotate(-40 32 32)"><rect x="
 pin:{l:"Autre lieu",s:`<g ${ast}><path d="M32 58 C20 42 12 34 12 24 A20 20 0 0 1 52 24 C52 34 44 42 32 58 Z" fill="${AG3}"/><circle cx="32" cy="24" r="7" fill="${AY}"/></g>`},
 main:{l:"Partenaires",s:`<g ${ast}><path d="M6 38 L18 30 L30 30 Q34 30 34 34 Q34 38 30 38 L22 38 L36 38 L50 28 Q56 26 56 32 L40 48 L16 48 L6 54 Z" fill="${AY}"/></g>`}
 };
+
+/* Icônes des sorties particulières : prêt / don, vers un autre lieu, perte / casse */
+const SPEC_ICONS={
+__dep:`<g ${ast}><rect x="6" y="26" width="30" height="26" rx="3" fill="${AY}"/><path d="M6 34 H36" fill="none"/><path d="M21 26 V52" fill="none" stroke-width="2.5"/><path d="M14 26 C10 18 18 16 21 24 C24 16 32 18 28 26" fill="none" stroke-width="2.5"/></g><path d="M41 33 H57 M50 25 L58 33 L50 41" fill="none" stroke="${AG}" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>`,
+__trans:`<g ${ast}><path d="M5 24 L15 16 L25 24 V40 H5 Z" fill="${AY}"/><path d="M39 30 L49 22 L59 30 V46 H39 Z" fill="${AG3}"/></g><path d="M14 50 C22 58 40 58 48 50 M42 49 L48 50 L48 44" fill="none" stroke="${AG}" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>`,
+__perte:`<g ${ast}><path d="M22 6 H42 V14 L46 22 V54 Q46 58 42 58 H22 Q18 58 18 54 V22 L22 14 Z" fill="${AAL}"/><path d="M22 14 H42" fill="none"/></g><path d="M30 22 L25 33 L33 36 L27 50" fill="none" stroke="#C0392B" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/><path d="M50 40 l6 -3 M51 48 l7 1 M10 44 l-5 -2" stroke="${AK}" stroke-width="3" stroke-linecap="round"/>`};
+function actIco(id,cls){if(SPEC_ICONS[id])return '<svg class="'+(cls||"aic")+'" viewBox="0 0 64 64" aria-hidden="true">'+SPEC_ICONS[id]+'</svg>';return actIcon(cfg().activites.find(x=>x.id===id),cls)}
 function actIcon(a,cls){if(!a||!a.icone)return "";if(a.icone.startsWith("ic:")){const i=ACT_ICONS[a.icone.slice(3)];return i?'<svg class="'+(cls||"aic")+'" viewBox="0 0 64 64" aria-hidden="true">'+i.s+'</svg>':""}return '<span class="'+(cls||"aic")+' emo" aria-hidden="true">'+esc(a.icone)+'</span>'}
 
 const BASE_RDR=[
@@ -922,7 +941,7 @@ function draw(){
   document.body.classList.toggle("en-ecran",S.view==="ecran");document.body.classList.toggle("v-coordo",S.view==="coordo");
   $("#app").innerHTML=(S.view==="ecran"?viewEcran(st):S.view==="equipe"?viewEquipe(st):viewCoordo(st));
   document.querySelectorAll(".subnav,.tw,.svnav,.chips").forEach((el,i)=>{const k=(el.className)+i;if(keepX[k])el.scrollLeft=keepX[k]});
-  {const r=document.querySelector(".actrow"),on=r&&r.querySelector('[aria-pressed="true"]');if(on){const l=on.offsetLeft-r.offsetLeft,rr=l+on.offsetWidth;if(l<r.scrollLeft||rr>r.scrollLeft+r.clientWidth)r.scrollLeft=Math.max(0,l-16)}}
+  {const r=document.querySelector(".actminis"),on=r&&r.querySelector('[aria-pressed="true"]');if(on){const l=on.offsetLeft-r.offsetLeft,rr=l+on.offsetWidth;if(l<r.scrollLeft||rr>r.scrollLeft+r.clientWidth)r.scrollLeft=Math.max(0,rr-r.clientWidth+6,Math.min(l-6,r.scrollLeft))}}
   {const sv=document.querySelector(".svnav"),on=sv&&sv.querySelector('[aria-pressed="true"]');if(on){const l=on.offsetLeft-sv.offsetLeft,r=l+on.offsetWidth;if(l<sv.scrollLeft)sv.scrollLeft=l-8;else if(r>sv.scrollLeft+sv.clientWidth)sv.scrollLeft=r-sv.clientWidth+8}}
   if(S.view==="coordo")addPrintButtons();
   document.querySelectorAll("table.resp").forEach(t=>{const hs=[...t.querySelectorAll("thead th")].map(h=>h.textContent);t.querySelectorAll("tbody tr").forEach(tr=>[...tr.children].forEach((td,i)=>{if(hs[i])td.setAttribute("data-label",hs[i])}))});
@@ -1008,11 +1027,13 @@ function paintAct(){const H=document.documentElement,teamOn=S.view!=="coordo"&&S
   if(!cols.length){delete H.dataset.tint;H.style.removeProperty("--tint");H.style.removeProperty("--tintbg");return}
   H.dataset.tint="";H.style.setProperty("--tint",cols[0]);
   H.style.setProperty("--tintbg",cols.length>1?"linear-gradient(160deg,"+cols.map((c,i)=>"color-mix(in srgb,"+c+" 14%,var(--bg)) "+Math.round(i/(cols.length-1)*100)+"%").join(",")+")":"color-mix(in srgb,"+cols[0]+" 14%,var(--bg))")}
-function actBar(){const L=actCycle(),i=L.indexOf(S.activite),a=cfg().activites.find(x=>x.id===S.activite),dir=S.actDir;S.actDir=0;
-  return '<div class="label"><span class="stepn">1</span>Où ?</div><div class="actbar" data-swipe="act"><button class="actarr" data-act="actStep" data-v="-1" aria-label="Activité précédente"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 5l-7 7 7 7" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></button>'
-   +'<div class="actmid" aria-live="polite"><div class="actname'+(dir>0?" in-r":dir<0?" in-l":"")+'">'+(a?actIcon(a,"aic big"):"")+'<span>'+esc(actLabel(S.activite))+'</span></div><div class="actdots" aria-hidden="true">'+L.map((x,k)=>'<i'+(k===i?' class="on"':'')+'></i>').join("")+'</div></div>'
-   +'<button class="actarr" data-act="actStep" data-v="1" aria-label="Activité suivante"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 5l7 7-7 7" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></button></div>'
-   +'<div class="actmeta"><span class="note">Gardée pour la journée</span><button class="link" data-act="actOpen">'+(S.actOpen?"Fermer la liste":"Voir toutes les activités")+'</button></div>'}
+function actBar(){const L=actCycle(),i=L.indexOf(S.activite),has=i>=0,dir=S.actDir;S.actDir=0;
+  const arr=(v,d,l)=>'<button class="actarr" data-act="actStep" data-v="'+v+'" aria-label="'+l+'"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="'+d+'" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></button>';
+  return '<div class="label"><span class="stepn">1</span>Où ?</div><div class="actbar'+(has?'':' none')+'" data-swipe="act">'+arr(-1,"M15 5l-7 7 7 7","Activité précédente")
+   +'<div class="actmid" aria-live="polite"><div class="actname'+(dir>0?" in-r":dir<0?" in-l":"")+'">'+(has?actIco(S.activite,"aic big")+'<span>'+esc(actLabel(S.activite))+'</span>':'<span class="actnone">Choisis l\'activité</span>')+'</div>'
+   +'<div class="actminis" role="group" aria-label="Activités">'+L.map(x=>'<button type="button" class="actmini'+(x===S.activite?' on':'')+'" style="--mc:'+actColor(x)+'" data-act="activite" data-id="'+esc(x)+'" aria-pressed="'+(x===S.activite)+'" aria-label="'+esc(actLabel(x))+'" title="'+esc(actLabel(x))+'">'+(actIco(x,"ami")||'<span class="ami lt">'+esc(actLabel(x).slice(0,1))+'</span>')+'</button>').join("")+'</div></div>'
+   +arr(1,"M9 5l7 7-7 7","Activité suivante")+'</div>'
+   +(has?'<div class="actmeta"><span class="note">Gardée pour la journée</span></div>':'')}
 /* Écran d'accueil : facultatif. Android propose l'installation en un geste, iPhone demande trois appuis qu'on montre en images. */
 window.addEventListener("beforeinstallprompt",e=>{e.preventDefault();S.installEvt=e;render()});
 window.addEventListener("appinstalled",()=>{S.installEvt=null;toast("Stockaarud est sur ton écran d'accueil");render()});
@@ -1038,11 +1059,7 @@ function viewEquipe(st){
   if((S.dbState==="loading"||S.dbState==="slow")&&!S.produits.size)return h+'<div class="label" style="color:var(--muted);font-weight:400">Chargement du stock…</div><div class="grid">'+'<div class="skel"></div>'.repeat(6)+'</div>';
   if(!S.config&&S.dbState==="ok")h+='<div class="empty">Stockaarud n\'est pas encore configuré. Le responsable stock ajoute les activités et le matériel dans l\'espace gestion, puis l\'équipe peut saisir ses sorties ici.'+(S.isAdmin?'<button class="btn primary" style="margin-top:10px" data-act="wzStart">Lancer l\'installation guidée</button>':'')+'</div>';
   if(L.length>1)h+='<div class="label">Où es-tu ?</div><div class="chips">'+L.map(l=>'<button class="chip lieuchip" data-act="lieu" data-id="'+l.id+'" aria-pressed="'+(S.lieu===l.id)+'"><span>'+esc(l.nom)+'<small>'+lieuKind(l)+'</small></span></button>').join("")+'</div><p class="note" style="margin-top:6px">Le matériel est pris dans ce stock. Ce téléphone s\'en souvient.</p>';
-  const has=S.activite&&actCycle().includes(S.activite);if(has)h+=actBar()+terrainBar();
-  if(!has||S.actOpen)h+=(has?'':'<div class="label"><span class="stepn">1</span>Où ?</div>')+'<div class="chips'+(has?' actlist':'')+'">'+acts.map(a=>'<button class="chip" data-act="activite" data-id="'+a.id+'" aria-pressed="'+(S.activite===a.id)+'">'+actIcon(a)+esc(a.nom)+'</button>').join("")
-    +'<button class="chip ghost" data-act="activite" data-id="__dep" aria-pressed="'+(S.activite==="__dep")+'">Prêt / don à une asso</button>'
-    +(L.length>1?'<button class="chip ghost" data-act="activite" data-id="__trans" aria-pressed="'+(S.activite==="__trans")+'">Vers un autre lieu</button>':"")
-    +'<button class="chip ghost" data-act="activite" data-id="__perte" aria-pressed="'+(S.activite==="__perte")+'">Perte / casse</button></div>';
+  const has=S.activite&&actCycle().includes(S.activite);h+=actBar()+(has?terrainBar():'');
   if(!acts.length&&S.config)h+='<p class="note">Aucune activité pour l\'instant : le responsable stock les crée dans Réglages.</p>';
   // tri : les plus sortis pour cette activité d'abord
   const freq={};for(const m of S.mvts)if(m.type==="sortie"&&m.activite===S.activite)freq[m.produit]=(freq[m.produit]||0)+1;
@@ -1050,7 +1067,7 @@ function viewEquipe(st){
   ps.sort((a,b)=>(freq[b.id]||0)-(freq[a.id]||0)||a.nom.localeCompare(b.nom,"fr"));
   h+='<div class="quoi'+(S.activite?'':' attente')+'">';
   h+='<div class="row" style="justify-content:space-between;margin:18px 0 8px"><div class="label" style="margin:0"><span class="stepn">2</span>Quoi ?</div></div><div class="search"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg><input id="q" type="search" inputmode="search" autocomplete="off" placeholder="Chercher : paille, capotes, nalox…" value="'+esc(S.query)+'" aria-label="Chercher un produit"></div>';
-  if(!S.activite)h+='<p class="note quoi-msg">Choisis d\'abord l\'activité ci-dessus, puis touche un produit.</p>';
+  if(!S.activite)h+='<p class="note quoi-msg">Choisis d\'abord l\'activité ci-dessus (flèches ou icônes), puis touche un produit.</p>';
   const tile=p=>{const s=st[p.id],sl=s.byLieu[S.lieu]||0;return '<button class="tile'+(S.flash&&S.flash.id===p.id&&Date.now()<S.flash.until?' flash':'')+'" style="--cat:var('+(CATCOL[catOf(p)]||"--muted")+')" data-act="pick" data-id="'+p.id+'">'+badge(p)+'<span class="nm">'+esc(p.nom)+'</span><span class="st"><span class="dot '+(sl<=0?"crit":s.etat==="mute"?"":s.etat==="good"?"ok":s.etat)+'"></span>'+(sl<=0?'<b style="color:var(--crit)">Stock épuisé</b>':(s.etat==="crit"?'<b style="color:var(--crit)">stock bas</b>, ':s.etat==="warn"?'<b style="color:var(--warn)">à surveiller</b>, ':"")+'reste '+esc(fmtQ(p,sl)))+'</span></button>'};
   const grid=a=>'<div class="grid">'+a.map(tile).join("")+'</div>';
   const catBody=(k,a)=>{const gs=[...new Set(a.map(p=>p.groupe).filter(Boolean))].sort((x,y)=>x.localeCompare(y,"fr"));if(!gs.length)return grid(a);
@@ -2946,7 +2963,7 @@ document.addEventListener("click",async e=>{
   case "tabMore":S.tabMore=!S.tabMore;render();break;
   case "lieu":S.lieu=id;ls.set("lieu",id);render();break;
   case "activite":setActivite(id,0);S.actOpen=false;render();break;
-  case "actStep":{const L=actCycle(),i=L.indexOf(S.activite);setActivite(L[(i+(+b.dataset.v)+L.length)%L.length],+b.dataset.v);render();break}
+  case "actStep":{const L=actCycle(),i=L.indexOf(S.activite),v=+b.dataset.v;setActivite(i<0?L[v>0?0:L.length-1]:L[(i+v+L.length)%L.length],v);render();break}
   case "actOpen":S.actOpen=!S.actOpen;render();break;
   case "vueLieu":S.vueLieu=id||null;render();break;
   case "pick":openPick(id);break;
