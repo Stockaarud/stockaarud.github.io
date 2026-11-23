@@ -546,3 +546,5 @@ html { scroll-padding-top: calc(var(--space-3xl) + var(--space-lg)); }
 .vbox form { position: absolute; top: -52px; right: 0; }
 .vbox-x { width: 44px; height: 44px; border: 0; background: var(--color-paper-3); color: var(--color-ink); font-size: 28px; line-height: 1; cursor: pointer; box-shadow: 3px 3px 0 var(--color-ink); }
 .vbox-x:focus-visible { outline: 3px solid var(--color-focus); }
+/* accroche : la chute « de matos » surlignée */
+.h1-plus { display: inline-block; background: var(--color-accent); padding: 0 0.12em; rotate: -1.5deg; box-shadow: 0.06em 0.06em 0 var(--color-ink); }
