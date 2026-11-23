@@ -1011,12 +1011,11 @@ function viewEquipe(st){
   if((S.dbState==="loading"||S.dbState==="slow")&&!S.produits.size)return h+'<div class="label" style="color:var(--muted);font-weight:400">Chargement du stock…</div><div class="grid">'+'<div class="skel"></div>'.repeat(6)+'</div>';
   if(!S.config&&S.dbState==="ok")h+='<div class="empty">Stockaarud n\'est pas encore configuré. Le responsable stock ajoute les activités et le matériel dans l\'espace gestion, puis l\'équipe peut saisir ses sorties ici.'+(S.isAdmin?'<button class="btn primary" style="margin-top:10px" data-act="wzStart">Lancer l\'installation guidée</button>':'')+'</div>';
   if(L.length>1)h+='<div class="label">Où es-tu ?</div><div class="chips">'+L.map(l=>'<button class="chip lieuchip" data-act="lieu" data-id="'+l.id+'" aria-pressed="'+(S.lieu===l.id)+'"><span>'+esc(l.nom)+'<small>'+lieuKind(l)+'</small></span></button>').join("")+'</div><p class="note" style="margin-top:6px">Le matériel est pris dans ce stock. Ce téléphone s\'en souvient.</p>';
-  const has=S.activite&&actCycle().includes(S.activite);
-  h+='<div class="label"><span class="stepn">1</span>Où ?</div><div class="chips'+(has?' actrow':'')+'">'+acts.map(a=>'<button class="chip" data-act="activite" data-id="'+a.id+'" aria-pressed="'+(S.activite===a.id)+'">'+actIcon(a)+esc(a.nom)+'</button>').join("")
+  const has=S.activite&&actCycle().includes(S.activite);if(has)h+=actBar()+terrainBar();
+  if(!has||S.actOpen)h+=(has?'':'<div class="label"><span class="stepn">1</span>Où ?</div>')+'<div class="chips'+(has?' actlist':'')+'">'+acts.map(a=>'<button class="chip" data-act="activite" data-id="'+a.id+'" aria-pressed="'+(S.activite===a.id)+'">'+actIcon(a)+esc(a.nom)+'</button>').join("")
     +'<button class="chip ghost" data-act="activite" data-id="__dep" aria-pressed="'+(S.activite==="__dep")+'">Prêt / don à une asso</button>'
     +(L.length>1?'<button class="chip ghost" data-act="activite" data-id="__trans" aria-pressed="'+(S.activite==="__trans")+'">Vers un autre lieu</button>':"")
-    +'<button class="chip ghost" data-act="activite" data-id="__perte" aria-pressed="'+(S.activite==="__perte")+'">Perte / casse</button></div>'
-    +(has?'<p class="note actkeep">Gardée pour la journée'+(actCycle().length>3?' · glisse la ligne pour changer':'')+'</p>'+terrainBar():'');
+    +'<button class="chip ghost" data-act="activite" data-id="__perte" aria-pressed="'+(S.activite==="__perte")+'">Perte / casse</button></div>';
   if(!acts.length&&S.config)h+='<p class="note">Aucune activité pour l\'instant : le responsable stock les crée dans Réglages.</p>';
   // tri : les plus sortis pour cette activité d'abord
   const freq={};for(const m of S.mvts)if(m.type==="sortie"&&m.activite===S.activite)freq[m.produit]=(freq[m.produit]||0)+1;
