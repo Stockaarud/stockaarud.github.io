@@ -9,53 +9,59 @@
   /* Deux CAARUD fictifs, pour essayer le passage de l'un à l'autre */
   const BASES = [{ ref: "nord", nom: "CAARUD Démo Nord" }, { ref: "sud", nom: "CAARUD Démo Sud" }];
   const base = BASES.some(b => b.ref === localStorage.getItem(BASE_KEY)) ? localStorage.getItem(BASE_KEY) : "nord";
-  const KEY = base === "nord" ? "stockaarud-demo-v6" : "stockaarud-demo-v6-" + base;
+  const KEY = base === "nord" ? "stockaarud-demo-v7" : "stockaarud-demo-v7-" + base;
+  /* Les anciennes versions gardaient une copie complète de l'année par CAARUD (plus de 1 Mo chacune) : on les efface. */
+  try { Object.keys(localStorage).filter((k) => /^stockaarud-demo-v[0-6](-|$)/.test(k)).forEach((k) => localStorage.removeItem(k)); } catch (e) {}
   window.STK_NS = base === "nord" ? "stk:" : "stk@demo-" + base + ":";
   const store = new Map();
   const startOfDay = (t) => { const d = new Date(t); d.setHours(0, 0, 0, 0); return d.getTime(); };
 
   const shiftIso = (d, ms) => new Date(Date.parse(d) + ms).toISOString().slice(0, 10);
+  /* On ne garde que ce que la personne a changé par rapport aux données d'exemple (quelques Ko), pas toute l'année. */
+  const dirty = new Map();
   function persist() {
-    const o = {}; for (const [c, m] of store) o[c] = Object.fromEntries(m);
-    try { localStorage.setItem(KEY, JSON.stringify({ anchorDay: startOfDay(Date.now()), data: o })); } catch (e) { console.warn("Démo : stockage local plein", e); if (!window.__demoFull) { window.__demoFull = true; setTimeout(() => alert("La démo n'a plus de place pour enregistrer sur ce navigateur : ce que tu saisis ne sera pas gardé après fermeture. « Remettre à zéro » libère de la place."), 50); } }
+    const o = {}; for (const [c, m] of dirty) o[c] = Object.fromEntries([...m].map(([id, v]) => [id, v === undefined ? null : v]));
+    const txt = JSON.stringify({ v: 7, anchorDay: startOfDay(Date.now()), changes: o });
+    try { localStorage.setItem(KEY, txt); } catch (e) {
+      try { Object.keys(localStorage).filter((k) => k.startsWith("stockaarud-demo-") && k !== KEY && k !== ROLE_KEY && k !== BASE_KEY).forEach((k) => localStorage.removeItem(k)); localStorage.setItem(KEY, txt); }
+      catch (e2) { console.warn("Démo : stockage local plein", e2); }
+    }
   }
+
   let tm = null; const save = () => { clearTimeout(tm); tm = setTimeout(() => { tm = null; persist(); }, 300); };
   // ne rien perdre si la page se ferme ou se recharge juste après une saisie
   const flushNow = () => { if (tm) { clearTimeout(tm); tm = null; persist(); } };
   window.addEventListener("pagehide", flushNow); document.addEventListener("visibilitychange", () => { if (document.visibilityState === "hidden") flushNow(); });
 
   function load(saved, seed) {
-    if (saved) {
-      for (const c in saved.data) store.set(c, new Map(Object.entries(saved.data[c])));
+    const shift = startOfDay(Date.now()) - DAY - startOfDay(seed.anchor);
+    const cf = JSON.parse(JSON.stringify(seed.config));
+    if (cf.main) cf.main.nomStructure = BASES.find(b => b.ref === base).nom;
+    store.set("config", new Map(Object.entries(cf)));
+    store.set("produits", new Map(Object.entries(seed.produits)));
+    const mv = new Map();
+    seed.mouvements.forEach((m, i) => mv.set("demo-" + i.toString(36), { lieu: "principal", ...m, t: m.t + shift, ...(m.peremption ? { peremption: shiftIso(m.peremption, shift) } : {}) }));
+    store.set("mouvements", mv);
+    const cm = new Map(); Object.entries(seed.commandes || {}).forEach(([id, c]) => cm.set(id, { ...c, t: c.t + shift }));
+    store.set("commandes", cm);
+    if (saved && saved.changes) {
       const days = Math.round((startOfDay(Date.now()) - saved.anchorDay) / DAY);
-      if (days > 0) for (const m of (store.get("mouvements") || new Map()).values()) { if (typeof m.t === "number") m.t += days * DAY; if (m.peremption) m.peremption = shiftIso(m.peremption, days * DAY); }
-      if (days > 0) for (const c of (store.get("commandes") || new Map()).values()) if (typeof c.t === "number") c.t += days * DAY;
-    } else {
-      const shift = startOfDay(Date.now()) - DAY - startOfDay(seed.anchor);
-      const cf = JSON.parse(JSON.stringify(seed.config));
-      if (cf.main) cf.main.nomStructure = BASES.find(b => b.ref === base).nom;
-      store.set("config", new Map(Object.entries(cf)));
-      store.set("produits", new Map(Object.entries(seed.produits)));
-      const mv = new Map();
-      seed.mouvements.forEach((m, i) => mv.set("demo-" + i.toString(36), { lieu: "principal", ...m, t: m.t + shift, ...(m.peremption ? { peremption: shiftIso(m.peremption, shift) } : {}) }));
-      store.set("mouvements", mv);
-      const cm = new Map();Object.entries(seed.commandes || {}).forEach(([id, c]) => cm.set(id, { ...c, t: c.t + shift }));
-      store.set("commandes", cm);
+      for (const c in saved.changes) for (const [id, d0] of Object.entries(saved.changes[c])) {
+        let d = d0;
+        if (d && days > 0 && (c === "mouvements" || c === "commandes")) { d = { ...d }; if (typeof d.t === "number") d.t += days * DAY; if (d.peremption) d.peremption = shiftIso(d.peremption, days * DAY); }
+        if (!store.has(c)) store.set(c, new Map());
+        if (!dirty.has(c)) dirty.set(c, new Map());
+        if (d === null) { store.get(c).delete(id); dirty.get(c).set(id, undefined); } else { store.get(c).set(id, d); dirty.get(c).set(id, d); }
+      }
+      if (days > 0) persist();
     }
-    persist();
   }
 
   const ready = (async () => {
     let saved = null;
     try { saved = JSON.parse(localStorage.getItem(KEY) || "null"); } catch (e) {}
-    if (saved && saved.data) {
-      load(saved);
-      const m = store.get("config"), c = m && m.get("main");
-      if (c && !c.nomStructure) m.set("main", { ...c, nomStructure: BASES.find(b => b.ref === base).nom });
-      return;
-    }
-    const r = await fetch("seed.json", { cache: "no-cache" });
-    load(null, await r.json());
+    const r = await fetch("seed.json");
+    load(saved, await r.json());
   })();
 
   const collL = new Map(), docL = new Map();
@@ -68,6 +74,7 @@
   function put(c, id, data) {
     if (!store.has(c)) store.set(c, new Map());
     if (data === undefined) store.get(c).delete(id); else store.get(c).set(id, data);
+    if (!dirty.has(c)) dirty.set(c, new Map()); dirty.get(c).set(id, data);
     save(); pend.add(c); emitDoc(c, id);
     if (!sch) { sch = true; setTimeout(() => { sch = false; const p = pend; pend = new Set(); p.forEach(emitColl); }, 0); }
   }

@@ -520,6 +520,18 @@ details.panel.fold[open]>summary::after{transform:rotate(-135deg);margin-bottom:
 .cr-d{flex:none;font:800 16px var(--display);padding:6px 10px;border-radius:10px;min-width:64px;text-align:center;font-variant-numeric:tabular-nums}
 .cr.up .cr-d,.cr.new .cr-d{background:var(--good-soft);color:var(--good)}.cr.down .cr-d,.cr.stop .cr-d{background:var(--warn-soft);color:var(--warn)}
 .chgh{display:flex;align-items:center;gap:8px;margin-top:18px}.chgh .pill{font-size:12px}
+
+/* Tableau croisé lisible sur téléphone */
+.tw.xt{overflow-x:auto!important;-webkit-overflow-scrolling:touch}
+.xt table{min-width:0}
+.xt table th{white-space:nowrap;max-width:none}
+.xt table td:first-child,.xt table th:first-child{position:sticky;left:0;z-index:1;background:var(--surface);min-width:0;max-width:11em;white-space:normal;box-shadow:6px 0 6px -6px rgb(0 0 0/.35)}
+.xctl{display:grid;grid-template-columns:minmax(0,1fr) auto minmax(0,1fr);grid-template-areas:"l b c" "m m m";gap:8px;align-items:end;margin-top:10px}.xctl>label:nth-child(1){grid-area:l}.xctl>label:nth-child(2){grid-area:c}.xctl>label:nth-child(3){grid-area:m}.xctl>button{grid-area:b}
+@media (min-width:700px){.xctl{grid-template-columns:repeat(2,minmax(0,200px)) auto minmax(0,220px);grid-template-areas:"l c b m"}}
+.xctl label{font-size:12px;gap:3px;min-width:0}
+.xctl select{width:100%!important;min-width:0;font-size:14px;min-height:40px;padding:6px 26px 6px 8px;text-overflow:ellipsis}
+.xctl .btn.small{min-height:40px;padding-inline:10px}
+@media (max-width:520px){.xctl .xinv{display:none}}
 </style>
 </head>
 <body>
@@ -574,7 +586,7 @@ details.panel.fold[open]>summary::after{transform:rotate(-135deg);margin-bottom:
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcode-generator/1.4.4/qrcode.min.js"></script>
 
-<script src="demo.js"></script>
+<script src="demo.js?v=7"></script>
 <script>
 /* ---------- Base RdR de départ (catalogue à activer par le coordo) ---------- */
 const MOTIFS=[["casse","Cassé / abîmé"],["peremption","Périmé"],["perte","Perdu / volé"],["autre","Autre"]];
@@ -1737,10 +1749,10 @@ function barresH(rows,fmt,opts){opts=opts||{};const W=VW(),lw=Math.min(opts.lw||
   rows.forEach((r,i)=>{const y=i*rh+4,w=Math.max(1,(W-lw-RW)*Math.min(r.v,max)/max);h+='<text x="'+(lw-8)+'" y="'+(y+15)+'" text-anchor="end" style="font:13px var(--body);fill:var(--fg)">'+esc(r.label.length>(W<450?18:28)?r.label.slice(0,W<450?17:27)+"…":r.label)+'</text><rect x="'+lw+'" y="'+(y+3)+'" width="'+w.toFixed(1)+'" height="16" rx="4" style="fill:var('+(r.col||"--c1")+')"><title>'+esc(r.label+" : "+fmt(r.v))+'</title></rect><text x="'+(lw+w+6)+'" y="'+(y+15)+'" style="font:600 12px var(--body);fill:var(--fg)">'+esc(fmt(r.v))+'</text>'});
   if(opts.ref){const x=lw+(W-lw-RW)*opts.ref/max;h+='<line x1="'+x+'" y1="0" x2="'+x+'" y2="'+(H-14)+'" style="stroke:var(--fg);stroke-width:1.5;stroke-dasharray:4 3"/><text x="'+x+'" y="'+(H-2)+'" text-anchor="middle" style="font:11px var(--body);fill:var(--muted)">'+esc(opts.refLabel||String(opts.ref))+'</text>'}
   return h+'</svg>'}
-function courbes(series,labels,opts){opts=opts||{};const W=VW(),H=opts.h||(W<450?220:260),L=opts.fmtY?66:44,Rr=12,T=12,B=28,all=series.flatMap(s=>s.vals.filter(v=>v!=null)),mx=Math.max(opts.ref||0,...all,1)*1.1,n=labels.length,X=i=>L+(W-L-Rr)*(n>1?i/(n-1):0.5),Y=v=>T+(H-T-B)*(1-v/mx);
+function courbes(series,labels,opts){opts=opts||{};const W=VW(),H=opts.h||(W<450?220:260),L=opts.fmtY?66:44,Rr=12,T=12,B=28,all=series.flatMap(s=>s.vals.filter(v=>v!=null)),mx0=Math.max(opts.ref||0,...all,1)*1.05,stp=niceStep(mx0),mx=Math.ceil(mx0/stp)*stp,n=labels.length,X=i=>L+(W-L-Rr)*(n>1?i/(n-1):0.5),Y=v=>T+(H-T-B)*(1-v/mx);
   let h='<svg viewBox="0 0 '+W+' '+H+'" role="img" aria-label="'+esc(opts.titre||"Courbes")+'"'+ck({kind:"series",labels,series:series.map(x=>({label:x.label,col:x.col,vals:x.vals})),fmt:opts.fmtY,geo:{x0:L,x1:W-Rr,n,W}})+'>';
-  for(let k=0;k<=4;k++){const v=mx*k/4,y=Y(v);h+='<line x1="'+L+'" x2="'+(W-Rr)+'" y1="'+y+'" y2="'+y+'" style="stroke:var(--line);stroke-width:1"/><text x="'+(L-6)+'" y="'+(y+4)+'" text-anchor="end" style="font:11px var(--body);fill:var(--muted)">'+esc(opts.fmtY?opts.fmtY(v):nfr(v))+'</text>'}
-  const step=Math.ceil(n/(W<450?6:12));labels.forEach((l,i)=>{if(i%step===0||i===n-1)h+='<text x="'+X(i)+'" y="'+(H-8)+'" text-anchor="middle" style="font:11px var(--body);fill:var(--muted)">'+esc(l)+'</text>'});
+  for(let k=0;k<=Math.round(mx/stp);k++){const v=stp*k,y=Y(v);h+='<line x1="'+L+'" x2="'+(W-Rr)+'" y1="'+y+'" y2="'+y+'" style="stroke:var(--line);stroke-width:1"/><text x="'+(L-6)+'" y="'+(y+4)+'" text-anchor="end" style="font:11px var(--body);fill:var(--muted)">'+esc(opts.fmtY?opts.fmtY(v):nfr(v))+'</text>'}
+  const step=Math.ceil(n/(W<450?6:12));labels.forEach((l,i)=>{if(i%step===0||i===n-1)h+='<text x="'+X(i)+'" y="'+(H-8)+'" text-anchor="'+(n>1&&i===n-1?"end":i===0&&n>1?"start":"middle")+'" style="font:11px var(--body);fill:var(--muted)">'+esc(l)+'</text>'});
   if(opts.ref){h+='<line x1="'+L+'" x2="'+(W-Rr)+'" y1="'+Y(opts.ref)+'" y2="'+Y(opts.ref)+'" style="stroke:var(--fg);stroke-width:1.2;stroke-dasharray:5 4"/>'}
   for(const s of series){let d="";s.vals.forEach((v,i)=>{if(v==null)return;d+=(d?"L":"M")+X(i).toFixed(1)+" "+Y(v).toFixed(1)});
     h+='<path d="'+d+'" style="fill:none;stroke:var('+s.col+');stroke-width:'+(s.w||2.6)+';stroke-linejoin:round;stroke-linecap:round'+(s.dash?';stroke-dasharray:'+s.dash:'')+'"/>';
@@ -1766,7 +1778,7 @@ function xKey(dim,m){const p=S.produits.get(m.produit)||{},d=new Date(m.t);
 function svExplo(){const xr=S.xr||"categorie",xc=S.xc||"mois",xm=S.xm||"u",{a,b}=periodeSV(),ms=sortiesEntre(a,b);
   const val=m=>xm==="e"?coutM(m):xm==="n"?1:num(m.qte,0),fmt=v=>xm==="e"?eur(v):nfr(v);
   const sel=(id,cur,opts)=>'<select id="'+id+'" style="width:auto">'+opts.map(([k,l])=>'<option value="'+k+'"'+(k===cur?" selected":"")+'>'+esc(l)+'</option>').join("")+'</select>';
-  const ctl='<div class="xctl"><label>Lignes '+sel("xR",xr,XDIM)+'</label><label>Colonnes '+sel("xC",xc,[["aucune","Aucune"]].concat(XDIM.filter(d=>d[0]!==xr)))+'</label><label>Mesure '+sel("xM",xm,[["u","Unités sorties"],["e","Coût en euros"],["n","Nombre de sorties"]])+'</label><button class="btn small" data-act="xSwap" title="Inverser lignes et colonnes">⇄ Inverser</button></div>'+segP();
+  const ctl='<div class="xctl"><label>Lignes '+sel("xR",xr,XDIM)+'</label><label>Colonnes '+sel("xC",xc,[["aucune","Aucune"]].concat(XDIM.filter(d=>d[0]!==xr)))+'</label><label>Mesure '+sel("xM",xm,[["u","Unités sorties"],["e","Coût en euros"],["n","Nombre de sorties"]])+'</label><button class="btn small" data-act="xSwap" title="Inverser lignes et colonnes" aria-label="Inverser lignes et colonnes">⇄<span class="xinv"> Inverser</span></button></div>'+segP();
   if(!ms.length)return pan("Tableau croisé","Croise deux critères pour voir les sorties sous l\'angle qui t\'intéresse.",ctl+'<div class="empty">Aucune sortie sur la période.</div>');
   const R=new Map(),C=new Map(),M=new Map();let tot=0;
   for(const m of ms){const [rk,rl]=xKey(xr,m),v=val(m);tot+=v;if(!R.has(rk))R.set(rk,{l:rl,t:0});R.get(rk).t+=v;
