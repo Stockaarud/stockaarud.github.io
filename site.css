@@ -501,7 +501,9 @@ html { scroll-padding-top: calc(var(--space-3xl) + var(--space-lg)); }
 @media (max-width: 40rem) {
   .tabs { grid-template-columns: minmax(0, 1fr); }
   .tab-t b { font-size: 1.2rem; overflow-wrap: anywhere; }
-  .hero-phones > .shot { width: 62%; }
+  .hero-phones { width: min(70%, 260px); padding-block: var(--space-xs) var(--space-lg); }
+  .hero-phones > .shot { width: 60%; }
+  .stage-area .shot--phone { width: min(50%, 190px); }
   .footer-grid--3 { grid-template-columns: minmax(0, 1fr); }
   .film-tri { width: 76px; height: 76px; }
 }
