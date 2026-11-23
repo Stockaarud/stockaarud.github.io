@@ -68,14 +68,29 @@
         </div>
         <p class="sheet sheet--fluoro tag-free" style="--r: -2deg"><span>Gratuit</span> Sans abonnement, sans licence.</p>
       </div>
-      <div class="hero-visual">
-        <figure class="sheet film" style="--r: 1.5deg">
-          <video controls playsinline preload="none" poster="video/stockaarud-film-poster.jpg?v=6" width="720" height="900" aria-label="Film de présentation de Stockaarud, 1 minute 49">
+      <div class="hero-visual hero-phones" aria-label="Aperçu de l’appli">
+        <figure class="sheet shot shot--phone hp-back" style="--r: -5deg"><img src="img/dash.jpg" width="780" height="1688" alt="Le tableau de bord du responsable stock : les produits à commander avant la rupture."></figure>
+        <figure class="sheet shot shot--phone hp-front" style="--r: 3deg"><img src="img/k3.jpg" width="780" height="1688" alt="Saisie d’une sortie sur téléphone : Maraude, kits d’injection, quantité, bouton Valider."></figure>
+      </div>
+    </div>
+  </section>
+
+  <section class="band band--light" aria-labelledby="film-titre">
+    <div class="container band-grid">
+      <div class="band-text">
+        <h2 id="film-titre">Stockaarud en 1 min 49</h2>
+        <p class="lead">Du carton qui arrive au garage jusqu’au bilan de l’année : tout le parcours, en images.</p>
+        <p class="trust">Conçue sur le terrain, dans un CAARUD marseillais, avec les équipes qui s’en servent.</p>
+      </div>
+      <figure class="sheet film" style="--r: 1.2deg">
+        <div class="film-box">
+          <video playsinline preload="none" poster="video/stockaarud-film-poster.jpg?v=7" width="720" height="900" aria-label="Film de présentation de Stockaarud, 1 minute 49">
             <source src="video/stockaarud-film.mp4?v=9" type="video/mp4">
           </video>
-          <figcaption>Le film, 1 min 49, avec le son.</figcaption>
-        </figure>
-      </div>
+          <button class="film-play" type="button" aria-label="Lire le film de présentation, 1 minute 49"><span class="film-tri" aria-hidden="true"></span><span class="film-dur">1 min 49</span></button>
+        </div>
+        <figcaption>Avec le son. Les données de l’appli sont fictives.</figcaption>
+      </figure>
     </div>
   </section>
 
@@ -84,7 +99,7 @@
       <div class="penbox">
       <svg class="pen" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true" focusable="false"><path d="M1.5 2.6C28 1.2 66 3.1 98.6 1.7M97.4 0.4C98.6 31 96.9 68 98.1 99.2M99.1 97.6C67 98.9 33 97.1 0.9 98.5M2.6 99.6C1.3 66 3 34 1.7 0.8"/></svg>
       <div class="section-head">
-        <h2 id="epingler">Une app pour un stock au top</h2>
+        <h2 id="epingler">Simple pour l’équipe, complète pour le responsable stock</h2>
       </div>
       <div class="wall" data-wall>
         <div class="sheet sheet--fluoro flyer flyer--big" style="--r: -1deg"><b>3 clics</b><span>pour noter une sortie : pour quoi, quel matos, combien.</span></div>
@@ -102,7 +117,7 @@
       <div class="penbox">
       <svg class="pen" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true" focusable="false"><path d="M0.8 1.9C35 3 70 1 99.2 2.4M98.3 0.6C97.2 36 98.9 66 97.6 99.5M98.8 98.2C64 97 31 99.1 1.3 97.8M1.9 99.3C3 63 1.1 30 2.5 0.3"/></svg>
       <div class="section-head">
-        <h2 id="marche">Une gestion de stock ad hoc</h2>
+        <h2 id="marche">De l’installation au bilan de l’année</h2>
       </div>
       <div class="switcher">
         <div class="tabs" role="tablist" aria-label="Les étapes">
@@ -132,10 +147,6 @@
         <p>Ou directement à <a href="mailto:stockaarud@proton.me">stockaarud@proton.me</a></p>
       </div>
       <form class="sheet contact-form" data-endpoint="https://formspree.io/f/xljbwnjj" data-mailto="stockaarud@proton.me" action="https://formspree.io/f/xljbwnjj" method="post" novalidate>
-        <div class="field">
-          <label for="c-nom">Votre nom</label>
-          <input id="c-nom" name="nom" type="text" autocomplete="name" required>
-        </div>
         <div class="field">
           <label for="c-mail">Votre e-mail</label>
           <input id="c-mail" name="email" type="email" autocomplete="email" inputmode="email" required>
@@ -169,25 +180,26 @@
 
 <footer class="footer">
   <div class="container">
-    <div class="footer-grid">
-      <ul>
-        <li><a href="guide.html#installation">Installer Stockaarud</a></li>
+    <div class="footer-grid footer-grid--3">
+      <div><h3 class="footer-h">Découvrir</h3><ul>
         <li><a href="demo/" target="_blank" rel="noopener">Essayer la démo</a></li>
+        <li><a href="guide.html">Le guide d’utilisation</a></li>
         <li><a href="questions.html">Qui, vos données, vos questions</a></li>
         <li><a href="https://wa.me/?text=Stockaarud%20%3A%20une%20appli%20gratuite%20pour%20g%C3%A9rer%20le%20stock%20de%20mat%C3%A9riel%20RdR%20des%20CAARUD.%20Le%20site%20%3A%20https%3A//stockaarud.github.io/%20et%20la%20d%C3%A9mo%20%C3%A0%20essayer%20sur%20ton%20t%C3%A9l%C3%A9phone%20%3A%20https%3A//stockaarud.github.io/demo/" target="_blank" rel="noopener">Partager sur WhatsApp</a></li>
+      </ul></div>
+      <div><h3 class="footer-h">Installer</h3><ul>
+        <li><a href="guide.html#installation">Installer Stockaarud</a></li>
         <li><a href="https://stockaarud.github.io/stockaarud/" target="_blank" rel="noopener">Ouvrir l’appli</a></li>
         <li><a href="https://github.com/Stockaarud/stockaarud">Code source sur GitHub</a></li>
-        <li><a href="documents.html">Tous les documents (flyers, affiche, logo)</a></li>
-        <li><a href="flyer/flyer-stockaarud-A5.pdf">Le flyer à imprimer (PDF)</a></li>
-        <li><a href="flyer/affiche-qr-stockaarud.pdf">L’affiche QR code pour le local (PDF)</a></li>
-        <li><a href="#contact">Nous écrire</a></li>
-        <li><a href="guide.html">Le guide d’utilisation</a></li>
-        <li><a href="docs/guide-utilisateur-stockaarud.pdf">Le guide utilisateur (PDF)</a></li>
-        <li><a href="docs/guide-installation-stockaarud.pdf">Le guide d’installation (PDF)</a></li>
-        <li><a href="docs/fiche-equipe-stockaarud.pdf">La fiche équipe (PDF)</a></li>
         <li><a href="https://github.com/Stockaarud/stockaarud/issues">Signaler un problème</a></li>
-      </ul>
-      <p><small>Contact : <a href="mailto:stockaarud@proton.me">stockaarud@proton.me</a>. Les captures montrent des données fictives.</small></p>
+      </ul></div>
+      <div><h3 class="footer-h">Documents</h3><ul>
+        <li><a href="documents.html">Tous les documents</a></li>
+        <li><a href="flyer/flyer-stockaarud-A5.pdf">Le flyer (PDF)</a></li>
+        <li><a href="flyer/affiche-qr-stockaarud.pdf">L’affiche QR code (PDF)</a></li>
+        <li><a href="docs/guide-installation-stockaarud.pdf">Le guide d’installation (PDF)</a></li>
+      </ul></div>
+      <p class="footer-note"><small>Contact : <a href="mailto:stockaarud@proton.me">stockaarud@proton.me</a> · <a href="#contact">Nous écrire</a>. Les captures montrent des données fictives.</small></p>
     </div>
   </div>
 </footer>
@@ -204,6 +216,10 @@
     t.addEventListener('keydown', (e) => { const d = { ArrowDown: 1, ArrowRight: 1, ArrowUp: -1, ArrowLeft: -1 }[e.key]; if (d) { e.preventDefault(); show((i + d + tabs.length) % tabs.length, true); } });
   });
   if (tabs.length) show(0);
+  document.querySelectorAll('.film-box').forEach((box) => {
+    const v = box.querySelector('video'), b = box.querySelector('.film-play');
+    b.addEventListener('click', () => { b.hidden = true; v.controls = true; v.play().catch(() => {}); });
+  });
   const wall = document.querySelector('[data-wall]');
   if (wall && 'IntersectionObserver' in window) {
     const io = new IntersectionObserver((es) => es.forEach((e) => { if (e.isIntersecting) { wall.classList.add('is-in'); io.disconnect(); } }), { rootMargin: '0px 0px -15% 0px' });
@@ -222,7 +238,7 @@ document.querySelectorAll('form[data-endpoint]').forEach((form) => {
     if (bad) { bad.setAttribute('aria-describedby', help.id); help.textContent = bad.value.trim() === '' ? 'Ce champ est à remplir.' : 'Cette adresse semble incomplète : écrivez-la comme nom@exemple.fr.'; bad.focus(); return; }
     const d = Object.fromEntries(new FormData(form));
     if (!form.dataset.endpoint) {
-      const body = `${d.message}\n\n${d.nom}${d.structure ? ', ' + d.structure : ''}\n${d.email}`;
+      const body = `${d.message}\n\n${d.structure ? d.structure + '\n' : ''}${d.email}`;
       help.textContent = 'Votre logiciel de messagerie s’ouvre avec le message prêt : il reste à l’envoyer.';
       location.href = `mailto:${form.dataset.mailto}?subject=${encodeURIComponent('Stockaarud : ' + d.objet)}&body=${encodeURIComponent(body)}`;
       return;
