@@ -12,7 +12,7 @@
 <meta property="og:url" content="https://stockaarud.github.io/questions.html">
 <meta property="og:title" content="Stockaarud : qui, vos données, vos questions">
 <meta property="og:description" content="Qui fait Stockaarud, ce que l’appli enregistre, où vont vos données, ce que ça coûte.">
-<meta property="og:image" content="https://stockaarud.github.io/img/og-stockaarud.jpg">
+<meta property="og:image" content="https://stockaarud.github.io/img/og-stockaarud.jpg?v=2">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="627">
 <meta name="twitter:card" content="summary_large_image">
@@ -94,15 +94,15 @@
       <section class="qsheet" id="donnees" aria-labelledby="donnees-t">
         <h2 id="donnees-t" class="doc-h2">Vos données restent chez vous</h2>
         <p class="qflag">Aucune information sur les personnes accueillies : l’appli ne compte que du matériel.</p>
-        <dl class="rows rows--dl">
-          <div><dt>Ce qui est enregistré</dt><dd>Le catalogue, les entrées et sorties de matériel (produit, quantité, activité, date), les commandes, les noms des fournisseurs et des associations partenaires. Les sorties ne portent aucun nom.</dd></div>
-          <div><dt>Où</dt><dd>Dans une base Supabase que votre CAARUD crée lui-même, à son nom. Le guide conseille la région Europe (Paris). Il n’y a pas de base commune.</dd></div>
-          <div><dt>Qui y a accès</dt><dd>Votre équipe, par le code ou le QR code que vous lui donnez, et vos responsables stock. Les règles sont appliquées par la base elle-même. Nous n’avons pas accès à votre base.</dd></div>
-          <div><dt>Alertes par e-mail</dt><dd>Facultatives. Si vous les activez, l’appli confie à un service d’envoi tenu par Stockaarud le nom du CAARUD, les noms de produits concernés, les jours de stock restants et les adresses destinataires, le temps d’envoyer le mail. Rien sur les personnes accueillies. Chaque adresse doit confirmer son inscription et peut se désabonner d’un clic.</dd></div>
-          <div><dt>Donnée personnelle</dt><dd>Une seule : l’adresse e-mail du compte responsable stock, conservée dans votre projet Supabase.</dd></div>
-          <div><dt>Sauvegardes</dt><dd>Supabase gratuit ne garde pas de copie. L’appli télécharge une sauvegarde complète en un geste, et vous le rappelle.</dd></div>
-          <div><dt>Ce site</dt><dd>Il est hébergé par GitHub et ne reçoit aucune donnée de stock. Le formulaire de contact transmet votre message par le service Formspree.</dd></div>
-        </dl>
+        <div class="faq">
+          <details class="qa"><summary>Ce qui est enregistré</summary><div class="qa-a"><p>Le catalogue, les entrées et sorties de matériel (produit, quantité, activité, date), les commandes, les noms des fournisseurs et des associations partenaires. Les sorties ne portent aucun nom.</p></div></details>
+          <details class="qa"><summary>Où</summary><div class="qa-a"><p>Dans une base Supabase que votre CAARUD crée lui-même, à son nom. Le guide conseille la région Europe (Paris). Il n’y a pas de base commune.</p></div></details>
+          <details class="qa"><summary>Qui y a accès</summary><div class="qa-a"><p>Votre équipe, par le code ou le QR code que vous lui donnez, et vos responsables stock. Les règles sont appliquées par la base elle-même. Nous n’avons pas accès à votre base.</p></div></details>
+          <details class="qa"><summary>Alertes par e-mail</summary><div class="qa-a"><p>Facultatives. Si vous les activez, l’appli confie à un service d’envoi tenu par Stockaarud le nom du CAARUD, les noms de produits concernés, les jours de stock restants et les adresses destinataires, le temps d’envoyer le mail. Rien sur les personnes accueillies. Chaque adresse doit confirmer son inscription et peut se désabonner d’un clic.</p></div></details>
+          <details class="qa"><summary>Donnée personnelle</summary><div class="qa-a"><p>Une seule : l’adresse e-mail du compte responsable stock, conservée dans votre projet Supabase.</p></div></details>
+          <details class="qa"><summary>Sauvegardes</summary><div class="qa-a"><p>Supabase gratuit ne garde pas de copie. L’appli télécharge une sauvegarde complète en un geste, et vous le rappelle.</p></div></details>
+          <details class="qa"><summary>Ce site</summary><div class="qa-a"><p>Il est hébergé par GitHub et ne reçoit aucune donnée de stock. Le formulaire de contact transmet votre message par le service Formspree.</p></div></details>
+        </div>
       </section>
 
       <section class="qsheet" id="faq" aria-labelledby="faq-t">
@@ -113,7 +113,7 @@
           <details class="qa"><summary>Peut-on gérer le stock depuis un ordinateur ?</summary><div class="qa-a"><p>Oui, et c’est même plus confortable pour le responsable stock. Ouvrez la même adresse, <a href="https://stockaarud.github.io/stockaarud/" target="_blank" rel="noopener">stockaarud.github.io/stockaarud</a>, sur l’ordinateur du bureau, puis connectez-vous avec votre e-mail, ou avec un code de responsable stock créé depuis votre téléphone (Réglages, Accès et appareils). Le téléphone et l’ordinateur voient le même stock, en direct.</p><p>Sur grand écran : les commandes et le bon de commande, les statistiques en grand, l’inventaire sur une page, le matériel à télécharger et réimporter en tableur, les PDF pour le rapport d’activité.</p></div></details>
           <details class="qa"><summary>Combien ça coûte ?</summary><div class="qa-a"><p>Rien. L’appli est gratuite, sans abonnement. La base de données est un projet Supabase gratuit, limité à 500 Mo de données et 1 Go de photos : c’est très au-delà de ce qu’un CAARUD utilise.</p></div></details>
           <details class="qa"><summary>Et quand il n’y a pas de réseau ?</summary><div class="qa-a"><p>L’équipe continue de noter. Les saisies restent sur le téléphone et partent dès le retour de la connexion.</p></div></details>
-          <details class="qa"><summary>Faut-il créer des comptes pour l’équipe ?</summary><div class="qa-a"><p>Non. L’équipe entre avec un QR code ou un lien. Seul le responsable stock a un compte, avec un e-mail et un mot de passe.</p></div></details>
+          <details class="qa"><summary>Faut-il créer des comptes pour l’équipe ?</summary><div class="qa-a"><p>Non. L’équipe entre avec un QR code ou un lien. Les responsables stock aussi, avec un code de gestion. Aucun mot de passe à retenir.</p></div></details>
           <details class="qa"><summary>Quelqu’un perd son téléphone ou quitte l’équipe ?</summary><div class="qa-a"><p>Dans Réglages, « Retirer l’accès de toute l’équipe » déconnecte tous les téléphones. Vous redonnez ensuite un nouveau code aux personnes qui restent.</p></div></details>
           <details class="qa"><summary>On a plusieurs lieux de stockage ?</summary><div class="qa-a"><p>C’est prévu : un stock principal et, si besoin, des stocks intermédiaires (un local, une antenne) qui s’y réapprovisionnent.</p></div></details>
           <details class="qa"><summary>Le projet Supabase s’est mis en pause ?</summary><div class="qa-a"><p>Supabase met en pause un projet gratuit resté 7 jours sans activité. Cliquez sur « Restore project » dans Supabase : aucune donnée n’est perdue.</p></div></details>
@@ -133,19 +133,26 @@
 
 <footer class="footer">
   <div class="container">
-    <div class="footer-grid">
-      <ul>
-        <li><a href="./">Accueil</a></li>
-        <li><a href="guide.html#installation">Installer Stockaarud</a></li>
+    <div class="footer-grid footer-grid--3">
+      <div><h3 class="footer-h">Découvrir</h3><ul>
         <li><a href="demo/" target="_blank" rel="noopener">Essayer la démo</a></li>
-        <li><a href="https://stockaarud.github.io/stockaarud/" target="_blank" rel="noopener">Ouvrir l’appli</a></li>
         <li><a href="guide.html">Le guide d’utilisation</a></li>
-        <li><a href="documents.html">Tous les documents (flyers, affiche, logo)</a></li>
-        <li><a href="flyer/flyer-stockaarud-A5.pdf">Le flyer à imprimer (PDF)</a></li>
-        <li><a href="flyer/affiche-qr-stockaarud.pdf">L’affiche QR code pour le local (PDF)</a></li>
-        <li><a href="./#contact">Nous écrire</a></li>
-      </ul>
-      <p><small>Contact : <a href="mailto:stockaarud@proton.me">stockaarud@proton.me</a>.</small></p>
+        <li><a href="questions.html">Qui, vos données, vos questions</a></li>
+        <li><a href="./">Accueil</a></li>
+      </ul></div>
+      <div><h3 class="footer-h">Installer</h3><ul>
+        <li><a href="guide.html#installation">Installer Stockaarud</a></li>
+        <li><a href="https://stockaarud.github.io/stockaarud/" target="_blank" rel="noopener">Ouvrir l’appli</a></li>
+        <li><a href="https://github.com/Stockaarud/stockaarud">Code source sur GitHub</a></li>
+        <li><a href="https://github.com/Stockaarud/stockaarud/issues">Signaler un problème</a></li>
+      </ul></div>
+      <div><h3 class="footer-h">Documents</h3><ul>
+        <li><a href="documents.html">Tous les documents</a></li>
+        <li><a href="flyer/flyer-stockaarud-A5.pdf">Le flyer (PDF)</a></li>
+        <li><a href="flyer/affiche-qr-stockaarud.pdf">L’affiche QR code (PDF)</a></li>
+        <li><a href="docs/guide-installation-stockaarud.pdf">Le guide d’installation (PDF)</a></li>
+      </ul></div>
+      <p class="footer-note"><small>Contact : <a href="mailto:stockaarud@proton.me">stockaarud@proton.me</a> · <a href="./#contact">Nous écrire</a>. Les captures montrent des données fictives.</small></p>
     </div>
   </div>
 </footer>

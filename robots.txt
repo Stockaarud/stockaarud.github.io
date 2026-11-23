@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+Disallow: /demo/
+Sitemap: https://stockaarud.github.io/sitemap.xml
