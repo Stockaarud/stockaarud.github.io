@@ -13,7 +13,7 @@
   --color-ink: oklch(21% 0.018 177); --color-ink-2: oklch(25% 0.016 170); --color-muted: oklch(29% 0.026 70);
   --color-rule: oklch(50% 0.055 68); --color-rule-2: oklch(84% 0.012 85);
   --color-accent: oklch(81.1% 0.166 85); --color-accent-ink: oklch(21% 0.018 177); --color-focus: oklch(21% 0.018 177); --color-wall: oklch(38.2% 0.061 164); --color-wall-ink: oklch(94% 0.012 90); --color-crit: oklch(51.4% 0.166 28);
-  --font-display: "Archivo", Impact, sans-serif; --font-body: "Atkinson Hyperlegible", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-display: "Archivo", Impact, sans-serif; --font-body: "StkNum", "Atkinson Hyperlegible", system-ui, -apple-system, "Segoe UI", sans-serif;
   --radius-card: 0; --radius-pill: 999px; --rule-hair: 1px;
   --shadow-card: 0 1px 0 oklch(18% 0.01 60 / 0.2), 0 4px 10px oklch(18% 0.01 60 / 0.12);
   --shadow-sheet: 0 14px 30px oklch(18% 0.01 60 / 0.26), 0 2px 4px oklch(18% 0.01 60 / 0.14);

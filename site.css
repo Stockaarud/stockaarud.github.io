@@ -12,6 +12,7 @@
 @font-face { font-family: "Archivo"; src: url("fonts/archivo.woff2") format("woff2"); font-weight: 100 900; font-stretch: 62% 125%; font-display: swap; }
 @font-face { font-family: "Atkinson Hyperlegible"; src: url("fonts/atkinson-hyperlegible-latin-400-normal.woff2") format("woff2"); font-weight: 400; font-display: swap; }
 @font-face { font-family: "Atkinson Hyperlegible"; src: url("fonts/atkinson-hyperlegible-latin-700-normal.woff2") format("woff2"); font-weight: 700; font-display: swap; }
+@font-face { font-family: "StkNum"; src: url("fonts/archivo-chiffres.woff2") format("woff2"); font-weight: 100 900; font-display: swap; unicode-range: U+0030-0039; } /* chiffres sans zéro barré */
 
 body { color: var(--color-ink); font-size: 1.125rem; line-height: 1.5; }
 h1, h2 { font-stretch: 62%; font-weight: var(--display-weight); text-transform: uppercase; line-height: 1; letter-spacing: var(--tracking-display); color: var(--color-ink); }
@@ -548,3 +549,32 @@ html { scroll-padding-top: calc(var(--space-3xl) + var(--space-lg)); }
 .vbox-x:focus-visible { outline: 3px solid var(--color-focus); }
 /* accroche : la chute « de matos » surlignée */
 .h1-plus { display: inline-block; background: var(--color-accent); padding: 0 0.12em; rotate: -1.5deg; box-shadow: 0.06em 0.06em 0 var(--color-ink); }
+
+/* mur des atouts sur ordinateur : trois colonnes égales, aucune carte à moitié vide */
+@media (min-width: 60.01rem) {
+  .wall { grid-template-columns: repeat(3, minmax(0, 1fr)); grid-template-rows: auto; }
+  .wall > .flyer { grid-row: auto; grid-column: auto; min-height: 13rem; }
+  .wall > .flyer b, .wall > .flyer--big b { font-size: clamp(2.25rem, 2.2vw + 1rem, 3.5rem); overflow-wrap: break-word; hyphens: manual; }
+  .wall > .flyer--full { grid-column: span 2; grid-template-columns: minmax(0, 1fr); align-items: start; }
+}
+
+/* documents sur téléphone : une fiche par ligne, vignette à gauche */
+@media (max-width: 30rem) {
+  .dgrid { grid-template-columns: minmax(0, 1fr); gap: var(--space-lg); }
+  .dcard { grid-template-columns: 6.5rem minmax(0, 1fr); gap: var(--space-md); align-items: start; }
+  .dcard--logo .dthumb { padding: var(--space-sm); }
+  .dcard h3 { font-size: var(--text-lg); }
+  .dlinks a { white-space: nowrap; }
+}
+
+/* vidéos courtes du guide : même bouton que le film */
+.film-play--s .film-tri { width: 64px; height: 64px; box-shadow: 4px 4px 0 var(--color-ink); }
+.film-play--s .film-tri::after { margin-left: 6px; border-width: 13px 0 13px 21px; }
+
+/* pied de page sur téléphone : deux colonnes, les documents en un seul lien */
+@media (max-width: 40rem) {
+  .footer-grid.footer-grid--3 { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--space-lg) var(--space-md); }
+  .footer-grid--3 > div:nth-child(3) { grid-column: 1 / -1; }
+  .footer-grid--3 > div:nth-child(3) .footer-h, .footer-grid--3 > div:nth-child(3) li:not(:first-child) { display: none; }
+  .footer-grid--3 > div:nth-child(3) li:first-child a::after { content: " : flyer, affiche, guides PDF"; }
+}
