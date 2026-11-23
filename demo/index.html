@@ -544,6 +544,21 @@ details.panel.fold[open]>summary::after{transform:rotate(-135deg);margin-bottom:
 .actmini.on{width:44px;height:44px;opacity:1;background:var(--surface);box-shadow:0 0 0 2.5px var(--mc,var(--accent))}
 .actbar.none .actmini{opacity:1}
 .actmini:focus-visible{outline:2px solid var(--fg);outline-offset:2px}
+
+/* Activités en cartes qui glissent, voisines visibles */
+.actdeck{display:flex;align-items:center;gap:10px;overflow-x:auto;scroll-snap-type:x mandatory;padding:6px 0 8px;margin:0 -2px;scrollbar-width:none;-webkit-overflow-scrolling:touch}
+.actdeck::-webkit-scrollbar{display:none}
+.adpad{flex:0 0 calc(50% - 80px)}
+.adc{flex:0 0 auto;width:100px;min-height:96px;scroll-snap-align:center;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;padding:10px 6px;border:1px solid var(--line);border-radius:16px;background:var(--surface);color:var(--fg);cursor:pointer;opacity:.6;transform:scale(.9);transition:transform .25s ease,opacity .25s,width .25s,background-color .25s}
+.adc.spec{border-style:dashed}
+.adc .adi{width:36px;height:36px;margin:0}.adc .adi.emo{font-size:28px;line-height:36px;text-align:center}
+.adc .adi.lt{display:grid;place-items:center;border-radius:10px;background:var(--surface-2);font:800 18px var(--display)}
+.adn{font:700 13px/1.15 var(--body);text-align:center;overflow-wrap:anywhere}
+.adc.on{width:160px;min-height:124px;opacity:1;transform:none;border:2px solid var(--mc,var(--accent));background:color-mix(in srgb,var(--mc,var(--accent)) 14%,var(--surface))}
+.adc.on .adi{width:52px;height:52px}.adc.on .adn{font:800 18px/1.1 var(--display)}
+.actdeck.none .adc{opacity:1;transform:none}
+.actdeck.none .adpad:first-child{flex-basis:4px}
+@media (prefers-reduced-motion:reduce){.adc{transition:none}}
 </style>
 </head>
 <body>
@@ -941,7 +956,7 @@ function draw(){
   document.body.classList.toggle("en-ecran",S.view==="ecran");document.body.classList.toggle("v-coordo",S.view==="coordo");
   $("#app").innerHTML=(S.view==="ecran"?viewEcran(st):S.view==="equipe"?viewEquipe(st):viewCoordo(st));
   document.querySelectorAll(".subnav,.tw,.svnav,.chips").forEach((el,i)=>{const k=(el.className)+i;if(keepX[k])el.scrollLeft=keepX[k]});
-  {const r=document.querySelector(".actminis"),on=r&&r.querySelector('[aria-pressed="true"]');if(on){const l=on.offsetLeft-r.offsetLeft,rr=l+on.offsetWidth;if(l<r.scrollLeft||rr>r.scrollLeft+r.clientWidth)r.scrollLeft=Math.max(0,rr-r.clientWidth+6,Math.min(l-6,r.scrollLeft))}}
+  {const r=document.querySelector(".actdeck"),on=r&&r.querySelector(".adc.on");if(on){const a=r.getBoundingClientRect(),b=on.getBoundingClientRect();r.scrollLeft+=b.left+b.width/2-(a.left+a.width/2)}}
   {const sv=document.querySelector(".svnav"),on=sv&&sv.querySelector('[aria-pressed="true"]');if(on){const l=on.offsetLeft-sv.offsetLeft,r=l+on.offsetWidth;if(l<sv.scrollLeft)sv.scrollLeft=l-8;else if(r>sv.scrollLeft+sv.clientWidth)sv.scrollLeft=r-sv.clientWidth+8}}
   if(S.view==="coordo")addPrintButtons();
   document.querySelectorAll("table.resp").forEach(t=>{const hs=[...t.querySelectorAll("thead th")].map(h=>h.textContent);t.querySelectorAll("tbody tr").forEach(tr=>[...tr.children].forEach((td,i)=>{if(hs[i])td.setAttribute("data-label",hs[i])}))});
@@ -1027,13 +1042,19 @@ function paintAct(){const H=document.documentElement,teamOn=S.view!=="coordo"&&S
   if(!cols.length){delete H.dataset.tint;H.style.removeProperty("--tint");H.style.removeProperty("--tintbg");return}
   H.dataset.tint="";H.style.setProperty("--tint",cols[0]);
   H.style.setProperty("--tintbg",cols.length>1?"linear-gradient(160deg,"+cols.map((c,i)=>"color-mix(in srgb,"+c+" 14%,var(--bg)) "+Math.round(i/(cols.length-1)*100)+"%").join(",")+")":"color-mix(in srgb,"+cols[0]+" 14%,var(--bg))")}
-function actBar(){const L=actCycle(),i=L.indexOf(S.activite),has=i>=0,dir=S.actDir;S.actDir=0;
-  const arr=(v,d,l)=>'<button class="actarr" data-act="actStep" data-v="'+v+'" aria-label="'+l+'"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="'+d+'" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></button>';
-  return '<div class="label"><span class="stepn">1</span>Où ?</div><div class="actbar'+(has?'':' none')+'" data-swipe="act">'+arr(-1,"M15 5l-7 7 7 7","Activité précédente")
-   +'<div class="actmid" aria-live="polite"><div class="actname'+(dir>0?" in-r":dir<0?" in-l":"")+'">'+(has?actIco(S.activite,"aic big")+'<span>'+esc(actLabel(S.activite))+'</span>':'<span class="actnone">Choisis l\'activité</span>')+'</div>'
-   +'<div class="actminis" role="group" aria-label="Activités">'+L.map(x=>'<button type="button" class="actmini'+(x===S.activite?' on':'')+'" style="--mc:'+actColor(x)+'" data-act="activite" data-id="'+esc(x)+'" aria-pressed="'+(x===S.activite)+'" aria-label="'+esc(actLabel(x))+'" title="'+esc(actLabel(x))+'">'+(actIco(x,"ami")||'<span class="ami lt">'+esc(actLabel(x).slice(0,1))+'</span>')+'</button>').join("")+'</div></div>'
-   +arr(1,"M9 5l7 7-7 7","Activité suivante")+'</div>'
-   +(has?'<div class="actmeta"><span class="note">Gardée pour la journée</span></div>':'')}
+function actBar(){const L=actCycle(),has=L.includes(S.activite);S.actDir=0;
+  return '<div class="label"><span class="stepn">1</span>Où ?</div><div class="actdeck'+(has?'':' none')+'" role="listbox" aria-label="Activités"><span class="adpad" aria-hidden="true"></span>'
+   +L.map(x=>'<button type="button" class="adc'+(x===S.activite?' on':'')+(x.startsWith("__")?' spec':'')+'" style="--mc:'+actColor(x)+'" data-act="activite" data-id="'+esc(x)+'" role="option" aria-selected="'+(x===S.activite)+'">'+(actIco(x,"adi")||'<span class="adi lt">'+esc(actLabel(x).slice(0,1))+'</span>')+'<span class="adn">'+esc(actLabel(x))+'</span></button>').join("")
+   +'<span class="adpad" aria-hidden="true"></span></div>'
+   +'<div class="actmeta"><span class="note">'+(has?'Gardée pour la journée · glisse pour changer':'Glisse ou touche une carte')+'</span></div>'}
+/* Cartes des activités : quand on a fait glisser la rangée, la carte arrêtée au milieu devient l'activité */
+(()=>{let user=false,tm=0;const deck=()=>document.querySelector(".actdeck");
+  document.addEventListener("pointerdown",e=>{if(e.target.closest&&e.target.closest(".actdeck"))user=true},{passive:true});
+  document.addEventListener("wheel",e=>{if(e.target.closest&&e.target.closest(".actdeck"))user=true},{passive:true});
+  document.addEventListener("scroll",e=>{if(!user||!e.target.classList||!e.target.classList.contains("actdeck"))return;clearTimeout(tm);tm=setTimeout(()=>{user=false;const d=deck();if(!d)return;const r=d.getBoundingClientRect(),mid=r.left+r.width/2;let best=null,bd=1e9;
+    d.querySelectorAll(".adc").forEach(c=>{const q=c.getBoundingClientRect(),dd=Math.abs(q.left+q.width/2-mid);if(dd<bd){bd=dd;best=c}});
+    if(best&&best.dataset.id!==S.activite&&bd<best.offsetWidth){setActivite(best.dataset.id,0);S.actOpen=false;render()}},160)},true)})();
+
 /* Écran d'accueil : facultatif. Android propose l'installation en un geste, iPhone demande trois appuis qu'on montre en images. */
 window.addEventListener("beforeinstallprompt",e=>{e.preventDefault();S.installEvt=e;render()});
 window.addEventListener("appinstalled",()=>{S.installEvt=null;toast("Stockaarud est sur ton écran d'accueil");render()});
@@ -1067,7 +1088,7 @@ function viewEquipe(st){
   ps.sort((a,b)=>(freq[b.id]||0)-(freq[a.id]||0)||a.nom.localeCompare(b.nom,"fr"));
   h+='<div class="quoi'+(S.activite?'':' attente')+'">';
   h+='<div class="row" style="justify-content:space-between;margin:18px 0 8px"><div class="label" style="margin:0"><span class="stepn">2</span>Quoi ?</div></div><div class="search"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg><input id="q" type="search" inputmode="search" autocomplete="off" placeholder="Chercher : paille, capotes, nalox…" value="'+esc(S.query)+'" aria-label="Chercher un produit"></div>';
-  if(!S.activite)h+='<p class="note quoi-msg">Choisis d\'abord l\'activité ci-dessus (flèches ou icônes), puis touche un produit.</p>';
+  if(!S.activite)h+='<p class="note quoi-msg">Choisis d\'abord l\'activité ci-dessus, puis touche un produit.</p>';
   const tile=p=>{const s=st[p.id],sl=s.byLieu[S.lieu]||0;return '<button class="tile'+(S.flash&&S.flash.id===p.id&&Date.now()<S.flash.until?' flash':'')+'" style="--cat:var('+(CATCOL[catOf(p)]||"--muted")+')" data-act="pick" data-id="'+p.id+'">'+badge(p)+'<span class="nm">'+esc(p.nom)+'</span><span class="st"><span class="dot '+(sl<=0?"crit":s.etat==="mute"?"":s.etat==="good"?"ok":s.etat)+'"></span>'+(sl<=0?'<b style="color:var(--crit)">Stock épuisé</b>':(s.etat==="crit"?'<b style="color:var(--crit)">stock bas</b>, ':s.etat==="warn"?'<b style="color:var(--warn)">à surveiller</b>, ':"")+'reste '+esc(fmtQ(p,sl)))+'</span></button>'};
   const grid=a=>'<div class="grid">'+a.map(tile).join("")+'</div>';
   const catBody=(k,a)=>{const gs=[...new Set(a.map(p=>p.groupe).filter(Boolean))].sort((x,y)=>x.localeCompare(y,"fr"));if(!gs.length)return grid(a);
