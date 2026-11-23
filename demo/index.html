@@ -1042,11 +1042,12 @@ function paintAct(){const H=document.documentElement,teamOn=S.view!=="coordo"&&S
   if(!cols.length){delete H.dataset.tint;H.style.removeProperty("--tint");H.style.removeProperty("--tintbg");return}
   H.dataset.tint="";H.style.setProperty("--tint",cols[0]);
   H.style.setProperty("--tintbg",cols.length>1?"linear-gradient(160deg,"+cols.map((c,i)=>"color-mix(in srgb,"+c+" 14%,var(--bg)) "+Math.round(i/(cols.length-1)*100)+"%").join(",")+")":"color-mix(in srgb,"+cols[0]+" 14%,var(--bg))")}
-function actBar(){const L=actCycle(),has=L.includes(S.activite);S.actDir=0;
-  return '<div class="label"><span class="stepn">1</span>Où ?</div><div class="actdeck'+(has?'':' none')+'" role="listbox" aria-label="Activités"><span class="adpad" aria-hidden="true"></span>'
-   +L.map(x=>'<button type="button" class="adc'+(x===S.activite?' on':'')+(x.startsWith("__")?' spec':'')+'" style="--mc:'+actColor(x)+'" data-act="activite" data-id="'+esc(x)+'" role="option" aria-selected="'+(x===S.activite)+'">'+(actIco(x,"adi")||'<span class="adi lt">'+esc(actLabel(x).slice(0,1))+'</span>')+'<span class="adn">'+esc(actLabel(x))+'</span></button>').join("")
-   +'<span class="adpad" aria-hidden="true"></span></div>'
-   +'<div class="actmeta"><span class="note">'+(has?'Gardée pour la journée · glisse pour changer':'Glisse ou touche une carte')+'</span></div>'}
+function actBar(){const L=actCycle(),i=L.indexOf(S.activite),has=i>=0,dir=S.actDir;S.actDir=0;
+  const arr=(v,d,l)=>'<button class="actarr" data-act="actStep" data-v="'+v+'" aria-label="'+l+'"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="'+d+'" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></button>';
+  return '<div class="label"><span class="stepn">1</span>Où ?</div><div class="actbar'+(has?'':' none')+'" data-swipe="act">'+arr(-1,"M15 5l-7 7 7 7","Activité précédente")
+   +'<div class="actmid" aria-live="polite"><div class="actname'+(dir>0?" in-r":dir<0?" in-l":"")+'">'+(has?actIco(S.activite,"aic big")+'<span>'+esc(actLabel(S.activite))+'</span>':'<span class="actnone">Choisis l\'activité</span>')+'</div><div class="actdots" aria-hidden="true">'+L.map((x,k)=>'<i'+(k===i?' class="on"':'')+'></i>').join("")+'</div></div>'
+   +arr(1,"M9 5l7 7-7 7","Activité suivante")+'</div>'
+   +'<div class="actmeta"><span class="note">'+(has?'Gardée pour la journée':'Flèches ou glisse le doigt')+'</span></div>'}
 /* Cartes des activités : quand on a fait glisser la rangée, la carte arrêtée au milieu devient l'activité */
 (()=>{let user=false,tm=0;const deck=()=>document.querySelector(".actdeck");
   document.addEventListener("pointerdown",e=>{if(e.target.closest&&e.target.closest(".actdeck"))user=true},{passive:true});
