@@ -509,3 +509,8 @@ html { scroll-padding-top: calc(var(--space-3xl) + var(--space-lg)); }
 }
 @media (prefers-reduced-motion: reduce) { .film-tri { transition: none; } }
 @media print { .band { background: none; padding-block: 6mm; } .film-play { display: none; } .hero-phones { display: none; } }
+/* contact : une seule colonne tant que l'écran n'est pas large, pour que le formulaire ne soit jamais tassé */
+@media (max-width: 75rem) {
+  .contact { grid-template-columns: minmax(0, 1fr); gap: var(--space-xl); }
+  .contact-form { grid-template-columns: minmax(0, 1fr); max-width: 40rem; }
+}
