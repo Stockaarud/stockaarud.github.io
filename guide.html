@@ -238,9 +238,9 @@
       <section class="guide-part who-pane" id="gestion" role="tabpanel" aria-labelledby="tab-gestion">
         <h2 id="t-gestion" class="doc-h2 part-h">Le responsable stock</h2>
         <p class="part-lead">Le bouton <strong>Gestion</strong>, en haut de l’appli, ouvre l’espace du responsable stock. Il marche sur téléphone et, plus confortablement, sur ordinateur.</p>
+      <div class="fold-all screen-only"><button class="btn btn--secondary" type="button" data-fold-all>Tout déplier</button></div>
       <ol class="steps">
-        <li class="step step--full" id="ordinateur">
-          <h2>Sur ordinateur</h2>
+        <li class="step step--full step--fold" id="ordinateur"><details class="fold"><summary class="fold-s"><span class="fold-t"><h2>Sur ordinateur</h2><span class="fold-hint">Ouvrez la même adresse sur l’ordinateur du bureau.</span></span></summary><div class="fold-in">
           <div class="step-body">
             <p>Ouvrez la même adresse sur l’ordinateur du bureau : <a href="https://stockaarud.github.io/stockaarud/" target="_blank" rel="noopener">stockaarud.github.io/stockaarud</a>. Connectez-vous avec votre e-mail, ou avec un code de responsable stock : sur le téléphone, <strong>Réglages</strong>, <strong>Accès et appareils</strong>, <strong>Ajouter un responsable stock</strong>.</p>
             <p>Le téléphone et l’ordinateur voient le même stock, en direct. Tout ce que décrit ce guide marche sur les deux ; l’ordinateur ajoute :</p>
@@ -251,9 +251,8 @@
               <div><dt>Écran du stock</dt><dd>Depuis le tableau de bord : un affichage en grand pour un écran ou une tablette au local, mis à jour tout seul.</dd></div>
             </dl>
           </div>
-        </li>
-        <li class="step" id="bord">
-          <h2>Tableau de bord</h2>
+        </div></details></li>
+        <li class="step step--fold" id="bord"><details class="fold"><summary class="fold-s"><span class="fold-t"><h2>Tableau de bord</h2><span class="fold-hint">C’est la page à regarder en arrivant.</span></span></summary><div class="fold-in">
           <div class="step-body">
             <p>C’est la page à regarder en arrivant. Elle répond à une question : <strong>qu’est-ce qui va manquer ?</strong></p>
             <dl class="rows--dl rows--tight">
@@ -267,9 +266,8 @@
             </dl>
           </div>
           <figure class="sheet shot shot--setup" style="--r: 1deg"><div data-kind="product" data-alt="Le tableau de bord : deux alertes, les produits à commander, le budget et l’autonomie du stock."><img src="img/guide/bord.jpg" width="780" height="1688" alt="Le tableau de bord : deux alertes, les produits à commander, le budget et l’autonomie du stock." loading="lazy"></div></figure>
-        </li>
-        <li class="step" id="commandes">
-          <h2>Commandes</h2>
+        </div></details></li>
+        <li class="step step--fold" id="commandes"><details class="fold"><summary class="fold-s"><span class="fold-t"><h2>Commandes</h2><span class="fold-hint">L’appli propose une commande par fournisseur, arrondie au carton.</span></span></summary><div class="fold-in">
           <div class="step-body">
             <p>L’appli propose une commande par fournisseur, arrondie au carton.</p>
             <dl class="rows--dl rows--tight">
@@ -282,9 +280,8 @@
             </dl>
           </div>
           <figure class="sheet shot shot--setup" style="--r: -1deg"><div data-kind="product" data-alt="La commande proposée : chaque produit avec sa quantité, et le bouton Commander celui-ci."><img src="img/guide/cmd.jpg" width="780" height="1688" alt="La commande proposée : chaque produit avec sa quantité, et le bouton Commander celui-ci." loading="lazy"></div></figure>
-        </li>
-        <li class="step" id="stats">
-          <h2>Statistiques : le principe</h2>
+        </div></details></li>
+        <li class="step step--fold" id="stats"><details class="fold"><summary class="fold-s"><span class="fold-t"><h2>Statistiques : le principe</h2><span class="fold-hint">Dix-sept vues, à choisir dans la bande en haut de l’onglet.</span></span></summary><div class="fold-in">
           <div class="step-body">
             <p>Dix-sept vues, à choisir dans la bande en haut de l’onglet. Trois réglages reviennent partout :</p>
             <dl class="rows--dl rows--tight">
@@ -295,9 +292,8 @@
             <p>Chaque graphique a une légende et donne ses chiffres au toucher ou au survol. Les prêts et dons à d’autres associations sont comptés à part : ils ne gonflent pas vos sorties.</p>
           </div>
           <figure class="sheet shot shot--setup" style="--r: 1.2deg"><div data-kind="product" data-alt="Les statistiques : le choix de l’activité, de la période, et la courbe de consommation."><img src="img/guide/stats.jpg" width="780" height="1688" alt="Les statistiques : le choix de l’activité, de la période, et la courbe de consommation." loading="lazy"></div></figure>
-        </li>
-        <li class="step" id="stats-conso">
-          <h2>Statistiques : ce qui sort</h2>
+        </div></details></li>
+        <li class="step step--fold" id="stats-conso"><details class="fold"><summary class="fold-s"><span class="fold-t"><h2>Statistiques : ce qui sort</h2><span class="fold-hint"></span></span></summary><div class="fold-in">
           <div class="step-body">
             <dl class="rows--dl rows--tight">
               <div><dt>Consommation</dt><dd>Les sorties mois par mois, par produit ou par catégorie, en unités ou en euros, avec le classement complet. Touchez une ligne pour l’isoler. <em>Sert à</em> voir ce qui part le plus et repérer une hausse ou un creux.</dd></div>
@@ -308,9 +304,8 @@
             </dl>
           </div>
           <figure class="sheet shot shot--setup" style="--r: -1deg"><div data-kind="product" data-alt="Par activité : un camembert par activité, avec les catégories et les produits les plus distribués."><img src="img/guide/s-act.jpg" width="780" height="1688" alt="Par activité : un camembert par activité, avec les catégories et les produits les plus distribués." loading="lazy"></div></figure>
-        </li>
-        <li class="step" id="stats-pratiques">
-          <h2>Statistiques : comprendre les pratiques</h2>
+        </div></details></li>
+        <li class="step step--fold" id="stats-pratiques"><details class="fold"><summary class="fold-s"><span class="fold-t"><h2>Statistiques : comprendre les pratiques</h2><span class="fold-hint"></span></span></summary><div class="fold-in">
           <div class="step-body">
             <dl class="rows--dl rows--tight">
               <div><dt>Évolution des pratiques</dt><dd>Chaque catégorie comparée à sa propre moyenne : 100 = un mois moyen, 150 = 50 % de plus. <em>Sert à</em> comparer l’injection et l’inhalation même si leurs volumes n’ont rien à voir, sur 12 ou 24 mois.</dd></div>
@@ -320,9 +315,8 @@
             </dl>
           </div>
           <figure class="sheet shot shot--setup" style="--r: 1deg"><div data-kind="product" data-alt="Cohérence des kits : pour 100 seringues, le nombre de filtres, de Stéricup, d’eau et de tampons sortis."><img src="img/guide/s-coh.jpg" width="780" height="1688" alt="Cohérence des kits : pour 100 seringues, le nombre de filtres, de Stéricup, d’eau et de tampons sortis." loading="lazy"></div></figure>
-        </li>
-        <li class="step" id="stats-budget">
-          <h2>Statistiques : l’argent</h2>
+        </div></details></li>
+        <li class="step step--fold" id="stats-budget"><details class="fold"><summary class="fold-s"><span class="fold-t"><h2>Statistiques : l’argent</h2><span class="fold-hint">Les coûts utilisent le prix unitaire TTC indiqué dans Matériel.</span></span></summary><div class="fold-in">
           <div class="step-body">
             <dl class="rows--dl rows--tight">
               <div><dt>Budget</dt><dd>Le coût du matériel sorti depuis janvier, la projection sur l’année et la part du budget consommée. La ligne pointillée montre le rythme régulier, un douzième par mois : au-dessus, vous dépensez plus vite que prévu. Tapez le budget de l’année pour l’activer.</dd></div>
@@ -332,9 +326,8 @@
             <p>Les coûts utilisent le prix unitaire TTC indiqué dans Matériel. Un produit sans prix n’est pas compté : l’appli le signale.</p>
           </div>
           <figure class="sheet shot shot--setup" style="--r: -1.2deg"><div data-kind="product" data-alt="Budget : dépensé depuis janvier, projection, part du budget, et la courbe face au rythme prévu."><img src="img/guide/s-budget.jpg" width="780" height="1688" alt="Budget : dépensé depuis janvier, projection, part du budget, et la courbe face au rythme prévu." loading="lazy"></div></figure>
-        </li>
-        <li class="step" id="stats-stock">
-          <h2>Statistiques : l’état du stock</h2>
+        </div></details></li>
+        <li class="step step--fold" id="stats-stock"><details class="fold"><summary class="fold-s"><span class="fold-t"><h2>Statistiques : l’état du stock</h2><span class="fold-hint"></span></span></summary><div class="fold-in">
           <div class="step-body">
             <dl class="rows--dl rows--tight">
               <div><dt>Météo du stock</dt><dd>Combien de jours chaque produit va tenir, saisons comprises. Rouge : commander tout de suite. Orange : à prévoir. Vert : tranquille.</dd></div>
@@ -343,9 +336,8 @@
             </dl>
           </div>
           <figure class="sheet shot shot--setup" style="--r: 1deg"><div data-kind="product" data-alt="Ruptures : produits touchés, jours cumulés, passages probablement sans matériel et unités non distribuées."><img src="img/guide/s-rupt.jpg" width="780" height="1688" alt="Ruptures : produits touchés, jours cumulés, passages probablement sans matériel et unités non distribuées." loading="lazy"></div></figure>
-        </li>
-        <li class="step" id="stats-rapport">
-          <h2>Statistiques : le rapport d’activité</h2>
+        </div></details></li>
+        <li class="step step--fold" id="stats-rapport"><details class="fold"><summary class="fold-s"><span class="fold-t"><h2>Statistiques : le rapport d’activité</h2><span class="fold-hint"></span></span></summary><div class="fold-in">
           <div class="step-body">
             <dl class="rows--dl rows--tight">
               <div><dt>Chiffres de l’année</dt><dd>Tout le matériel distribué dans l’année : unités, nombre de saisies, références, coût estimé, le graphique par mois, la part de chaque catégorie et le détail produit par produit et par activité. <strong>Exporter le bilan</strong> sort le PDF, avec la comparaison à l’an dernier, les pertes, les prêts et dons, et les ruptures.</dd></div>
@@ -354,17 +346,15 @@
             </dl>
           </div>
           <figure class="sheet shot shot--setup" style="--r: -1deg"><div data-kind="product" data-alt="Chiffres de l’année : unités distribuées, saisies, références, coût, et le graphique par mois."><img src="img/guide/s-bilan.jpg" width="780" height="1688" alt="Chiffres de l’année : unités distribuées, saisies, références, coût, et le graphique par mois." loading="lazy"></div></figure>
-        </li>
-        <li class="step" id="previsions">
-          <h2>Prévisions</h2>
+        </div></details></li>
+        <li class="step step--fold" id="previsions"><details class="fold"><summary class="fold-s"><span class="fold-t"><h2>Prévisions</h2><span class="fold-hint">Les 3 prochains mois selon trois hypothèses.</span></span></summary><div class="fold-in">
           <div class="step-body">
             <p>Les 3 prochains mois selon trois hypothèses : le rythme actuel, comme l’an dernier, ou une hausse ou baisse que vous fixez. L’appli compte les commandes à prévoir, leur coût et les ruptures possibles.</p>
             <p><strong>Et si je commande</strong> : changez une quantité ou une date de commande, la courbe du stock suit. Utile avant un festival ou une fermeture.</p>
           </div>
           <figure class="sheet shot shot--setup" style="--r: -1deg"><div data-kind="product" data-alt="Les prévisions : commandes à prévoir, coût estimé et la courbe du stock prévu."><img src="img/guide/prev.jpg" width="780" height="1688" alt="Les prévisions : commandes à prévoir, coût estimé et la courbe du stock prévu." loading="lazy"></div></figure>
-        </li>
-        <li class="step" id="mouvements">
-          <h2>Mouvements</h2>
+        </div></details></li>
+        <li class="step step--fold" id="mouvements"><details class="fold"><summary class="fold-s"><span class="fold-t"><h2>Mouvements</h2><span class="fold-hint"></span></span></summary><div class="fold-in">
           <div class="step-body">
             <dl class="rows--dl rows--tight">
               <div><dt>Entrée hors commande</dt><dd>Un don, du matériel rendu par une asso, un emprunt, des cartons qui reviennent d’une activité, avec la péremption si besoin.</dd></div>
@@ -374,9 +364,8 @@
             </dl>
           </div>
           <figure class="sheet shot shot--setup" style="--r: 1deg"><div data-kind="product" data-alt="L’écran Mouvements : le formulaire d’entrée hors commande."><img src="img/guide/mvt.jpg" width="780" height="1688" alt="L’écran Mouvements : le formulaire d’entrée hors commande." loading="lazy"></div></figure>
-        </li>
-        <li class="step" id="inventaire">
-          <h2>Inventaire</h2>
+        </div></details></li>
+        <li class="step step--fold" id="inventaire"><details class="fold"><summary class="fold-s"><span class="fold-t"><h2>Inventaire</h2><span class="fold-hint">L’inventaire remet le stock de l’appli d’accord avec les étagères.</span></span></summary><div class="fold-in">
           <div class="step-body">
             <p>L’inventaire remet le stock de l’appli d’accord avec les étagères. Les sorties sont des estimations : un inventaire par trimestre, ou avant une grosse commande, garde les calculs justes.</p>
             <dl class="rows--dl rows--tight">
@@ -390,16 +379,15 @@
             </dl>
           </div>
           <figure class="sheet shot shot--setup" style="--r: -1.2deg"><div data-kind="product" data-alt="L’inventaire guidé : un produit, son stock théorique, Valider et suivant."><img src="img/guide/inv.jpg" width="780" height="1688" alt="L’inventaire guidé : un produit, son stock théorique, Valider et suivant." loading="lazy"></div></figure>
-        </li>
-        <li class="step" id="historique">
-          <h2>Reprendre un historique</h2>
+        </div></details></li>
+        <li class="step step--fold" id="historique"><details class="fold"><summary class="fold-s"><span class="fold-t"><h2>Reprendre un historique</h2><span class="fold-hint">Vous suiviez le stock dans un tableur ?</span></span></summary><div class="fold-in">
           <div class="step-body">
             <p>Vous suiviez le stock dans un tableur ? Importez les sorties des années précédentes : vous aurez tout de suite des statistiques, la comparaison avec l’an dernier et un budget prévisionnel fiable. <strong>Le stock actuel n’est pas touché</strong>.</p>
             <ol>
               <li>Vérifiez que tout votre matériel est dans <strong>Réglages</strong>, <strong>Matériel</strong>, avec les bons noms.</li>
               <li>Dans <strong>Réglages</strong>, <strong>Reprendre un historique</strong>, touchez <strong>Télécharger le modèle (CSV)</strong>. Il contient déjà une ligne par produit et une colonne par mois, pour les deux dernières années.</li>
               <li>Ouvrez-le dans Excel ou LibreOffice et remplissez les quantités sorties chaque mois. Laissez vide ce que vous ne savez pas.</li>
-              <li>Enregistrez au format CSV, puis touchez <strong>Importer l’historique</strong>. L’appli montre ce qu’elle a lu avant d’enregistrer.</li>
+              <li>Enregistrez au format CSV, puis touchez <strong>Importer l’historique</strong>. L’appli montre ce qu’elle a lu avant d’enregistrer.</div></details></li>
             </ol>
             <dl class="rows--dl rows--tight">
               <div><dt>Prix de l’époque</dt><dd>La colonne prix unitaire est facultative. Remplie, elle donne le coût réel de cette année-là ; vide, le prix actuel est utilisé.</dd></div>
@@ -411,8 +399,7 @@
           </div>
           <figure class="sheet shot shot--setup" style="--r: 1deg"><div data-kind="product" data-alt="Réglages, Reprendre un historique : télécharger le modèle, puis importer le fichier rempli."><img src="img/guide/histo.jpg" width="780" height="1688" alt="Réglages, Reprendre un historique : télécharger le modèle, puis importer le fichier rempli." loading="lazy"></div></figure>
         </li>
-        <li class="step" id="reglages">
-          <h2>Réglages</h2>
+        <li class="step step--fold" id="reglages"><details class="fold"><summary class="fold-s"><span class="fold-t"><h2>Réglages</h2><span class="fold-hint"></span></span></summary><div class="fold-in">
           <div class="step-body">
             <dl class="rows--dl rows--tight">
               <div><dt>Inviter l’équipe</dt><dd>Le lien et le QR code de votre CAARUD, à envoyer par WhatsApp ou par e-mail, la fiche équipe et l’affiche QR code pour le local.</dd></div>
@@ -431,7 +418,7 @@
             </dl>
           </div>
           <figure class="sheet shot shot--setup" style="--r: 1deg"><div data-kind="product" data-alt="Les réglages, rangés en parties repliables."><img src="img/guide/reg.jpg" width="780" height="1688" alt="Les réglages, rangés en parties repliables." loading="lazy"></div></figure>
-        </li>
+        </div></details></li>
       </ol>
       </section>
 
@@ -504,6 +491,21 @@ document.addEventListener('click',(e)=>{const m=document.querySelector('.nav-men
   });
   const fromHash = () => { const k = panes.findIndex((p) => p.id === location.hash.slice(1) || p.contains(document.getElementById(location.hash.slice(1)))); pick(k < 0 ? 0 : k); };
   fromHash(); addEventListener('hashchange', fromHash);
+})();
+</script>
+<script>
+(() => {
+  const folds = [...document.querySelectorAll('details.fold')];
+  if (!folds.length) return;
+  const openHash = () => { const t = location.hash && document.getElementById(decodeURIComponent(location.hash.slice(1))); const d = t && (t.matches('details.fold') ? t : t.querySelector('details.fold') || t.closest('details.fold')); if (d) { d.open = true; } };
+  openHash(); addEventListener('hashchange', openHash);
+  const btn = document.querySelector('[data-fold-all]');
+  const sync = () => { if (btn) btn.textContent = folds.every((d) => d.open) ? 'Tout replier' : 'Tout déplier'; };
+  folds.forEach((d) => d.addEventListener('toggle', sync));
+  if (btn) btn.addEventListener('click', () => { const all = folds.every((d) => d.open); folds.forEach((d) => { d.open = !all; }); sync(); });
+  addEventListener('beforeprint', () => folds.forEach((d) => { d.dataset.was = d.open ? '1' : ''; d.open = true; }));
+  addEventListener('afterprint', () => folds.forEach((d) => { d.open = d.dataset.was === '1'; }));
+  sync();
 })();
 </script>
 </body>
