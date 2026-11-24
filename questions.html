@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Stockaarud : qui, vos données, vos questions</title>
+<title>Stockaarud : qui, vos données, vos questions</title>
 <meta name="description" content="Qui fait Stockaarud, ce que l’appli enregistre, où vont les données de votre CAARUD, ce que ça coûte, et les réponses aux questions courantes.">
 <meta name="theme-color" content="#1f4d3a">
 <meta property="og:type" content="article">
@@ -27,27 +27,24 @@
     <nav class="nav sheet" aria-label="Principale">
       <a class="wordmark" href="./" aria-label="Stockaarud, accueil"><img src="img/icon.png" width="40" height="40" alt=""><img class="wm" src="img/wordmark.png" width="1133" height="115" alt=""></a>
       <ul class="nav-links">
-        <li class="nav-link"><a href="./">Accueil</a></li>
         <li class="nav-link"><a href="guide.html">Guide</a></li>
-        <li class="nav-link"><a href="https://stockaarud.github.io/stockaarud/" target="_blank" rel="noopener">Ouvrir l’appli</a></li>
-        <li class="nav-link"><a href="documents.html">Documents</a></li>
         <li class="nav-link"><a href="questions.html" aria-current="page">Questions</a></li>
+        <li class="nav-link"><a href="documents.html">Documents</a></li>
         <li class="nav-link"><a href="./#contact">Contact</a></li>
+        <li class="nav-link nav-link--app"><a href="https://stockaarud.github.io/stockaarud/" target="_blank" rel="noopener">Déjà installé ? Ouvrir l’appli</a></li>
         <li><a class="btn btn--primary btn--nav" href="demo/" target="_blank" rel="noopener">Essayer la démo</a></li>
       </ul>
       <details class="nav-menu">
         <summary aria-label="Menu"><span class="burger" aria-hidden="true"><i></i><i></i><i></i></span>Menu</summary>
         <div class="nav-drop sheet">
           <ul>
-            <li><a href="./">Accueil</a></li>
             <li><a href="guide.html">Guide</a></li>
-            <li><a href="https://stockaarud.github.io/stockaarud/" target="_blank" rel="noopener">Ouvrir l’appli</a></li>
             <li><a href="questions.html" aria-current="page">Questions</a></li>
             <li><a href="documents.html">Documents</a></li>
             <li><a href="./#contact">Contact</a></li>
-            <li><a href="https://github.com/Stockaarud/stockaarud">Code source</a></li>
           </ul>
           <a class="btn btn--primary" href="demo/" target="_blank" rel="noopener">Essayer la démo</a>
+          <a class="nav-drop-app" href="https://stockaarud.github.io/stockaarud/" target="_blank" rel="noopener">Déjà installé ? Ouvrir l’appli</a>
         </div>
       </details>
     </nav>
@@ -85,21 +82,21 @@
       <section id="qui" class="qsheet" aria-labelledby="qui-t">
         <h2 id="qui-t" class="doc-h2">Qui fait Stockaarud</h2>
         <div class="prose">
-          <p>Stockaarud est né dans une structure de réduction des risques à Marseille, pour répondre à un problème du quotidien : savoir ce qu’il reste au stock avant d’en manquer.</p>
+          <p>Stockaarud est né dans une structure de réduction des risques à Marseille, pour répondre à un problème du quotidien : savoir ce qu’il reste au stock avant d’en manquer.</p>
           <p>Il est conçu et maintenu par un médecin qui y travaille.</p>
-          <p>L’appli est gratuite et son code est public : chacun peut le lire sur <a href="https://github.com/Stockaarud/stockaarud">GitHub</a>. Pour nous joindre : <a href="mailto:stockaarud@proton.me">stockaarud@proton.me</a>.</p>
+          <p>L’appli est gratuite et son code est public : chacun peut le lire sur <a href="https://github.com/Stockaarud/stockaarud">GitHub</a>. Pour nous joindre : <a href="mailto:stockaarud@proton.me">stockaarud@proton.me</a>.</p>
         </div>
       </section>
 
       <section class="qsheet" id="donnees" aria-labelledby="donnees-t">
         <h2 id="donnees-t" class="doc-h2">Vos données restent chez vous</h2>
-        <p class="qflag">Aucune information sur les personnes accueillies : l’appli ne compte que du matériel.</p>
+        <p class="qflag">Aucune information sur les personnes accueillies : l’appli ne compte que du matériel.</p>
         <div class="faq">
           <details class="qa"><summary>Ce qui est enregistré</summary><div class="qa-a"><p>Le catalogue, les entrées et sorties de matériel (produit, quantité, activité, date), les commandes, les noms des fournisseurs et des associations partenaires. Les sorties ne portent aucun nom.</p></div></details>
           <details class="qa"><summary>Où</summary><div class="qa-a"><p>Dans une base Supabase que votre CAARUD crée lui-même, à son nom. Le guide conseille la région Europe (Paris). Il n’y a pas de base commune.</p></div></details>
           <details class="qa"><summary>Qui y a accès</summary><div class="qa-a"><p>Votre équipe, par le code ou le QR code que vous lui donnez, et vos responsables stock. Les règles sont appliquées par la base elle-même. Nous n’avons pas accès à votre base.</p></div></details>
           <details class="qa"><summary>Alertes par e-mail</summary><div class="qa-a"><p>Facultatives. Si vous les activez, l’appli confie à un service d’envoi tenu par Stockaarud le nom du CAARUD, les noms de produits concernés, les jours de stock restants et les adresses destinataires, le temps d’envoyer le mail. Rien sur les personnes accueillies. Chaque adresse doit confirmer son inscription et peut se désabonner d’un clic.</p></div></details>
-          <details class="qa"><summary>Donnée personnelle</summary><div class="qa-a"><p>Une seule : l’adresse e-mail du compte responsable stock, conservée dans votre projet Supabase.</p></div></details>
+          <details class="qa"><summary>Donnée personnelle</summary><div class="qa-a"><p>Une seule : l’adresse e-mail du compte responsable stock, conservée dans votre projet Supabase.</p></div></details>
           <details class="qa"><summary>Sauvegardes</summary><div class="qa-a"><p>Supabase gratuit ne garde pas de copie. L’appli télécharge une sauvegarde complète en un geste, et vous le rappelle.</p></div></details>
           <details class="qa"><summary>Ce site</summary><div class="qa-a"><p>Il est hébergé par GitHub et ne reçoit aucune donnée de stock. Le formulaire de contact transmet votre message par le service Formspree.</p></div></details>
         </div>
@@ -108,22 +105,22 @@
       <section class="qsheet" id="faq" aria-labelledby="faq-t">
         <h2 id="faq-t" class="doc-h2">Questions fréquentes</h2>
         <div class="faq">
-          <details class="qa"><summary>Ça marche sur iPhone et sur Android ?</summary><div class="qa-a"><p>Oui. Stockaarud s’ouvre dans le navigateur, sur téléphone comme sur ordinateur. Pour l’avoir comme une appli, ajoutez-le à l’écran d’accueil : dans Safari, Partager puis « Sur l’écran d’accueil » ; dans Chrome, le menu puis « Ajouter à l’écran d’accueil ».</p></div></details>
-          <details class="qa"><summary>Peut-on être prévenu par e-mail ?</summary><div class="qa-a"><p>Oui. Dans Réglages, Alertes par e-mail, indiquez une ou plusieurs adresses : un mail part quand l’équipe signale une rupture, quand un produit sera épuisé avant la prochaine livraison, et un récap « Météo du stock » peut arriver chaque semaine, toutes les deux semaines ou chaque mois. Les mails partent quand un appareil de l’équipe ouvre l’appli avec du réseau. Si le mail de confirmation n’arrive pas, regardez dans les indésirables : certaines messageries d’association bloquent les expéditeurs inconnus.</p></div></details>
-          <details class="qa"><summary>Peut-on gérer le stock depuis un ordinateur ?</summary><div class="qa-a"><p>Oui, et c’est même plus confortable pour le responsable stock. Ouvrez la même adresse, <a href="https://stockaarud.github.io/stockaarud/" target="_blank" rel="noopener">stockaarud.github.io/stockaarud</a>, sur l’ordinateur du bureau, puis connectez-vous avec votre e-mail, ou avec un code de responsable stock créé depuis votre téléphone (Réglages, Accès et appareils). Le téléphone et l’ordinateur voient le même stock, en direct.</p><p>Sur grand écran : les commandes et le bon de commande, les statistiques en grand, l’inventaire sur une page, le matériel à télécharger et réimporter en tableur, les PDF pour le rapport d’activité.</p></div></details>
-          <details class="qa"><summary>Combien ça coûte ?</summary><div class="qa-a"><p>Rien. L’appli est gratuite, sans abonnement. La base de données est un projet Supabase gratuit, limité à 500 Mo de données et 1 Go de photos : c’est très au-delà de ce qu’un CAARUD utilise.</p></div></details>
-          <details class="qa"><summary>Et quand il n’y a pas de réseau ?</summary><div class="qa-a"><p>L’équipe continue de noter. Les saisies restent sur le téléphone et partent dès le retour de la connexion.</p></div></details>
-          <details class="qa"><summary>Faut-il créer des comptes pour l’équipe ?</summary><div class="qa-a"><p>Non. L’équipe entre avec un QR code ou un lien. Les responsables stock aussi, avec un code de gestion. Aucun mot de passe à retenir.</p></div></details>
-          <details class="qa"><summary>Quelqu’un perd son téléphone ou quitte l’équipe ?</summary><div class="qa-a"><p>Dans Réglages, « Retirer l’accès de toute l’équipe » déconnecte tous les téléphones. Vous redonnez ensuite un nouveau code aux personnes qui restent.</p></div></details>
-          <details class="qa"><summary>On a plusieurs lieux de stockage ?</summary><div class="qa-a"><p>C’est prévu : un stock principal et, si besoin, des stocks intermédiaires (un local, une antenne) qui s’y réapprovisionnent.</p></div></details>
-          <details class="qa"><summary>Le projet Supabase s’est mis en pause ?</summary><div class="qa-a"><p>Supabase met en pause un projet gratuit resté 7 jours sans activité. Cliquez sur « Restore project » dans Supabase : aucune donnée n’est perdue.</p></div></details>
-          <details class="qa"><summary>On peut arrêter et récupérer nos données ?</summary><div class="qa-a"><p>Oui, à tout moment. L’appli exporte les mouvements, le catalogue et une sauvegarde complète. Pour tout effacer, supprimez votre projet Supabase : il n’existe aucune autre copie.</p></div></details>
+          <details class="qa"><summary>Ça marche sur iPhone et sur Android ?</summary><div class="qa-a"><p>Oui. Stockaarud s’ouvre dans le navigateur, sur téléphone comme sur ordinateur. Pour l’avoir comme une appli, ajoutez-le à l’écran d’accueil : dans Safari, Partager puis « Sur l’écran d’accueil » ; dans Chrome, le menu puis « Ajouter à l’écran d’accueil ».</p></div></details>
+          <details class="qa"><summary>Peut-on être prévenu par e-mail ?</summary><div class="qa-a"><p>Oui. Dans Réglages, Alertes par e-mail, indiquez une ou plusieurs adresses : un mail part quand l’équipe signale une rupture, quand un produit sera épuisé avant la prochaine livraison, et un récap « Météo du stock » peut arriver chaque semaine, toutes les deux semaines ou chaque mois. Les mails partent quand un appareil de l’équipe ouvre l’appli avec du réseau. Si le mail de confirmation n’arrive pas, regardez dans les indésirables : certaines messageries d’association bloquent les expéditeurs inconnus.</p></div></details>
+          <details class="qa"><summary>Peut-on gérer le stock depuis un ordinateur ?</summary><div class="qa-a"><p>Oui, et c’est même plus confortable pour le responsable stock. Ouvrez la même adresse, <a href="https://stockaarud.github.io/stockaarud/" target="_blank" rel="noopener">stockaarud.github.io/stockaarud</a>, sur l’ordinateur du bureau, puis connectez-vous avec votre e-mail, ou avec un code de responsable stock créé depuis votre téléphone (Réglages, Accès et appareils). Le téléphone et l’ordinateur voient le même stock, en direct.</p><p>Sur grand écran : les commandes et le bon de commande, les statistiques en grand, l’inventaire sur une page, le matériel à télécharger et réimporter en tableur, les PDF pour le rapport d’activité.</p></div></details>
+          <details class="qa"><summary>Combien ça coûte ?</summary><div class="qa-a"><p>Rien. L’appli est gratuite, sans abonnement. La base de données est un projet Supabase gratuit, limité à 500 Mo de données et 1 Go de photos : c’est très au-delà de ce qu’un CAARUD utilise.</p></div></details>
+          <details class="qa"><summary>Et quand il n’y a pas de réseau ?</summary><div class="qa-a"><p>L’équipe continue de noter. Les saisies restent sur le téléphone et partent dès le retour de la connexion.</p></div></details>
+          <details class="qa"><summary>Faut-il créer des comptes pour l’équipe ?</summary><div class="qa-a"><p>Non. L’équipe entre avec un QR code ou un lien. Les responsables stock aussi, avec un code de gestion. Aucun mot de passe à retenir.</p></div></details>
+          <details class="qa"><summary>Quelqu’un perd son téléphone ou quitte l’équipe ?</summary><div class="qa-a"><p>Dans Réglages, « Retirer l’accès de toute l’équipe » déconnecte tous les téléphones. Vous redonnez ensuite un nouveau code aux personnes qui restent.</p></div></details>
+          <details class="qa"><summary>On a plusieurs lieux de stockage ?</summary><div class="qa-a"><p>C’est prévu : un stock principal et, si besoin, des stocks intermédiaires (un local, une antenne) qui s’y réapprovisionnent.</p></div></details>
+          <details class="qa"><summary>Le projet Supabase s’est mis en pause ?</summary><div class="qa-a"><p>Supabase met en pause un projet gratuit resté 7 jours sans activité. Cliquez sur « Restore project » dans Supabase : aucune donnée n’est perdue.</p></div></details>
+          <details class="qa"><summary>On peut arrêter et récupérer nos données ?</summary><div class="qa-a"><p>Oui, à tout moment. L’appli exporte les mouvements, le catalogue et une sauvegarde complète. Pour tout effacer, supprimez votre projet Supabase : il n’existe aucune autre copie.</p></div></details>
         </div>
 
       </section>
 
       <div class="sheet sheet--wall done">
-        <p class="done-t">Une autre question ?</p>
+        <p class="done-t">Une autre question ?</p>
         <p>On vous répond, et on peut vous aider à l’installer.</p>
         <div class="actions"><a class="btn btn--primary" href="./#contact">Écrivez-nous</a><a class="btn btn--secondary" href="demo/" target="_blank" rel="noopener">Essayer la démo</a></div>
       </div>
@@ -147,18 +144,19 @@
         <li><a href="https://github.com/Stockaarud/stockaarud/issues">Signaler un problème</a></li>
       </ul></div>
       <div><h3 class="footer-h">Documents</h3><ul>
-        <li><a href="documents.html">Tous les documents</a></li>
+        <li><a href="documents.html">Tous les documents<span class="foot-more"> : flyer, affiche, guides PDF</span></a></li>
         <li><a href="flyer/flyer-stockaarud-A5.pdf">Le flyer (PDF)</a></li>
         <li><a href="flyer/affiche-qr-stockaarud.pdf">L’affiche QR code (PDF)</a></li>
         <li><a href="docs/guide-installation-stockaarud.pdf">Le guide d’installation (PDF)</a></li>
       </ul></div>
-      <p class="footer-note"><small>Contact : <a href="mailto:stockaarud@proton.me">stockaarud@proton.me</a> · <a href="./#contact">Nous écrire</a>. Les captures montrent des données fictives.</small></p>
+      <p class="footer-note"><small>Contact : <a href="mailto:stockaarud@proton.me">stockaarud@proton.me</a> · <a href="./#contact">Nous écrire</a>. Les captures montrent des données fictives.</small></p>
     </div>
   </div>
 </footer>
 <script>window.hallmarkSlots = (m) => { for (const [k, v] of Object.entries(m)) { const s = document.querySelector(`[data-slot="${k}"]`); if (!s) continue; const im = new Image(); im.src = typeof v === 'string' ? v : v.src; im.alt = (typeof v === 'object' && v.alt) || s.dataset.alt || ''; s.querySelectorAll(':scope > img').forEach((o) => o.remove()); s.prepend(im); } };
 document.querySelectorAll('[data-slot] img').forEach((i) => { if (i.complete && !i.naturalWidth) i.remove(); else i.addEventListener('error', () => i.remove(), { once: true }); });</script>
 <script>if(!matchMedia('(prefers-reduced-motion: reduce)').matches)document.addEventListener('pointerdown',(e)=>{const t=e.target.closest&&e.target.closest('a,button,summary,.tab');if(!t)return;const d=document.createElement('span');d.className='tapfx';d.style.left=e.clientX+'px';d.style.top=e.clientY+'px';document.body.appendChild(d);setTimeout(()=>d.remove(),500)},{passive:true});
-document.addEventListener('click',(e)=>{const m=document.querySelector('.nav-menu[open]');if(m&&(!m.contains(e.target)||e.target.closest('.nav-drop a')))m.open=false});</script>
+document.addEventListener('click',(e)=>{const m=document.querySelector('.nav-menu[open]');if(m&&(!m.contains(e.target)||e.target.closest('.nav-drop a')))m.open=false});
+document.addEventListener('keydown',(e)=>{if(e.key!=='Escape')return;const m=document.querySelector('.nav-menu[open]');if(m){m.open=false;m.querySelector('summary').focus()}});</script>
 </body>
 </html>

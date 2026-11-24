@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Stockaarud : le stock de matériel RdR des CAARUD, suivi en direct</title>
+<title>Stockaarud : le stock de matériel RdR des CAARUD, suivi en direct</title>
 <meta name="description" content="Appli web gratuite pour les CAARUD : l’équipe note ses sorties de matériel en 3 clics, le responsable stock voit venir les ruptures.">
 <meta name="theme-color" content="#1f4d3a">
 <link rel="canonical" href="https://stockaarud.github.io/">
@@ -27,29 +27,26 @@
 <header class="nav-wrap">
   <div class="container">
     <nav class="nav sheet" aria-label="Principale">
-      <a class="wordmark" href="./" aria-label="Stockaarud, accueil"><img src="img/icon.png" width="40" height="40" alt=""><img class="wm" src="img/wordmark.png" width="1133" height="115" alt=""></a>
+      <a class="wordmark" href="./" aria-label="Stockaarud, accueil" aria-current="page"><img src="img/icon.png" width="40" height="40" alt=""><img class="wm" src="img/wordmark.png" width="1133" height="115" alt=""></a>
       <ul class="nav-links">
-        <li class="nav-link"><a href="./" aria-current="page">Accueil</a></li>
         <li class="nav-link"><a href="guide.html">Guide</a></li>
-        <li class="nav-link"><a href="https://stockaarud.github.io/stockaarud/" target="_blank" rel="noopener">Ouvrir l’appli</a></li>
-        <li class="nav-link"><a href="documents.html">Documents</a></li>
         <li class="nav-link"><a href="questions.html">Questions</a></li>
+        <li class="nav-link"><a href="documents.html">Documents</a></li>
         <li class="nav-link"><a href="./#contact">Contact</a></li>
+        <li class="nav-link nav-link--app"><a href="https://stockaarud.github.io/stockaarud/" target="_blank" rel="noopener">Déjà installé ? Ouvrir l’appli</a></li>
         <li><a class="btn btn--primary btn--nav" href="demo/" target="_blank" rel="noopener">Essayer la démo</a></li>
       </ul>
       <details class="nav-menu">
         <summary aria-label="Menu"><span class="burger" aria-hidden="true"><i></i><i></i><i></i></span>Menu</summary>
         <div class="nav-drop sheet">
           <ul>
-            <li><a href="./" aria-current="page">Accueil</a></li>
             <li><a href="guide.html">Guide</a></li>
-            <li><a href="https://stockaarud.github.io/stockaarud/" target="_blank" rel="noopener">Ouvrir l’appli</a></li>
             <li><a href="questions.html">Questions</a></li>
             <li><a href="documents.html">Documents</a></li>
             <li><a href="./#contact">Contact</a></li>
-            <li><a href="https://github.com/Stockaarud/stockaarud">Code source</a></li>
           </ul>
           <a class="btn btn--primary" href="demo/" target="_blank" rel="noopener">Essayer la démo</a>
+          <a class="nav-drop-app" href="https://stockaarud.github.io/stockaarud/" target="_blank" rel="noopener">Déjà installé ? Ouvrir l’appli</a>
         </div>
       </details>
     </nav>
@@ -79,7 +76,7 @@
     <div class="container band-grid">
       <div class="band-text">
         <h2 id="film-titre">Stockaarud en 1 min 49</h2>
-        <p class="lead">Du carton qui arrive au garage jusqu’au bilan de l’année : tout le parcours, en images.</p>
+        <p class="lead">Du carton qui arrive au garage jusqu’au bilan de l’année : tout le parcours, en images.</p>
         <p class="trust">Conçue sur le terrain, dans un CAARUD marseillais, avec les équipes qui s’en servent.</p>
       </div>
       <figure class="sheet film" style="--r: 1.2deg">
@@ -101,11 +98,11 @@
         <h2 id="epingler">Simple pour l’équipe, complète pour le responsable stock</h2>
       </div>
       <div class="wall" data-wall>
-        <div class="sheet sheet--fluoro flyer flyer--big" style="--r: -1deg"><b>3 clics</b><span>pour noter une sortie : pour quoi, quel matos, combien.</span></div>
+        <div class="sheet sheet--fluoro flyer flyer--big" style="--r: -1deg"><b>3 clics</b><span>pour noter une sortie : pour quoi, quel matos, combien.</span></div>
         <div class="sheet flyer flyer--wide"><b>15 minutes</b><span>pour l’installer, sans rien télécharger.</span></div>
         <div class="sheet flyer" style="--r: 1.5deg"><b>Hors ligne</b><span>En maraude, en festival, au fond d’un local.</span></div>
         <div class="sheet sheet--wall flyer"><b>Vos données chez vous</b><span>Chaque CAARUD a sa propre base.</span></div>
-        <div class="sheet flyer flyer--full" style="--r: -0.6deg"><b>Téléphone et ordinateur</b><span>L’équipe note sur son téléphone. Le responsable stock gère aussi depuis l’ordinateur : commandes, statistiques, inventaire, matériel en tableur, exports PDF.</span></div>
+        <div class="sheet flyer flyer--full" style="--r: -0.6deg"><b>Téléphone et ordinateur</b><span>L’équipe note sur son téléphone. Le responsable stock gère aussi depuis l’ordinateur : commandes, statistiques, inventaire, matériel en tableur, exports PDF.</span></div>
       </div>
       </div>
     </div>
@@ -121,7 +118,7 @@
       <div class="switcher">
         <div class="tabs" role="tablist" aria-label="Les étapes">
           <button class="tab" type="button" role="tab" id="tab-organisation" aria-controls="pan-organisation" aria-selected="true" tabindex="0"><span class="tab-n">1</span><span class="tab-t"><b>Votre organisation</b>Un stock principal ou plusieurs, vos activités, votre matériel.</span></button>
-          <button class="tab" type="button" role="tab" id="tab-saisie" aria-controls="pan-saisie" aria-selected="false" tabindex="-1"><span class="tab-n">2</span><span class="tab-t"><b>3 clics, c’est noté</b>Où ? Quoi ? Combien ? Même sans réseau.</span></button>
+          <button class="tab" type="button" role="tab" id="tab-saisie" aria-controls="pan-saisie" aria-selected="false" tabindex="-1"><span class="tab-n">2</span><span class="tab-t"><b>3 clics, c’est noté</b>Où ? Quoi ? Combien ? Même sans réseau.</span></button>
           <button class="tab" type="button" role="tab" id="tab-alertes" aria-controls="pan-alertes" aria-selected="false" tabindex="-1"><span class="tab-n">3</span><span class="tab-t"><b>L’alerte avant la rupture</b>Quoi commander, combien, et avant quand.</span></button>
           <button class="tab" type="button" role="tab" id="tab-chiffres" aria-controls="pan-chiffres" aria-selected="false" tabindex="-1"><span class="tab-n">4</span><span class="tab-t"><b>Les chiffres de l’année</b>Statistiques, budget et ruptures, prêts pour le rapport d’activité.</span></button>
         </div>
@@ -141,7 +138,7 @@
       <div class="penbox contact">
       <svg class="pen" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true" focusable="false"><path d="M2 1.4C31 2.8 69 0.9 98.9 2.9M97.9 1C98.8 33 97 71 98.6 98.9M99.3 98.8C70 97.3 30 99 0.7 97.4M2.2 98.9C1 70 2.9 31 1.4 0.5"/></svg>
       <div class="contact-text">
-        <h2 id="ecrire">Une question ? Écrivez-nous</h2>
+        <h2 id="ecrire">Une question ? Écrivez-nous</h2>
         <p class="lead">Pour essayer Stockaarud dans votre CAARUD, ou pour de l’aide à l’installation.</p>
         <p>Ou directement à <a href="mailto:stockaarud@proton.me">stockaarud@proton.me</a></p>
       </div>
@@ -149,6 +146,7 @@
         <div class="field">
           <label for="c-mail">Votre e-mail</label>
           <input id="c-mail" name="email" type="email" autocomplete="email" inputmode="email" required>
+          <p class="field-err" id="c-mail-err" hidden></p>
         </div>
         <div class="field">
           <label for="c-struct">Votre structure <span>(facultatif)</span></label>
@@ -166,6 +164,7 @@
         <div class="field field--wide">
           <label for="c-msg">Votre message</label>
           <textarea id="c-msg" name="message" rows="5" required></textarea>
+          <p class="field-err" id="c-msg-err" hidden></p>
         </div>
         <div class="field--wide form-foot">
           <button class="btn btn--primary" type="submit">Envoyer le message</button>
@@ -193,12 +192,12 @@
         <li><a href="https://github.com/Stockaarud/stockaarud/issues">Signaler un problème</a></li>
       </ul></div>
       <div><h3 class="footer-h">Documents</h3><ul>
-        <li><a href="documents.html">Tous les documents</a></li>
+        <li><a href="documents.html">Tous les documents<span class="foot-more"> : flyer, affiche, guides PDF</span></a></li>
         <li><a href="flyer/flyer-stockaarud-A5.pdf">Le flyer (PDF)</a></li>
         <li><a href="flyer/affiche-qr-stockaarud.pdf">L’affiche QR code (PDF)</a></li>
         <li><a href="docs/guide-installation-stockaarud.pdf">Le guide d’installation (PDF)</a></li>
       </ul></div>
-      <p class="footer-note"><small>Contact : <a href="mailto:stockaarud@proton.me">stockaarud@proton.me</a> · <a href="#contact">Nous écrire</a>. Les captures montrent des données fictives.</small></p>
+      <p class="footer-note"><small>Contact : <a href="mailto:stockaarud@proton.me">stockaarud@proton.me</a> · <a href="#contact">Nous écrire</a>. Les captures montrent des données fictives.</small></p>
     </div>
   </div>
 </footer>
@@ -229,16 +228,20 @@
 <script>
 document.querySelectorAll('form[data-endpoint]').forEach((form) => {
   const help = form.querySelector('[role="status"]');
+  form.querySelectorAll('[required]').forEach((f) => f.addEventListener('input', () => { const err = document.getElementById(f.id + '-err'); if (err && f.checkValidity()) { err.hidden = true; err.textContent = ''; f.removeAttribute('aria-invalid'); f.removeAttribute('aria-describedby'); } }));
   form.addEventListener('submit', (e) => {
     e.preventDefault();
     const fields = [...form.querySelectorAll('[required]')];
-    fields.forEach((f) => f.toggleAttribute('aria-invalid', !f.checkValidity()));
+    const say = (f, text) => { const err = document.getElementById(f.id + '-err'); if (!err) return; err.textContent = text; err.hidden = !text; if (text) { f.setAttribute('aria-invalid', 'true'); f.setAttribute('aria-describedby', err.id); } else { f.removeAttribute('aria-invalid'); f.removeAttribute('aria-describedby'); } };
+    const why = (f) => f.checkValidity() ? '' : f.value.trim() === '' ? (f.type === 'email' ? 'Indiquez votre e-mail, pour qu’on puisse vous répondre.' : 'Écrivez votre message avant d’envoyer.') : 'Cette adresse semble incomplète : écrivez-la comme nom@exemple.fr.';
+    fields.forEach((f) => say(f, why(f)));
     const bad = fields.find((f) => !f.checkValidity());
-    if (bad) { bad.setAttribute('aria-describedby', help.id); help.textContent = bad.value.trim() === '' ? 'Ce champ est à remplir.' : 'Cette adresse semble incomplète : écrivez-la comme nom@exemple.fr.'; bad.focus(); return; }
+    help.textContent = '';
+    if (bad) { bad.focus(); return; }
     const d = Object.fromEntries(new FormData(form));
     if (!form.dataset.endpoint) {
       const body = `${d.message}\n\n${d.structure ? d.structure + '\n' : ''}${d.email}`;
-      help.textContent = 'Votre logiciel de messagerie s’ouvre avec le message prêt : il reste à l’envoyer.';
+      help.textContent = 'Votre logiciel de messagerie s’ouvre avec le message prêt : il reste à l’envoyer.';
       location.href = `mailto:${form.dataset.mailto}?subject=${encodeURIComponent('Stockaarud : ' + d.objet)}&body=${encodeURIComponent(body)}`;
       return;
     }
@@ -253,6 +256,7 @@ document.querySelectorAll('form[data-endpoint]').forEach((form) => {
 <script>window.hallmarkSlots = (m) => { for (const [k, v] of Object.entries(m)) { const s = document.querySelector(`[data-slot="${k}"]`); if (!s) continue; const im = new Image(); im.src = typeof v === 'string' ? v : v.src; im.alt = (typeof v === 'object' && v.alt) || s.dataset.alt || ''; s.querySelectorAll(':scope > img').forEach((o) => o.remove()); s.prepend(im); } };
 document.querySelectorAll('[data-slot] img').forEach((i) => { if (i.complete && !i.naturalWidth) i.remove(); else i.addEventListener('error', () => i.remove(), { once: true }); });</script>
 <script>if(!matchMedia('(prefers-reduced-motion: reduce)').matches)document.addEventListener('pointerdown',(e)=>{const t=e.target.closest&&e.target.closest('a,button,summary,.tab');if(!t)return;const d=document.createElement('span');d.className='tapfx';d.style.left=e.clientX+'px';d.style.top=e.clientY+'px';document.body.appendChild(d);setTimeout(()=>d.remove(),500)},{passive:true});
-document.addEventListener('click',(e)=>{const m=document.querySelector('.nav-menu[open]');if(m&&(!m.contains(e.target)||e.target.closest('.nav-drop a')))m.open=false});</script>
+document.addEventListener('click',(e)=>{const m=document.querySelector('.nav-menu[open]');if(m&&(!m.contains(e.target)||e.target.closest('.nav-drop a')))m.open=false});
+document.addEventListener('keydown',(e)=>{if(e.key!=='Escape')return;const m=document.querySelector('.nav-menu[open]');if(m){m.open=false;m.querySelector('summary').focus()}});</script>
 </body>
 </html>
