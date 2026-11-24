@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Stockaarud : tous les documents</title>
+<title>Stockaarud : tous les documents</title>
 <meta name="description" content="Flyers, affiche QR code, guide PDF, vidéos et logo de Stockaarud, à télécharger et à diffuser librement.">
 <meta name="theme-color" content="#1f4d3a">
 <meta property="og:type" content="article">
@@ -26,27 +26,24 @@
     <nav class="nav sheet" aria-label="Principale">
       <a class="wordmark" href="./" aria-label="Stockaarud, accueil"><img src="img/icon.png" width="40" height="40" alt=""><img class="wm" src="img/wordmark.png" width="1133" height="115" alt=""></a>
       <ul class="nav-links">
-        <li class="nav-link"><a href="./">Accueil</a></li>
         <li class="nav-link"><a href="guide.html">Guide</a></li>
-        <li class="nav-link"><a href="https://stockaarud.github.io/stockaarud/" target="_blank" rel="noopener">Ouvrir l’appli</a></li>
-        <li class="nav-link"><a href="documents.html" aria-current="page">Documents</a></li>
         <li class="nav-link"><a href="questions.html">Questions</a></li>
+        <li class="nav-link"><a href="documents.html" aria-current="page">Documents</a></li>
         <li class="nav-link"><a href="./#contact">Contact</a></li>
+        <li class="nav-link nav-link--app"><a href="https://stockaarud.github.io/stockaarud/" target="_blank" rel="noopener">Déjà installé ? Ouvrir l’appli</a></li>
         <li><a class="btn btn--primary btn--nav" href="demo/" target="_blank" rel="noopener">Essayer la démo</a></li>
       </ul>
       <details class="nav-menu">
         <summary aria-label="Menu"><span class="burger" aria-hidden="true"><i></i><i></i><i></i></span>Menu</summary>
         <div class="nav-drop sheet">
           <ul>
-            <li><a href="./">Accueil</a></li>
             <li><a href="guide.html">Guide</a></li>
-            <li><a href="https://stockaarud.github.io/stockaarud/" target="_blank" rel="noopener">Ouvrir l’appli</a></li>
             <li><a href="questions.html">Questions</a></li>
             <li><a href="documents.html" aria-current="page">Documents</a></li>
             <li><a href="./#contact">Contact</a></li>
-            <li><a href="https://github.com/Stockaarud/stockaarud">Code source</a></li>
           </ul>
           <a class="btn btn--primary" href="demo/" target="_blank" rel="noopener">Essayer la démo</a>
+          <a class="nav-drop-app" href="https://stockaarud.github.io/stockaarud/" target="_blank" rel="noopener">Déjà installé ? Ouvrir l’appli</a>
         </div>
       </details>
     </nav>
@@ -136,19 +133,20 @@
         <li><a href="https://github.com/Stockaarud/stockaarud/issues">Signaler un problème</a></li>
       </ul></div>
       <div><h3 class="footer-h">Documents</h3><ul>
-        <li><a href="documents.html">Tous les documents</a></li>
+        <li><a href="documents.html">Tous les documents<span class="foot-more"> : flyer, affiche, guides PDF</span></a></li>
         <li><a href="flyer/flyer-stockaarud-A5.pdf">Le flyer (PDF)</a></li>
         <li><a href="flyer/affiche-qr-stockaarud.pdf">L’affiche QR code (PDF)</a></li>
         <li><a href="docs/guide-installation-stockaarud.pdf">Le guide d’installation (PDF)</a></li>
       </ul></div>
-      <p class="footer-note"><small>Contact : <a href="mailto:stockaarud@proton.me">stockaarud@proton.me</a> · <a href="./#contact">Nous écrire</a>. Les captures montrent des données fictives.</small></p>
+      <p class="footer-note"><small>Contact : <a href="mailto:stockaarud@proton.me">stockaarud@proton.me</a> · <a href="./#contact">Nous écrire</a>. Les captures montrent des données fictives.</small></p>
     </div>
   </div>
 </footer>
 <script>window.hallmarkSlots = (m) => { for (const [k, v] of Object.entries(m)) { const s = document.querySelector(`[data-slot="${k}"]`); if (!s) continue; const im = new Image(); im.src = typeof v === 'string' ? v : v.src; im.alt = (typeof v === 'object' && v.alt) || s.dataset.alt || ''; s.querySelectorAll(':scope > img').forEach((o) => o.remove()); s.prepend(im); } };
 document.querySelectorAll('[data-slot] img').forEach((i) => { if (i.complete && !i.naturalWidth) i.remove(); else i.addEventListener('error', () => i.remove(), { once: true }); });</script>
 <script>if(!matchMedia('(prefers-reduced-motion: reduce)').matches)document.addEventListener('pointerdown',(e)=>{const t=e.target.closest&&e.target.closest('a,button,summary,.tab');if(!t)return;const d=document.createElement('span');d.className='tapfx';d.style.left=e.clientX+'px';d.style.top=e.clientY+'px';document.body.appendChild(d);setTimeout(()=>d.remove(),500)},{passive:true});
-document.addEventListener('click',(e)=>{const m=document.querySelector('.nav-menu[open]');if(m&&(!m.contains(e.target)||e.target.closest('.nav-drop a')))m.open=false});</script>
+document.addEventListener('click',(e)=>{const m=document.querySelector('.nav-menu[open]');if(m&&(!m.contains(e.target)||e.target.closest('.nav-drop a')))m.open=false});
+document.addEventListener('keydown',(e)=>{if(e.key!=='Escape')return;const m=document.querySelector('.nav-menu[open]');if(m){m.open=false;m.querySelector('summary').focus()}});</script>
 <dialog class="vbox" id="vbox" aria-label="Lecture de la vidéo">
   <form method="dialog"><button class="vbox-x" aria-label="Fermer la vidéo">×</button></form>
   <video controls playsinline preload="none"></video>

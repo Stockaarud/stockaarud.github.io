@@ -208,7 +208,7 @@ code { font-family: var(--font-body); font-weight: 700; background: var(--color-
 }
 
 /* the form as a sheet */
-.contact { display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); gap: var(--space-3xl); align-items: center; }
+.contact { display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); gap: var(--space-3xl); align-items: start; }
 .contact-text { display: grid; gap: var(--space-lg); }
 .contact-form { box-shadow: 6px 6px 0 var(--color-ink); display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: var(--space-lg); padding: var(--space-2xl); }
 .field { display: grid; gap: var(--space-xs); min-width: 0; }
@@ -348,7 +348,7 @@ html { scroll-behavior: smooth; }
 .need-t { font-family: var(--font-display); font-stretch: 62%; font-weight: 800; text-transform: uppercase; font-size: 2.5rem; line-height: 1; margin-bottom: var(--space-md); }
 .need ul { list-style: none; margin: 0; padding: 0; display: grid; gap: var(--space-sm); }
 .need li { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: var(--space-sm); font-weight: 700; }
-.need li::before { content: ""; width: 1.1em; height: 1.1em; margin-top: 0.2em; border: 2.5px solid var(--color-ink); background: var(--color-paper-3); }
+.need li::before { content: ""; width: 0.9em; height: 3px; margin-top: 0.75em; background: var(--color-ink); }
 .steps { display: grid; gap: var(--space-xl); }
 .steps .step { background: var(--color-paper-3); box-shadow: var(--shadow-card); border-top: 0; padding: var(--space-xl) var(--space-2xl) var(--space-2xl); }
 .steps .step h2 { display: flex; align-items: center; gap: var(--space-md); }
@@ -417,7 +417,7 @@ html { scroll-behavior: smooth; }
   @keyframes targetIn { from { outline: 3px solid var(--color-accent); outline-offset: 6px; } to { outline: 3px solid transparent; outline-offset: 6px; } }
 }
 html { scroll-padding-top: calc(var(--space-3xl) + var(--space-lg)); }
-@media (max-width: 75rem) { .nav-links { display: none !important; } .nav-menu { display: block; } }
+@media (max-width: 64rem) { .nav-links { display: none !important; } .nav-menu { display: block; } }
 @media print {
   #equipe, #gestion, #roles { break-before: page; margin-top: 0; }
   .doc-h2, .part-h, .part-lead { break-after: avoid; }
@@ -571,10 +571,51 @@ html { scroll-padding-top: calc(var(--space-3xl) + var(--space-lg)); }
 .film-play--s .film-tri { width: 64px; height: 64px; box-shadow: 4px 4px 0 var(--color-ink); }
 .film-play--s .film-tri::after { margin-left: 6px; border-width: 13px 0 13px 21px; }
 
+.foot-more { display: none; }
 /* pied de page sur téléphone : deux colonnes, les documents en un seul lien */
 @media (max-width: 40rem) {
   .footer-grid.footer-grid--3 { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--space-lg) var(--space-md); }
   .footer-grid--3 > div:nth-child(3) { grid-column: 1 / -1; }
   .footer-grid--3 > div:nth-child(3) .footer-h, .footer-grid--3 > div:nth-child(3) li:not(:first-child) { display: none; }
-  .footer-grid--3 > div:nth-child(3) li:first-child a::after { content: " : flyer, affiche, guides PDF"; }
+  .footer-grid--3 > div:nth-child(3) .foot-more { display: inline; }
 }
+
+/* --- critique du site, novembre 2026 --- */
+/* nav : quatre liens, la démo, et un lien discret pour qui a déjà installé */
+.nav-link--app a { font-size: var(--text-sm) !important; font-weight: 400 !important; color: var(--color-muted); }
+.nav-link--app a::after { display: none; }
+.nav-drop-app { justify-self: start; font-size: var(--text-sm); color: var(--color-muted); }
+@media (max-width: 80rem) { .nav-link--app { display: none; } }
+@media (max-width: 75rem) { .nav ul { gap: var(--space-md); } }
+
+/* le film d'accueil : le bouton sous l'enseigne, pas dessus */
+.film-play:not(.film-play--s) { align-content: end; padding-bottom: 14%; }
+
+/* textes et légendes : pas de mot seul, pas de lignes trop longues */
+figcaption { text-wrap: pretty; }
+.qsheet p, .qsheet li p, .step-body > p { max-width: 68ch; }
+
+/* formulaire : l'erreur sous le champ concerné */
+.field-err { margin: var(--space-2xs) 0 0; font-size: var(--text-sm); font-weight: 700; color: var(--color-error, #a3261b); }
+
+/* guide : la barre d'onglets garde un fond quand elle colle en haut */
+.guide .who { background: var(--color-paper); padding-block: var(--space-xs); }
+
+/* guide, responsable stock : quatre groupes et leur sommaire */
+.steps.steps--cont { counter-reset: none; }
+.steps-group { margin: var(--space-3xl) 0 var(--space-lg); font-family: var(--font-display); font-stretch: 62%; font-weight: 800; text-transform: uppercase; font-size: clamp(2rem, 1.5vw + 1.4rem, 2.75rem); line-height: 1; }
+.pane-index { display: flex; flex-wrap: wrap; gap: var(--space-sm); margin-bottom: var(--space-lg); }
+.pane-index a { display: inline-flex; align-items: center; min-height: 44px; padding: 0 var(--space-md); border: 2px solid var(--color-ink); background: var(--color-paper-3); font-weight: 700; text-decoration: none; }
+.pane-index a:hover { background: var(--color-accent); }
+.steps-group, .steps .step { scroll-margin-top: 7rem; }
+
+/* guide : une seule conclusion sous l'onglet Installation */
+.js .guide:has(> #installation.is-on) > .done { display: none; }
+
+/* guide sur téléphone : les onglets d'abord, les PDF à imprimer après */
+.need--late { display: none; }
+@media (max-width: 44rem) {
+  .doc-hero .need { display: none; }
+  .need--late { display: block; justify-self: start; max-width: 22rem; margin: var(--space-2xl) 0; }
+}
+@media print { .need--late { display: none !important; } }
