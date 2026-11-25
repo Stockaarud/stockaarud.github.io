@@ -619,3 +619,10 @@ figcaption { text-wrap: pretty; }
   .need--late { display: block; justify-self: start; max-width: 22rem; margin: var(--space-2xl) 0; }
 }
 @media print { .need--late { display: none !important; } }
+
+/* Finitions (revue « make interfaces feel better », 25 nov. 2026) */
+.footer ul { gap: 0; }
+.footer li a { display: inline-block; padding-block: 10px; }
+.toc a, main li > a:only-child { display: inline-block; padding-block: 10px; }
+.nav .wordmark { padding-block: 5px; }
+main img:not([src*="logo"]):not([src*="wordmark"]) { outline: 1px solid oklch(0 0 0 / 0.1); outline-offset: -1px; }
