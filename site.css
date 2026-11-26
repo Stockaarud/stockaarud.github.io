@@ -619,6 +619,7 @@ figcaption { text-wrap: pretty; }
   .need--late { display: block; justify-self: start; max-width: 22rem; margin: var(--space-2xl) 0; }
 }
 @media print { .need--late { display: none !important; } }
+@media print { .steps-group { break-before: page; margin-top: 0; } .site-footer, footer { display: none !important; } }
 
 /* Finitions (revue « make interfaces feel better », 25 nov. 2026) */
 .footer ul { gap: 0; }
