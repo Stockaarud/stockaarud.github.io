@@ -340,6 +340,25 @@ details.cat>.grid{margin:0;padding:0 10px 10px}
 .lab-s{font:700 12px var(--body);text-transform:uppercase;letter-spacing:.1em;color:var(--muted);margin:8px 0 6px}
 .wizbar{display:flex;gap:6px;margin-bottom:14px}.wizbar span{flex:1;height:6px;border-radius:3px;background:var(--line)}.wizbar .done{background:var(--accent)}.wizbar .cur{background:var(--brand-2)}
 .wizh{font-size:28px;font-weight:800;margin-bottom:6px}
+.wizmot{display:flex;flex-wrap:wrap;gap:6px 12px;align-items:center;margin:0 0 12px;font-weight:700;color:var(--accent)}.wizmot .tps{font-weight:600;color:var(--muted);background:var(--surface);border:1px solid var(--line);border-radius:99px;padding:2px 10px;font-size:13px}
+.pp{position:relative;margin-top:12px;border:2px solid var(--brand-2);background:var(--surface);border-radius:14px;padding:16px}
+.pp h2{margin:0 40px 2px 0}.pp .ppmot{margin:0 0 10px;font-weight:700;color:var(--accent)}
+.ppbar{height:10px;border-radius:5px;background:var(--line);overflow:hidden;margin:4px 0 12px}.ppbar span{display:block;height:100%;border-radius:5px;background:linear-gradient(90deg,var(--accent),var(--brand-2))}
+@media (prefers-reduced-motion:no-preference){.ppbar span{transition:width .6s cubic-bezier(.2,.8,.2,1)}}
+.pp ol{list-style:none;margin:0;padding:0;display:grid;gap:8px}
+.pp li{display:flex;align-items:center;gap:10px;min-height:44px;flex-wrap:wrap}
+.pp li .ck{flex:none;width:26px;height:26px;border-radius:50%;display:grid;place-items:center;font-weight:800;font-size:14px;border:2px solid var(--line);color:var(--muted)}
+.pp li.ok .ck{background:var(--accent);border-color:var(--accent);color:#fff}.pp li.ok .t{color:var(--muted);text-decoration:line-through;text-decoration-thickness:1px}
+.pp li.now .ck{border-color:var(--brand-2);background:var(--brand-2);color:var(--brand-ink,#14201d)}.pp li.now .t{font-weight:700}
+.pp li .t{flex:1;min-width:140px}.pp li .btn{margin-left:auto}
+.pp .x{position:absolute;top:8px;right:8px;width:44px;height:44px;border:0;background:none;color:var(--muted);font-size:22px;cursor:pointer;border-radius:10px}
+.fete{position:fixed;inset:0;z-index:60;display:grid;place-items:center;background:rgb(0 0 0/.45);padding:16px;overflow:hidden}
+.fete .carte{position:relative;z-index:1;max-width:380px;width:100%;background:var(--surface);color:var(--fg);border-radius:18px;padding:24px 20px;text-align:center;box-shadow:0 12px 40px rgb(0 0 0/.3)}
+.fete .carte .big{font-size:52px;line-height:1;margin-bottom:8px}.fete h2{margin:0 0 6px;font-size:24px}.fete p{margin:0 0 16px}
+.fete i{position:absolute;top:-16px;width:10px;height:14px;border-radius:2px;opacity:0}
+@media (prefers-reduced-motion:no-preference){.fete i{animation:confetti 2.6s cubic-bezier(.25,.6,.4,1) forwards}.fete .carte{animation:popIn .35s cubic-bezier(.2,1.4,.4,1) both}}
+@keyframes confetti{0%{opacity:1;transform:translate3d(0,0,0) rotate(0)}100%{opacity:0;transform:translate3d(var(--dx),105vh,0) rotate(var(--r))}}
+@keyframes popIn{from{transform:scale(.85);opacity:0}to{transform:none;opacity:1}}
 .wizl{display:flex;flex-direction:column;gap:6px;font-weight:600;margin-top:10px}.wizl input{font-size:18px;min-height:52px}
 .wizacts{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px;margin-top:12px}
 .wizact{display:flex;align-items:center;gap:10px;border:2px solid var(--line);background:var(--surface);color:var(--fg);border-radius:12px;padding:12px;font:600 15px var(--body);cursor:pointer;text-align:left;min-height:64px}
@@ -1611,9 +1630,35 @@ function fieldErr(el,msg){if(typeof el==="string")el=document.getElementById(el)
   p.textContent=msg;el.setAttribute("aria-invalid","true");el.setAttribute("aria-describedby",((el.getAttribute("aria-describedby")||"").replace(eid,"").trim()+" "+eid).trim());el.focus()}
 function fieldOk(el){if(el.getAttribute("aria-invalid")!=="true")return;const eid=el.id+"-err",p=document.getElementById(eid);if(p)p.remove();el.removeAttribute("aria-invalid");const d=(el.getAttribute("aria-describedby")||"").replace(eid,"").trim();if(d)el.setAttribute("aria-describedby",d);else el.removeAttribute("aria-describedby")}
 function wizardNeeded(){if(!S.isAdmin||S.dbState!=="ok")return false;if(S.wiz)return true;if(S.wizSkip)return false;return !S.config||(!S.config.assistant&&S.produits.size===0)}
+/* Premiers pas : ce qu'il reste au responsable stock pour que l'appli tourne vraiment. */
+function ppEtapes(){const c=cfg(),loc=!!(window.SKB&&window.SKB.local),M=allMvts().filter(m=>!m.exemple),sorties=M.filter(m=>m.type==="sortie").length;
+  return [
+   {k:"base",ok:!loc,t:loc?"Mettre ta base en ligne, pour que l'équipe puisse noter":"Créer la base",a:"goOnline",l:"Passer en ligne"},
+   {k:"mat",ok:S.produits.size>0&&(c.activites||[]).some(a=>!a.archive),t:"Choisir les activités et le matériel",a:"wzStart",l:"Reprendre"},
+   {k:"inv",ok:invDejaFait(),t:"Compter le stock une première fois",a:"goInv",l:"Compter"},
+   {k:"eq",ok:loc?false:!!(c.equipeInvitee||lienEquipe()||sorties>=20),t:"Inviter l'équipe",a:loc?"goOnline":"ppEq",l:loc?"Passer en ligne":"Inviter"},
+   {k:"so",ok:sorties>0,t:"Noter une première sortie (toi, ou un collègue)",a:"view",v:"equipe",l:"Essayer"}]}
+function premiersPas(){
+  if(!S.isAdmin||S.dbState!=="ok"||cfg().premiersPas==="fini"||ls.get("ppCache",false))return "";
+  const E=ppEtapes(),n=E.filter(e=>e.ok).length,tot=E.length,i=E.findIndex(e=>!e.ok);
+  if(n===tot){if(allMvts().filter(m=>!m.exemple&&m.type==="sortie").length>=20)return "";
+    return '<div class="pp"><h2>Tout est en place 🎉</h2><p class="ppmot">Stockaarud tourne pour de bon. Les alertes et les commandes vont maintenant se remplir toutes seules.</p><div class="ppbar"><span style="width:100%"></span></div><button class="btn primary" data-act="ppFin">Super !</button></div>'}
+  const r=tot-n,mot=r===1?"On y est presque : plus qu'un pas !":n<=1?"C'est parti : "+r+" petits pas pour que tout tourne.":"Ça avance bien : plus que "+r+" pas.";
+  return '<div class="pp" role="region" aria-label="Premiers pas"><button class="x" data-act="ppCache" aria-label="Masquer les premiers pas" title="Masquer">×</button><h2>Premiers pas · '+n+'/'+tot+'</h2><p class="ppmot">'+esc(mot)+'</p><div class="ppbar" role="progressbar" aria-valuemin="0" aria-valuemax="'+tot+'" aria-valuenow="'+n+'"><span style="width:'+Math.round(100*n/tot)+'%"></span></div><ol>'
+   +E.map((e,j)=>'<li class="'+(e.ok?"ok":j===i?"now":"")+'"><span class="ck" aria-hidden="true">'+(e.ok?"✓":j+1)+'</span><span class="t">'+esc(e.t)+(e.ok?'<span class="sr"> : fait</span>':'')+'</span>'+(!e.ok&&j===i?'<button class="btn small primary" data-act="'+e.a+'"'+(e.v?' data-v="'+e.v+'"':'')+'>'+esc(e.l)+'</button>':'')+'</li>').join("")+'</ol></div>'}
+/* Petite fête : une carte et des confettis (rien qui bouge si l'appareil demande moins d'animations). */
+function fete(titre,texte){document.querySelectorAll(".fete,.toast").forEach(x=>x.remove());
+  const d=document.createElement("div");d.className="fete";d.setAttribute("role","dialog");d.setAttribute("aria-modal","true");d.setAttribute("aria-label",titre);
+  const C=["var(--brand-2)","var(--accent)","#e46f3c","#3f8fd2","#c94f9a","#7fc29c"];let conf="";
+  for(let i=0;i<46;i++)conf+='<i style="left:'+(Math.random()*100).toFixed(1)+'%;background:'+C[i%C.length]+';animation-delay:'+(Math.random()*.6).toFixed(2)+'s;--dx:'+((Math.random()-.5)*160).toFixed(0)+'px;--r:'+((Math.random()-.5)*900).toFixed(0)+'deg"></i>';
+  d.innerHTML=conf+'<div class="carte"><div class="big" aria-hidden="true">🎉</div><h2>'+esc(titre)+'</h2><p>'+esc(texte)+'</p><button class="btn primary" style="width:100%;min-height:52px;font-size:17px">Allons-y</button></div>';
+  const fin=()=>{d.remove();document.removeEventListener("keydown",esc1)},esc1=e=>{if(e.key==="Escape")fin()};
+  d.addEventListener("click",e=>{if(e.target===d||e.target.tagName==="BUTTON")fin()});document.addEventListener("keydown",esc1);
+  document.body.appendChild(d);setTimeout(()=>{const b=d.querySelector("button");b&&b.focus()},60)}
 function viewWizard(st){
   const s=S.wiz||1,c=cfg(),steps=["Ta structure","Tes activités","Ton matériel","Inventaire de départ","Inviter l'équipe"];
-  let h='<div class="wiz"><p class="lab-s">Première installation · étape '+s+' sur 5</p><div class="wizbar">'+steps.map((t,i)=>'<span class="'+(i+1<s?"done":i+1===s?"cur":"")+'"></span>').join("")+'</div><h1 class="wizh">'+steps[s-1]+'</h1>';
+  const MOT=[["C'est parti !","1 minute"],["Bien joué, ça avance !","1 minute"],["Le plus gros est déjà prêt : il suffit de trier.","3 minutes"],["L'étape la plus longue, et la plus utile. Tu peux aussi la faire plus tard.","10 à 20 minutes"],["Dernière étape : on y est presque !","2 minutes"]][s-1];
+  let h='<div class="wiz"><p class="lab-s">'+(window.SKB&&!window.SKB.local?"Ta base est créée ✓ · ":"")+'Première installation · étape '+s+' sur 5</p><div class="wizbar">'+steps.map((t,i)=>'<span class="'+(i+1<s?"done":i+1===s?"cur":"")+'"></span>').join("")+'</div><h1 class="wizh">'+steps[s-1]+'</h1><p class="wizmot">'+esc(MOT[0])+'<span class="tps">≈ '+esc(MOT[1])+'</span></p>';
   if(s===1){const L=c.lieux.filter(l=>!l.archive);
     h+='<label class="wizl">Nom de ta structure<input id="wzS" value="'+esc(c.nomStructure||"")+'" autocomplete="organization" aria-describedby="wzS-h"></label><p class="note wzhelp" id="wzS-h">Par exemple : CAARUD Centre-ville. Il figure en tête des bons de commande.</p><label class="wizl">Nom du stock principal<input id="wzN" value="'+esc(c.nomStock&&c.nomStock!=="Stock principal"?c.nomStock:"")+'" aria-describedby="wzN-h"></label><p class="note wzhelp" id="wzN-h">L\'endroit où tu ranges le matériel. Par exemple : garage, réserve, local.</p>'
      +'<p class="note" style="margin-top:6px">Tu stockes aussi ailleurs, dans un local ou une antenne qui se réapprovisionne au stock principal ? Ajoute ces stocks intermédiaires. Sinon, laisse vide : un seul stock suffit dans la plupart des CAARUD.</p>'
@@ -2239,7 +2284,7 @@ function viewCoordo(st){
     h+='<nav class="subnav tabbar" aria-label="Sections">'+(open?'<div class="more">'+extra.map(tb).join("")+'</div>':'')+'<div class="main">'+tabs.slice(0,3).map(tb).join("")
      +'<button data-act="tabMore" aria-expanded="'+open+'" aria-pressed="'+!!inX+'">'+tabIco(inX?inX[0]:"more")+'<span>'+(inX?inX[1]:"Plus")+'</span></button></div></nav>'
      +(open?'<div class="tabveil" data-act="tabMore" aria-hidden="true"></div>':'')}}
-  if(S.ctab==="bord")h+=tabBord(st);
+  if(S.ctab==="bord")h+=premiersPas()+tabBord(st);
   if(S.ctab==="stats")h+=tabStats();
   if(S.ctab==="prev")h+=tabPrev(st);
   if(S.ctab==="cmd")h+=tabCmd(st);
@@ -2554,7 +2599,7 @@ function tabInvGuide(st,ps,L){
 /* Réglages */
 function tabReg(st){
   const c=cfg();
-  let h='<div class="row" style="margin-top:12px;justify-content:flex-end"><button class="btn small" data-act="wzStart">Relancer l\'installation guidée</button></div>'+equipePanel(false)+aCompleter()+(window.SKB&&window.SKB.local?'':accesPanel())+(S.db?codePanel():'')+alertesPanel(false)+'<div class="panel" style="margin-top:14px"><button class="btn small pbtn" data-act="schemaExp">'+SHARE_ICO+'Exporter le schéma</button><h2>Stocks et organisation</h2><p class="note">Le stock central reçoit les commandes des fournisseurs. Si tu stockes aussi ailleurs (un local, une antenne), ajoute un stock intermédiaire : il est réapprovisionné depuis le stock central, et l\'équipe peut y prendre le matériel. Un seul stock suffit dans la plupart des CAARUD.</p><label class="wizl" style="margin:0 0 12px">Nom de la structure, affiché en haut de l\'appli<input id="nomStruct" value="'+esc(c.nomStructure||"")+'" placeholder="Ex. CAARUD Centre-ville"></label>'+schemaStocks(false)+'<div class="list" style="margin-top:8px">'
+  let h='<div class="row" style="margin-top:12px;justify-content:flex-end"><button class="btn small" data-act="wzStart">Relancer l\'installation guidée</button>'+(ls.get("ppCache",false)&&cfg().premiersPas!=="fini"?'<button class="btn small" data-act="ppMontre">Afficher les premiers pas</button>':'')+'</div>'+equipePanel(false)+aCompleter()+(window.SKB&&window.SKB.local?'':accesPanel())+(S.db?codePanel():'')+alertesPanel(false)+'<div class="panel" style="margin-top:14px"><button class="btn small pbtn" data-act="schemaExp">'+SHARE_ICO+'Exporter le schéma</button><h2>Stocks et organisation</h2><p class="note">Le stock central reçoit les commandes des fournisseurs. Si tu stockes aussi ailleurs (un local, une antenne), ajoute un stock intermédiaire : il est réapprovisionné depuis le stock central, et l\'équipe peut y prendre le matériel. Un seul stock suffit dans la plupart des CAARUD.</p><label class="wizl" style="margin:0 0 12px">Nom de la structure, affiché en haut de l\'appli<input id="nomStruct" value="'+esc(c.nomStructure||"")+'" placeholder="Ex. CAARUD Centre-ville"></label>'+schemaStocks(false)+'<div class="list" style="margin-top:8px">'
    +c.lieux.map(l=>'<div class="it"><input id="ln-'+esc(l.id)+'" value="'+esc(l.nom)+'" style="flex:1;min-width:160px" aria-label="Nom du stock">'+(l.principal?'<span class="pill good">stock central</span>':'<span class="pill mute">stock intermédiaire</span>'+'<button class="btn small" data-act="lieuArch" data-id="'+esc(l.id)+'">'+(l.archive?"Réactiver":"Archiver")+'</button>')+'</div>').join("")
    +'</div><div class="row" style="margin-top:10px"><button class="btn primary" data-act="saveLieux">Enregistrer les noms</button><button class="btn" data-act="addLieu">Ajouter un stock intermédiaire</button></div></div>';
   h+='<div class="panel" style="margin-top:14px"><h2>Passages et matériel récupéré</h2><p class="note"><b>Tout est facultatif.</b> Rien ne s\'affiche sur l\'écran de l\'équipe tant que tu ne coches rien. Aucun nom, aucune donnée personnelle : seulement des nombres par activité et par jour.</p>'
@@ -3210,6 +3255,10 @@ document.addEventListener("click",async e=>{
   case "bonCopy":case "bonCsv":{const st=computeStats(),f=b.dataset.v,ps=prodsActifs().filter(p=>st[p.id].suggere>0&&st[p.id].moy>0&&(fournNom(p)||"Sans fournisseur")===f);
     if(a==="bonCopy"){const t=bonTexte(f,ps,st);try{await navigator.clipboard.writeText(t);toast("Bon de commande copié")}catch(err){toast("Copie impossible : sélectionne le texte à la main")}}
     else{const q=v=>'"'+String(v).replace(/"/g,'""')+'"';const rows=[["Référence","Produit","Quantité","Conditionnement","Unités","Montant estimé TTC"]].concat(bonLignes(ps,st).map(l=>[l.ref,l.nom,l.qte,l.cond,l.u,l.total?l.total.toFixed(2).replace(".",","):""]));await download("bon-de-commande-"+f.replace(/\W+/g,"-").toLowerCase()+"-"+today()+".csv",rows.map(r=>r.map(q).join(";")).join("\n"),"text/csv")}break}
+  case "ppCache":ls.set("ppCache",true);toast("Premiers pas masqués. Ils restent dans Réglages.",async()=>{ls.set("ppCache",false);render()});render();break;
+  case "ppFin":await saveConfig({premiersPas:"fini"});render();fete("Bravo !","Ton stock est suivi, l'équipe note ses sorties : Stockaarud fait le reste.");break;
+  case "ppEq":S.view="coordo";S.ctab="reg";window.scrollTo(0,0);render();setTimeout(()=>{const t=[...document.querySelectorAll("#app h2")].find(x=>/Inviter l'équipe/.test(x.textContent));t&&t.scrollIntoView({block:"start",behavior:"smooth"})},80);break;
+  case "ppMontre":ls.set("ppCache",false);S.ctab="bord";window.scrollTo(0,0);render();break;
   case "wzStart":S.wiz=1;S.wizSkip=false;S.view="coordo";window.scrollTo(0,0);render();break;
   case "wzSkip":S.wiz=null;S.wizSkip=true;render();break;
   case "wzPrev":S.wiz=Math.max(1,(S.wiz||1)-1);window.scrollTo(0,0);render();break;
@@ -3227,11 +3276,12 @@ document.addEventListener("click",async e=>{
       await saveConfig({nomStructure:val("wzS").trim(),nomStock:nom,lieux:L})}
     if(s===2&&!c.activites.filter(x=>!x.archive).length){fieldErr(document.querySelector(".wizact"),"Choisis au moins une activité");break}
     if(s===3){const have=new Set([...S.produits.values()].map(p=>norm(p.nom)));let n=0;for(const x of STARTER){if(S.wizOff&&S.wizOff.has(x[0])||have.has(norm(x[0])))continue;await write("set","produits/"+slug(x[0]),starterDoc(x));n++}
-      if(!S.produits.size&&!n){fieldErr(document.querySelector('.chip[data-act="wzTog"]'),"Garde au moins un produit");break}if(n)toast(n+" produits ajoutés")}
+      if(!S.produits.size&&!n){fieldErr(document.querySelector('.chip[data-act="wzTog"]'),"Garde au moins un produit");break}S.wizN=n}
     if(s===4&&b.dataset.v!=="skip")await saveInvRapide();
-    if(s===5){await saveConfig({assistant:"fait"});S.wiz=null;S.ctab="bord";window.scrollTo(0,0);toast("Stockaarud est prêt");render();break}
+    if(s===5){await saveConfig({assistant:"fait"});S.wiz=null;S.ctab="bord";window.scrollTo(0,0);render();fete("Stockaarud est prêt !","Bravo, le plus dur est fait. Il reste quelques premiers pas, ils sont sur ton tableau de bord.");break}
+    {const r=5-s;toast((s===3&&S.wizN?S.wizN+" produits ajoutés · ":"")+(r===1?"On y est presque : plus qu'une étape !":"Étape faite ✓ Plus que "+r+" étapes."));S.wizN=0}
     S.wiz=s+1;window.scrollTo(0,0);render();break}
-  case "teamLink":try{const code=await window.SKB.newCode("equipe");S.teamLink=window.SKB.inviteLink(code);render()}catch(err){toast("Lien pas créé\u202f: la connexion à ta base a échoué. Réessaie, ou vérifie le réseau."+errC(err))}break;
+  case "teamLink":try{const code=await window.SKB.newCode("equipe");S.teamLink=window.SKB.inviteLink(code);if(!cfg().equipeInvitee)saveConfig({equipeInvitee:Date.now()}).catch(()=>{});render()}catch(err){toast("Lien pas créé\u202f: la connexion à ta base a échoué. Réessaie, ou vérifie le réseau."+errC(err))}break;
   case "saveLien":{const v=val("lienA").trim();if(v&&!/^https?:\/\//.test(v)){toast("Colle un lien qui commence par https://");break}await saveConfig({lienAppli:v});toast("Lien enregistré");break}
   case "copyMail":{const m=mailEquipe(lienEquipe());try{await navigator.clipboard.writeText(m.sujet+"\n\n"+m.body);toast("Message copié : colle-le dans ton e-mail")}catch(err){toast("Copie impossible sur cet appareil")}break}
   case "fichePdf":case "ficheShare":{const link=lienEquipe();if(!link)break;let blob;try{blob=await fichePdf(link)}catch(err){toast("Fiche pas créée\u202f: le module PDF n\'a pas pu se charger. Vérifie le réseau, puis réessaie."+errC(err));break}
