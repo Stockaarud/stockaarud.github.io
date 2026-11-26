@@ -1652,7 +1652,8 @@ const alMails=()=>alLire(alCfg().emails);
 const alRef=()=>{try{return new URL(window.SKB.url).hostname.split(".")[0]}catch(e){return ""}};
 const alNom=()=>(cfg().nomStructure||"").trim()||cfg().nomStock||"";
 const alDispo=()=>!!(RELAIS&&window.SKB&&!window.SKB.local&&alRef());
-async function relais(body){const r=await fetch(RELAIS,{method:"POST",headers:{"content-type":"application/json"},body:JSON.stringify(body)});const j=await r.json().catch(()=>({}));if(!r.ok)throw new Error(j.erreur||("relais "+r.status));return j}
+async function relais(body){const au=window.SKB&&window.SKB.relaisAuth?await window.SKB.relaisAuth():null;if(!au)throw new Error("Connecte-toi à ta base pour utiliser les alertes");
+  const r=await fetch(RELAIS,{method:"POST",headers:{"content-type":"application/json",...au},body:JSON.stringify({ref:alRef(),...body})});const j=await r.json().catch(()=>({}));if(!r.ok)throw new Error(j.erreur||("relais "+r.status));return j}
 const alMeteo=()=>{const st=computeStats(),ps=prodsActifs().filter(p=>st[p.id].moy>0).sort((a,b)=>st[a.id].autonomie-st[b.id].autonomie),l=e=>ps.filter(p=>st[p.id].etat===e).map(p=>({id:p.id,nom:p.nom,jours:isFinite(st[p.id].autonomie)?Math.round(st[p.id].autonomie):0}));return {urgents:l("crit"),aprevoir:l("warn"),tranquilles:ps.filter(p=>st[p.id].etat==="good").length}};
 let alT=0;
 async function alertesTick(force){
