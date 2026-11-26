@@ -327,12 +327,40 @@
         <li class="step step--fold" id="stats-rapport"><details class="fold"><summary class="fold-s"><span class="fold-t"><h2>Le rapport d’activité</h2><span class="fold-hint"></span></span></summary><div class="fold-in">
           <div class="step-body">
             <dl class="rows--dl rows--tight">
-              <div><dt>Chiffres de l’année</dt><dd>Tout le matériel distribué dans l’année : unités, nombre de saisies, références, coût estimé, le graphique par mois, la part de chaque catégorie et le détail produit par produit et par activité. <strong>Exporter le bilan</strong> sort le PDF, avec la comparaison à l’an dernier, les pertes, les prêts et dons, et les ruptures.</dd></div>
+              <div><dt>Chiffres de l’année</dt><dd>Tout le matériel distribué dans l’année : unités, nombre de saisies, références, coût estimé, le graphique par mois, la part de chaque catégorie et le détail produit par produit et par activité. <strong>Exporter le bilan</strong> sort un PDF court ; le <a href="#bilan-complet">bilan complet</a> va beaucoup plus loin.</dd></div>
               <div><dt>Récupération</dt><dd>Si vous faites noter le matériel récupéré : seringues usagées, collecteurs, kilos de DASRI, et le taux de récupération par rapport aux seringues distribuées.</dd></div>
               <div><dt>Par passage</dt><dd>Si vous importez le nombre de passages, le bilan ajoute le matériel distribué par passage.</dd></div>
             </dl>
           </div>
           <figure class="sheet shot shot--setup" style="--r: -1deg"><div data-kind="product" data-alt="Chiffres de l’année : unités distribuées, saisies, références, coût, et le graphique par mois."><img src="img/guide/s-bilan.jpg?v=11" width="780" height="1688" alt="Chiffres de l’année : unités distribuées, saisies, références, coût, et le graphique par mois." loading="lazy"></div></figure>
+        </div></details></li>
+
+        <li class="step step--fold" id="bilan-complet"><details class="fold"><summary class="fold-s"><span class="fold-t"><h2>Le bilan complet de l’année</h2><span class="fold-hint">Douze chapitres, en PDF, Excel ou Word.</span></span></summary><div class="fold-in">
+          <div class="step-body">
+            <p>En bas de <strong>Statistiques</strong>, <strong>Chiffres de l’année</strong> : trois boutons, <strong>PDF complet</strong>, <strong>Excel</strong> et <strong>Word</strong>. Le bilan est volontairement complet : gardez les chapitres utiles à votre rapport d’activité.</p>
+            <ol>
+              <li>Synthèse, avec toutes les années côte à côte.</li>
+              <li>Catégories de matériel, et leur évolution d’une année sur l’autre.</li>
+              <li>Activités, avec les passages et les unités par passage.</li>
+              <li>Mois par mois.</li>
+              <li>Produit par produit, détaillé par activité.</li>
+              <li>Prêts et dons faits, par association : unités, valeur, ce qui a été rendu et ce qui reste à rendre.</li>
+              <li>Dons et prêts reçus, par association.</li>
+              <li>Achats par fournisseur, et budget.</li>
+              <li>Pertes, casse et péremptions.</li>
+              <li>Ruptures de stock.</li>
+              <li>Stock de fin d’année et sa valeur.</li>
+              <li>Repères de réduction des risques.</li>
+            </ol>
+            <dl class="rows--dl rows--tight">
+              <div><dt>D’une année sur l’autre</dt><dd>Chaque chapitre se compare à l’année d’avant dès qu’elle existe dans l’appli, saisie au fil de l’eau ou <a href="#historique">reprise d’un historique</a>.</dd></div>
+              <div><dt>Excel</dt><dd>Un onglet par chapitre. Les graphiques sont de vrais graphiques Excel, liés à leur tableau : changez un chiffre, le graphique suit ; changez son type, ses couleurs ou son titre en le touchant.</dd></div>
+              <div><dt>Word</dt><dd>Le même contenu, graphiques compris, prêt à couper et à commenter. S’ouvre aussi dans LibreOffice et Google Docs.</dd></div>
+              <div><dt>Repères de RdR</dt><dd>Seringues distribuées (un kit d’injection en compte deux), taux de récupération, part de l’injection, de l’inhalation et du sniff, matériel par passage. Indiquez la file active de l’année, et le nombre de personnes qui s’injectent, pour avoir les chiffres par personne, dont les seringues par personne qui s’injecte, à comparer à la cible de l’OMS : 300 par an.</dd></div>
+              <div><dt>Les montants</dt><dd>Au prix actuel de chaque produit, sauf quand un prix de l’époque a été saisi.</dd></div>
+            </dl>
+          </div>
+          <figure class="sheet shot shot--setup" style="--r: 1deg"><div data-kind="product" data-alt="Le bilan complet : file active facultative, puis les boutons PDF, Excel et Word."><img src="img/guide/bilan-complet.jpg?v=13" width="780" height="1688" alt="Le bilan complet : file active facultative, puis les boutons PDF complet, Excel et Word." loading="lazy"></div></figure>
         </div></details></li>
       </ol>
       <h2 class="steps-group" id="g-stock">Le stock</h2>
@@ -370,24 +398,27 @@
           </div>
           <figure class="sheet shot shot--setup" style="--r: -1.2deg"><div data-kind="product" data-alt="L’inventaire guidé : un produit, son stock théorique, Valider et suivant."><img src="img/guide/inv.jpg?v=11" width="780" height="1688" alt="L’inventaire guidé : un produit, son stock théorique, Valider et suivant." loading="lazy"></div></figure>
         </div></details></li>
-        <li class="step step--fold" id="historique"><details class="fold"><summary class="fold-s"><span class="fold-t"><h2>Reprendre un historique</h2><span class="fold-hint">Vous suiviez le stock dans un tableur ?</span></span></summary><div class="fold-in">
+        <li class="step step--fold" id="historique"><details class="fold"><summary class="fold-s"><span class="fold-t"><h2>Reprendre un historique</h2><span class="fold-hint">Vous suiviez le stock dans un tableur ? Reprenez autant d’années que vous voulez.</span></span></summary><div class="fold-in">
           <div class="step-body">
-            <p>Vous suiviez le stock dans un tableur ? Importez les sorties des années précédentes : vous aurez tout de suite des statistiques, la comparaison avec l’an dernier et un budget prévisionnel fiable. <strong>Le stock actuel n’est pas touché</strong>.</p>
+            <p>Vous suiviez le stock dans un tableur ? Reprenez les années précédentes, même anciennes : statistiques, bilans comparés d’une année sur l’autre et budget prévisionnel fiable dès le premier jour. <strong>Le stock actuel n’est pas touché</strong> : seules les dates d’avant votre démarrage sur Stockaarud sont reprises.</p>
             <ol>
-              <li>Vérifiez que tout votre matériel est dans <strong>Réglages</strong>, <strong>Matériel</strong>, avec les bons noms.</li>
-              <li>Dans <strong>Réglages</strong>, <strong>Reprendre un historique</strong>, touchez <strong>Télécharger le modèle (CSV)</strong>. Il contient déjà une ligne par produit et une colonne par mois, pour les deux dernières années.</li>
-              <li>Ouvrez-le dans Excel ou LibreOffice et remplissez les quantités sorties chaque mois. Laissez vide ce que vous ne savez pas.</li>
-              <li>Enregistrez au format CSV, puis touchez <strong>Importer l’historique</strong>. L’appli montre ce qu’elle a lu avant d’enregistrer.</li>
+              <li>Vérifiez que votre matériel est dans <strong>Réglages</strong>, <strong>Matériel</strong>, avec les bons noms.</li>
+              <li>Dans <strong>Réglages</strong>, <strong>Reprendre un historique</strong>, touchez <strong>Télécharger le modèle (Excel)</strong>.</li>
+              <li>Remplissez les onglets que vous voulez : tous sont facultatifs. Laissez vide ce que vous ne savez pas.</li>
+              <li>Enregistrez, puis touchez <strong>Importer l’historique</strong> et choisissez le fichier, tel quel : pas besoin de le convertir. L’appli montre ce qu’elle a lu avant d’enregistrer.</li>
             </ol>
             <dl class="rows--dl rows--tight">
-              <div><dt>Prix de l’époque</dt><dd>La colonne prix unitaire est facultative. Remplie, elle donne le coût réel de cette année-là ; vide, le prix actuel est utilisé.</dd></div>
-              <div><dt>Par activité</dt><dd>Facultatif aussi : pour détailler un produit par activité, recopiez sa ligne et indiquez l’activité.</dd></div>
-              <div><dt>Passages</dt><dd>En tête de chaque année, une ligne « Passages » par activité accueille le nombre de personnes, mois par mois.</dd></div>
-              <div><dt>Une autre année</dt><dd>Recopiez un bloc et changez l’année.</dd></div>
-              <div><dt>Se tromper</dt><dd>Réimportez le fichier corrigé : il remplace les chiffres des mêmes mois. L’historique repris peut aussi être retiré d’un geste.</dd></div>
+              <div><dt>Sorties</dt><dd>Une ligne par produit et par année, une colonne par mois. L’activité et le prix unitaire de l’époque sont facultatifs. Les lignes « Passages » comptent les personnes.</dd></div>
+              <div><dt>Achats</dt><dd>Ce qui a été acheté chaque année, par fournisseur. Le montant suffit ; le produit et la quantité sont facultatifs.</dd></div>
+              <div><dt>Stock fin d’année</dt><dd>Ce qu’il restait au 31 décembre, produit par produit : le bilan en tire la valeur du stock et son évolution.</dd></div>
+              <div><dt>Prêts et dons</dt><dd>Sens (donné ou reçu), association, produit, quantité, et nature (don ou prêt).</dd></div>
+              <div><dt>Plusieurs années</dt><dd>Recopiez les lignes et changez l’année : 2015 marche aussi bien que l’an dernier.</dd></div>
+              <div><dt>Un produit disparu</dt><dd>Écrivez son nom tel quel. À l’import, l’appli propose de le créer « archivé » : il compte dans les bilans sans apparaître à l’équipe.</dd></div>
+              <div><dt>Format</dt><dd>Fichier Excel .xlsx, ou CSV pour les sorties seulement. L’ancien format .xls n’est pas lu : dans Excel, Fichier, Enregistrer sous, .xlsx.</dd></div>
+              <div><dt>Se tromper</dt><dd>Réimportez le fichier corrigé : il remplace les chiffres des mêmes mois. L’historique repris peut aussi être retiré d’un geste.</dd></div>
             </dl>
           </div>
-          <figure class="sheet shot shot--setup" style="--r: 1deg"><div data-kind="product" data-alt="Réglages, Reprendre un historique : télécharger le modèle, puis importer le fichier rempli."><img src="img/guide/histo.jpg?v=11" width="780" height="1688" alt="Réglages, Reprendre un historique : télécharger le modèle, puis importer le fichier rempli." loading="lazy"></div></figure>
+          <figure class="sheet shot shot--setup" style="--r: 1deg"><div data-kind="product" data-alt="Réglages, Reprendre un historique : télécharger le modèle Excel, puis importer le fichier rempli."><img src="img/guide/histo.jpg?v=13" width="780" height="1688" alt="Réglages, Reprendre un historique : télécharger le modèle Excel, puis importer le fichier rempli." loading="lazy"></div></figure>
         </div></details></li>
       </ol>
       <h2 class="steps-group" id="g-reglages">Les réglages</h2>
