@@ -1804,7 +1804,7 @@ async function directionPdf(){
   head("Présentation pour la direction");
   doc.setFont("helvetica","bold");doc.setFontSize(19);doc.setTextColor(...K);doc.text(doc.splitTextToSize("Le matériel de RdR suivi au jour le jour, sans tableur ni papier",Wd),X,y);y+=15;
   if(nomS){p("Proposé pour : "+nomS,{c:M,gap:5})}
-  {const KF=[["3","clics","pour noter une sortie"],["3","min","pour l'installer"],["0","€","ni abonnement ni licence"],["12","chapitres","dans le bilan de l'année"]],gw=4,bw=(Wd-gw*3)/4,bh=24;
+  {const KF=[["3","clics","pour noter une sortie"],["3","min","pour l'installer"],["0","€","ni abonnement ni licence à payer"],["12","chapitres","dans le bilan de l'année"]],gw=4,bw=(Wd-gw*3)/4,bh=24;
     KF.forEach(([n,u,t],i)=>{const bx=X+i*(bw+gw);doc.setFillColor(...(i===0?Y:[242,245,243]));doc.roundedRect(bx,y,bw,bh,2.5,2.5,"F");
       doc.setFont("helvetica","bold");doc.setFontSize(24);doc.setTextColor(...(i===0?K:G));doc.text(n,bx+5,y+11);const nw=doc.getTextWidth(n);doc.setFontSize(11);doc.text(u,bx+6+nw,y+11);
       doc.setFont("helvetica","normal");doc.setFontSize(9);doc.setTextColor(...(i===0?K:M));doc.text(doc.splitTextToSize(t,bw-9),bx+5,y+17)});
@@ -1820,7 +1820,7 @@ async function directionPdf(){
   y+=2;h2("Ce que ça demande");
   li("Installation : environ 3 minutes, une seule fois, par le responsable stock.","Puis 10 à 20 minutes pour compter le stock de départ, en une ou plusieurs fois.");
   li("Pour l'équipe : quelques secondes à chaque prise de matériel.","Aucune formation : une fiche de deux pages, un QR code pour rejoindre l'appli, sans compte ni mot de passe.");
-  li("Coût : aucun.","Logiciel libre (licence MIT), base de données sur l'offre gratuite de Supabase (500 Mo par base, très largement suffisant pour des données de stock). Aucun abonnement.");
+  li("Coût : aucun.","Logiciel libre (licence européenne EUPL 1.2). Base de données sur l'offre gratuite de Supabase : 500 Mo par base, très largement suffisant pour du stock.");
   if(y+31<BAS){y+=2;h2("Une sortie, côté équipe");const ST=[["Où ?","Bus, local, maraude, festif..."],["Quoi ?","Le produit, rangé par catégorie"],["Combien ?","En unités, boîtes ou cartons, puis Valider"]],pw=50,ph=20,gp=(Wd-pw*3)/2;
     ST.forEach(([t,d],i)=>{const px=X+i*(pw+gp);doc.setDrawColor(...G);doc.setLineWidth(0.6);doc.setFillColor(255,255,255);doc.roundedRect(px,y,pw,ph,4,4,"FD");doc.setFillColor(...G);
       doc.setFillColor(...Y);doc.circle(px+7,y+7.5,3.6,"F");doc.setFont("helvetica","bold");doc.setFontSize(11);doc.setTextColor(...K);doc.text(String(i+1),px+7,y+8.8,{align:"center"});doc.text(t,px+13,y+8.8);
