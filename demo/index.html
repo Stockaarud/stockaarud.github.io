@@ -607,6 +607,21 @@ details.panel.fold[open]>summary::after{transform:rotate(-135deg);margin-bottom:
 .brand .caarud{position:relative}
 .brand .caarud::after{content:"";position:absolute;inset:-11px -4px}
 .tlogout{text-align:center;margin-top:40px}
+
+/* Finitions (revue « make interfaces feel better », nov. 2026) */
+html{-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale}
+h1,h2,h3{text-wrap:balance}
+p,.note,.alert>span,.empty{text-wrap:pretty}
+.v,.n,.pill,.rank,.ac,.an small,.cr-d,.cr-n,.bh,table,input[type=number],input[inputmode=numeric],input[inputmode=decimal]{font-variant-numeric:tabular-nums}
+.tile,.chip,.btn,.hbtn,.actarr,.seg button,.svnav button,.subnav button,.kpi.kl,.lg button,.rank button,.brand .caarud{transition-property:transform,background-color,border-color,color,box-shadow;transition-duration:.12s,.2s,.2s,.2s,.25s;transition-timing-function:ease-out}
+.tile:active,.chip:active,.btn:active,.hbtn:active,.actarr:active,.seg button:active,.svnav button:active,.subnav button:active,.kpi.kl:active,.lg button:active,.rank button:active{transform:scale(.96)}
+.svnav button,.scopebar .chip{min-height:44px}
+.rank button{min-height:44px}
+details>summary:not([class]){padding-block:10px;cursor:pointer}
+details.cat{border-radius:18px}details.cat .tile{border-radius:8px}
+.alert{border-radius:16px}.alert .btn.small{border-radius:6px}
+.tile,.kpi,.panel{border-color:transparent;box-shadow:0 0 0 1px var(--line),0 1px 2px rgb(0 0 0/.04),0 3px 10px rgb(0 0 0/.04)}
+.tile:hover,.kpi.kl:hover{border-color:transparent;box-shadow:0 0 0 1.5px var(--accent),0 1px 2px rgb(0 0 0/.05),0 4px 12px rgb(0 0 0/.06)}
 </style>
 </head>
 <body>
