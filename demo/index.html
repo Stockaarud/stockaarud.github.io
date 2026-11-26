@@ -352,6 +352,10 @@ details.cat>.grid{margin:0;padding:0 10px 10px}
 .pp li.now .ck{border-color:var(--brand-2);background:var(--brand-2);color:var(--brand-ink,#14201d)}.pp li.now .t{font-weight:700}
 .pp li .t{flex:1;min-width:140px}.pp li .btn{margin-left:auto}
 .pp .x{position:absolute;top:8px;right:8px;width:44px;height:44px;border:0;background:none;color:var(--muted);font-size:22px;cursor:pointer;border-radius:10px}
+.pp.lock{border-color:var(--line);border-style:dashed}.pp.lock h2{margin-right:0}
+.unl{display:flex;flex-wrap:wrap;gap:6px 14px;margin-top:10px;font-size:14px;color:var(--muted)}.unl b{color:var(--fg)}
+.invpg{margin:10px 0 4px}.invpg .ppmot{margin:0 0 6px;font-weight:700;color:var(--accent)}.invok{color:var(--accent);font-weight:700}
+.bilx{margin-top:16px;padding-top:14px;border-top:2px solid var(--brand-2)}.bilx h3{font-size:18px;margin-bottom:4px}
 .fete{position:fixed;inset:0;z-index:60;display:grid;place-items:center;background:rgb(0 0 0/.45);padding:16px;overflow:hidden}
 .fete .carte{position:relative;z-index:1;max-width:380px;width:100%;background:var(--surface);color:var(--fg);border-radius:18px;padding:24px 20px;text-align:center;box-shadow:0 12px 40px rgb(0 0 0/.3)}
 .fete .carte .big{font-size:52px;line-height:1;margin-bottom:8px}.fete h2{margin:0 0 6px;font-size:24px}.fete p{margin:0 0 16px}
@@ -875,14 +879,15 @@ function histoLire(txt){const lines=txt.replace(/^\uFEFF/,"").split(/\r?\n/).fil
   return {rows,pass,parAn,passAn,avecPrix:rows.filter(r=>r.pu>0).length,inconnus:[...inconnus],actInc:[...actInc],bad,tard,lim}}
 function histoPanel(){const n=S.mvts.filter(m=>m.histo).length+(S.terrain||[]).filter(m=>m.histo).length,I=S.histoImp;
   let h='<div class="panel" style="margin-top:14px"><h2>Reprendre un historique</h2><p class="note">Tu suivais le stock dans un tableur ? Importe les sorties des années précédentes pour avoir tout de suite des statistiques, la comparaison avec l\'an dernier et un budget prévisionnel fiable. Le stock actuel n\'est pas touché : seules les dates d\'avant ton démarrage sur Stockaarud sont reprises.</p>'
-   +'<div class="row" style="margin-top:8px"><button class="btn" data-act="histoModele">Télécharger le modèle (CSV)</button><label class="btn primary">Importer l\'historique<input type="file" accept=".csv,.txt,text/csv" id="histoCsv" hidden></label>'+(n?'<button class="btn danger" data-act="histoDel">Supprimer l\'historique importé ('+nfr(n)+')</button>':'')+'</div>'
-   +'<p class="note" style="margin-top:6px"><b>D\'abord</b>, vérifie que tout ton matériel est dans Réglages, rubrique Matériel, avec les bons noms : le modèle reprend ces noms, tu n\'as plus qu\'à remplir les chiffres.</p><p class="note">Le modèle est un tableau : une ligne par produit, une colonne par mois, pour les deux dernières années. En tête de chaque année, une ligne « Passages » par activité pour le nombre de personnes (facultatif). La colonne <b>prix unitaire</b> est facultative : le prix de cette année-là, sinon le prix actuel est utilisé. La colonne <b>activité</b> aussi : pour détailler un produit par activité, recopie sa ligne. Pour une autre année, recopie un bloc et change l\'année. Dans Excel : Fichier, Enregistrer sous, format CSV.</p>';
+   +'<div class="row" style="margin-top:8px"><button class="btn" data-act="histoModele">Télécharger le modèle (Excel)</button><label class="btn primary">Importer l\'historique<input type="file" accept=".xlsx,.csv,.txt,text/csv,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" id="histoCsv" hidden></label>'+(n?'<button class="btn danger" data-act="histoDel">Supprimer l\'historique importé ('+nfr(n)+')</button>':'')+'</div>'
+   +'<p class="note" style="margin-top:6px"><b>D\'abord</b>, vérifie que tout ton matériel est dans Réglages, rubrique Matériel, avec les bons noms : le modèle reprend ces noms, tu n\'as plus qu\'à remplir les chiffres.</p><p class="note">Le modèle est un tableau : une ligne par produit, une colonne par mois, pour les deux dernières années. En tête de chaque année, une ligne « Passages » par activité pour le nombre de personnes (facultatif). La colonne <b>prix unitaire</b> est facultative : le prix de cette année-là, sinon le prix actuel est utilisé. La colonne <b>activité</b> aussi : pour détailler un produit par activité, recopie sa ligne. Pour une autre année, recopie un bloc et change l\'année. Le modèle Excel a aussi des onglets pour les <b>achats</b>, le <b>stock de fin d\'année</b> et les <b>prêts et dons</b>, pour comparer les bilans d\'une année sur l\'autre : reprends autant d\'années que tu veux, même anciennes. Un fichier CSV marche aussi, pour les sorties seulement.</p>';
   if(I)h+='<div class="narr" style="margin-top:10px">'+(I.err?'<b>Fichier non reconnu</b><p>'+esc(I.err)+'</p><button class="btn small" data-act="histoNo">Fermer</button>':'<b>'+nfr(I.rows.length)+' chiffres de sorties'+(I.pass.length?' et '+nfr(I.pass.length)+' de passages':'')+' reconnus</b><p>'+(Object.keys(I.parAn).sort().map(y=>y+" : "+nfr(I.parAn[y])+" unités"+(I.passAn[y]?", "+nfr(I.passAn[y])+" passages":"")).join(" · ")||"Aucune sortie à importer.")+'</p>'+(I.avecPrix?'<p>'+nfr(I.avecPrix)+' chiffres avec le prix de l\'époque.</p>':'')
-    +(I.inconnus.length?'<p><b>Produits non reconnus ('+I.inconnus.length+')</b>, lignes ignorées : '+esc(I.inconnus.slice(0,12).join(", "))+(I.inconnus.length>12?"…":"")+'. Corrige le nom dans le fichier, ou ajoute le produit dans Matériel, puis réimporte.</p>':'')
+    +((I.achats||[]).length||(I.stocks||[]).length||(I.dons||[]).length?'<p>Aussi reconnus : '+[(I.achats||[]).length&&nfr(I.achats.length)+" lignes d\'achats",(I.stocks||[]).length&&nfr(I.stocks.length)+" lignes de stock de fin d\'année",(I.dons||[]).length&&nfr(I.dons.length)+" lignes de prêts et dons"].filter(Boolean).join(", ")+'.</p>':'')
+    +(I.inconnus.length?'<p><b>Produits non reconnus ('+I.inconnus.length+')</b>, lignes ignorées : '+esc(I.inconnus.slice(0,12).join(", "))+(I.inconnus.length>12?"…":"")+'. Si ce sont des produits que tu ne distribues plus, crée-les en « archivé » : ils compteront dans les bilans sans apparaître à l\'équipe. Sinon, corrige le nom dans le fichier et réimporte.</p>'+(S.histoSrc?'<button class="btn small" data-act="histoCreer">Créer ces '+I.inconnus.length+' produits en archivé</button>':''):'')
     +(I.actInc.length?'<p>Activités non reconnues, importées sans activité : '+esc(I.actInc.slice(0,8).join(", "))+'.</p>':'')
     +(I.tard?'<p>'+nfr(I.tard)+' ligne'+(I.tard>1?"s":"")+' ignorée'+(I.tard>1?"s":"")+' : date postérieure au démarrage sur Stockaarud ('+new Date(I.lim).toLocaleDateString("fr-FR")+').</p>':'')
     +(I.bad.length?'<p>Dates non comprises : '+esc(I.bad.slice(0,5).join(", "))+'.</p>':'')
-    +'<div class="row" style="margin-top:8px">'+(I.rows.length||I.pass.length?'<button class="btn primary" data-act="histoOk">Importer</button>':'')+'<button class="btn" data-act="histoNo">Annuler</button></div>')+'</div>';
+    +'<div class="row" style="margin-top:8px">'+(I.rows.length||I.pass.length||(I.achats||[]).length||(I.stocks||[]).length||(I.dons||[]).length?'<button class="btn primary" data-act="histoOk">Importer</button>':'')+'<button class="btn" data-act="histoNo">Annuler</button></div>')+'</div>';
   return h+'</div>'}
 /* Modèle CSV à compléter : une ligne par jour, une colonne par activité */
 function passModele(){const A=activitesActives(),d=new Date(),y=d.getFullYear(),m=d.getMonth(),n=new Date(y,m+1,0).getDate(),L=[["date"].concat(A.map(a=>a.nom))];
@@ -989,7 +994,7 @@ let rzT=0;window.addEventListener("resize",()=>{clearTimeout(rzT);rzT=setTimeout
 
 /* ---------- Démarrage ---------- */
 async function start(){
-  S.view=ls.get("view","equipe");S.unit=ls.get("unit","unite");S.lieu=ls.get("lieu",null);S.activite=ls.get("activiteJour",null)===today()?ls.get("activite",null):null;
+  S.invDraft=ls.get("invDraft",null)||{};S.view=ls.get("view","equipe");S.unit=ls.get("unit","unite");S.lieu=ls.get("lieu",null);S.activite=ls.get("activiteJour",null)===today()?ls.get("activite",null):null;
   render();
   const [db,user,dl,assets]=await Promise.all([claude.use("db"),claude.use("user"),claude.use("downloads"),claude.use("assets")]);
   S.db=db;S.user=user;S.dl=dl;S.assets=assets;
@@ -1555,7 +1560,7 @@ const waHref=t=>"https://wa.me/?text="+encodeURIComponent(t);
 const WA_ICO='<svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" style="vertical-align:-3px;margin-right:6px"><path fill="currentColor" d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2Zm0 18.2a8.2 8.2 0 0 1-4.2-1.2l-.3-.2-3 .8.8-2.9-.2-.3A8.2 8.2 0 1 1 12 20.2Zm4.5-6.1c-.2-.1-1.5-.7-1.7-.8s-.4-.1-.6.1-.7.8-.8 1-.3.2-.5.1a6.7 6.7 0 0 1-3.3-2.9c-.3-.4.2-.4.7-1.4a.5.5 0 0 0 0-.5l-.8-1.9c-.2-.5-.4-.4-.6-.4h-.5a1 1 0 0 0-.7.3 3 3 0 0 0-.9 2.2 5.2 5.2 0 0 0 1.1 2.7 11.8 11.8 0 0 0 4.5 4c1.7.7 2.3.8 3.2.6a2.7 2.7 0 0 0 1.8-1.2 2.2 2.2 0 0 0 .1-1.2c-.1-.1-.3-.2-.5-.3Z"/></svg>';
 function equipePanel(inWizard){
   const link=lienEquipe();let h='<div class="panel" style="margin-top:12px"><h2>Inviter l\'équipe</h2>';
-  if(window.SKB&&window.SKB.local)return h+'<p class="note">Tu utilises Stockaarud sans compte : le stock est gardé sur cet appareil seulement. Pour inviter l\'équipe, et ne rien perdre si l\'appareil casse, passe en ligne. Compte 15 minutes sur un ordinateur ; tout ce que tu as saisi sera repris.</p><div class="row" style="margin-top:10px"><button class="btn primary" data-act="goOnline">Passer en ligne</button><button class="btn" data-act="backup">Télécharger une sauvegarde</button></div></div>';
+  if(window.SKB&&window.SKB.local)return h+'<p class="note">Tu utilises Stockaarud sans compte : le stock est gardé sur cet appareil seulement. Pour inviter l\'équipe, et ne rien perdre si l\'appareil casse, passe en ligne. Compte 3 minutes, même depuis ce téléphone ; tout ce que tu as saisi sera repris.</p><div class="row" style="margin-top:10px"><button class="btn primary" data-act="goOnline">Passer en ligne</button><button class="btn" data-act="backup">Télécharger une sauvegarde</button></div></div>';
   if(window.SKB){h+='<p class="note">Un lien et un QR code personnels à ton CAARUD : en l\'ouvrant, le téléphone rejoint l\'équipe sans créer de compte.</p>'+(link?'':'<button class="btn primary" style="margin-top:10px" data-act="teamLink">Créer le lien de l\'équipe</button>')}
   else{h+='<p class="note">Copie ici le lien de cette page (menu Partager, puis « Copier le lien »). Pour qu\'un membre de l\'équipe puisse l\'ouvrir, invite-le aussi dans Partager, avec l\'accès <b>Contributeur</b>.</p><div class="row" style="margin-top:8px"><input id="lienA" value="'+esc(cfg().lienAppli||"")+'" placeholder="https://claude.ai/artifact/…" style="flex:1;min-width:200px" aria-label="Lien de l\'appli"><button class="btn" data-act="saveLien">Enregistrer</button></div>'}
   if(link){const m=mailEquipe(link);
@@ -1584,6 +1589,243 @@ async function afficheDoc(){const doc=await newPdf("portrait"),C=PDFC,W=210,link
   return doc}
 let jspdfP=null;
 function loadJsPdf(){if(window.jspdf)return Promise.resolve();if(!jspdfP)jspdfP=new Promise((ok,ko)=>{const s=document.createElement("script");s.src="/stockaarud/vendor/jspdf.umd.min.js";s.onload=ok;s.onerror=()=>{jspdfP=null;ko()};document.head.appendChild(s)});return jspdfP}
+/* ================= Bilan complet de l'année : un seul modèle, rendu en PDF, Excel et Word ================= */
+const HT=new Set(["achatHisto","stockHisto","recuHisto","donneHisto"]);/* chiffres annuels repris d'un historique : jamais dans le stock ni dans le journal */
+let bilanP=null;
+function loadBilan(){if(window.STKBilan&&window.fflate)return Promise.resolve();if(!bilanP){const one=src=>new Promise((ok,ko)=>{const s=document.createElement("script");s.src=src;s.onload=ok;s.onerror=()=>{bilanP=null;ko(new Error("chargement"))};document.head.appendChild(s)});bilanP=one("/stockaarud/vendor/fflate.js").then(()=>one("/stockaarud/bilan.js"))}return bilanP}
+/* Stock théorique de chaque produit à une date, d'après les mouvements réels. */
+function stockAu(t){const L={};let vu=false;for(const m of allMvts()){if(m.t>t||m.histo||HT.has(m.type)||!m.produit)continue;const B=L[m.produit]=L[m.produit]||{};const add=(l,v)=>{B[l||"_"]=(B[l||"_"]||0)+v};
+    if(m.type==="inventaire"){B[m.lieu||"_"]=num(m.qte,0);vu=true}else if(m.type==="reception"||m.type==="entree"){add(m.lieu,num(m.qte,0));vu=true}else if(m.type==="transfert"){add(m.lieu,-num(m.qte,0));add(m.vers,num(m.qte,0))}else if(m.type==="sortie"||m.type==="depannage"||m.type==="perte")add(m.lieu,-num(m.qte,0))}
+  if(!vu)return null;const out=new Map();for(const k in L)out.set(k,Math.max(0,Object.values(L[k]).reduce((a,b)=>a+b,0)));return out}
+function stockFinAnnee(y){const H=allMvts().filter(m=>m.type==="stockHisto"&&new Date(m.t).getFullYear()===y);if(H.length){const o=new Map();for(const m of H)o.set(m.produit,(o.get(m.produit)||0)+num(m.qte,0));return {map:o,src:"repris de l'historique"}}
+  const fin=moisDebut(y+1,0)-1;if(histoDebut()>fin)return null;const cy=new Date().getFullYear(),map=stockAu(Math.min(Date.now(),fin));return map?{map,src:y===cy?"au "+dateFr(Date.now()):"au 31 décembre "+y}:null}
+/* Équivalent seringues : un kit d'injection en contient deux. */
+function seringuesDe(p){const n=norm(p.nom||"");if(/kit/.test(n)&&/(inject|steribox|kap|kit ?\+)/.test(n))return 2;if(/seringue/.test(n)&&!/(recup|collect|conteneur|container|boite a)/.test(n))return 1;return 0}
+function bilanComplet(y){const sc=ACT_SCOPE;ACT_SCOPE=[];try{return bilanComplet0(y)}finally{ACT_SCOPE=sc}}
+function bilanComplet0(y){
+  const now=Date.now(),cy=new Date().getFullYear(),a=moisDebut(y,0),b=moisDebut(y+1,0),M=allMvts(),an=m=>new Date(m.t).getFullYear(),c=cfg();
+  const yrs=[...new Set(M.filter(m=>m.type==="sortie"&&S.produits.has(m.produit)).map(an))].sort((p,q)=>p-q);if(!yrs.includes(y))yrs.push(y),yrs.sort((p,q)=>p-q);
+  const DY={};const dat=yy=>DY[yy]||(DY[yy]=bilanData(yy));const D=dat(y),aP=yrs.includes(y-1),P=aP?dat(y-1):null;
+  const ev=(n,p)=>p>0?(n-p)/p:null,sum=A=>A.reduce((x,v)=>x+v,0),prix=p=>num(p&&p.prix,0),pn=id=>(S.produits.get(id)||{}).nom||"?",cN="en "+y,cP="en "+(y-1);
+  const val=ms=>sum(ms.map(coutM)),qte=ms=>sum(ms.map(m=>num(m.qte,0)));
+  const passY=yy=>passagesEntre(moisDebut(yy,0),moisDebut(yy+1,0));
+  const enCours=y===cy?" (année en cours, au "+dateFr(now)+")":"";
+  const S_=[];const sec=(titre,intro,kpis,tables)=>S_.push({titre,intro,kpis:kpis.filter(Boolean),tables:tables.filter(t=>t&&t.rows.length)});
+  const tot=(lab,rows,idx,extra)=>{const r=new Array(rows[0]?rows[0].length:idx.length+1).fill("");r[0]=lab;for(const i of idx)r[i]=sum(rows.map(x=>typeof x[i]==="number"?x[i]:0));if(extra)extra(r);return r};
+  const parAsso=(ms,nom)=>{const o={};for(const m of ms){const k=nom(m);(o[k]=o[k]||[]).push(m)}return o};
+  const asso=m=>{const n=assoNom(m);return !n||n==="?"?"Non précisé":n};
+
+  /* 1. Synthèse */
+  {const np=passY(y),npP=aP?passY(y-1):0;
+   const T={titre:"D'une année sur l'autre",cols:[{t:"Année",f:"s"},{t:"Unités distribuées",f:"n"},{t:"Valeur estimée",f:"e"},{t:"Références",f:"n"},{t:"Passages",f:"n"},{t:"Unités par passage",f:"d"}],rows:yrs.map(yy=>{const d=dat(yy),p=passY(yy);return [String(yy),d.unites,Math.round(d.cout),d.refs,p||null,p?d.unites/p:null]}),chart:yrs.length>1?{type:"line",titre:"Unités distribuées par année",cat:0,ser:[1]}:null};
+   sec("Synthèse","Matériel sorti vers les activités "+cN+enCours+". Les pertes, les prêts et les dons à d'autres associations sont comptés à part, dans leurs chapitres.",[
+    ["Unités distribuées",nfr(D.unites)],D.cout>0&&["Valeur estimée du matériel distribué",eur(D.cout)],["Références distribuées",String(D.refs)],["Saisies de sortie",nfr(D.ms.length)],np&&["Passages comptés",nfr(np)],
+    P&&P.unites>0&&["Évolution des unités par rapport à "+(y-1),pcs((D.unites-P.unites)/P.unites*100)+" ("+nfr(P.unites)+" "+cP+")"],P&&P.cout>0&&D.cout>0&&["Évolution de la valeur par rapport à "+(y-1),pcs((D.cout-P.cout)/P.cout*100)]],[T])}
+
+  /* 2. Catégories */
+  {const K=Object.keys(CATS),vc=d=>{const o={};for(const m of d.ms){const k=catOf(S.produits.get(m.produit));o[k]=(o[k]||0)+coutM(m)}return o},VN=vc(D);
+   const rows=K.filter(k=>D.parCat[k]||(P&&P.parCat[k])).map(k=>[CATS[k],D.parCat[k]||0].concat(aP?[P.parCat[k]||0,ev(D.parCat[k]||0,P.parCat[k]||0)]:[]).concat([D.unites?(D.parCat[k]||0)/D.unites:0,Math.round(VN[k]||0)]));
+   const cols=[{t:"Catégorie",f:"s"},{t:"Unités "+y,f:"n"}].concat(aP?[{t:"Unités "+(y-1),f:"n"},{t:"Évolution",f:"v"}]:[]).concat([{t:"Part du total",f:"p"},{t:"Valeur "+y,f:"e"}]);
+   if(rows.length)rows.push(tot("Total",rows,aP?[1,2,5]:[1,3],r=>{if(aP)r[3]=ev(r[1],r[2]);r[aP?4:2]=1}));
+   const ys=yrs.slice(-6),T2=ys.length>1?{titre:"Les catégories, année par année",cols:[{t:"Catégorie",f:"s"}].concat(ys.map(yy=>({t:String(yy),f:"n"}))),rows:K.filter(k=>ys.some(yy=>dat(yy).parCat[k])).map(k=>[CATS[k]].concat(ys.map(yy=>dat(yy).parCat[k]||0))),chart:{type:"bar",titre:"Unités par catégorie et par année",cat:0,ser:ys.map((_,i)=>i+1)}}:null;
+   sec("Par catégorie de matériel","Injection, inhalation, sniff, santé sexuelle… : la répartition du matériel distribué dit comment les pratiques évoluent.",[],[{titre:"Catégories "+cN,cols,rows,total:true,chart:{type:"pie",titre:"Répartition par catégorie "+cN,cat:0,ser:[1]}},T2])}
+
+  /* 3. Activités */
+  {const ids=[...new Set(D.ms.map(m=>m.activite||"").concat(P?P.ms.map(m=>m.activite||""):[]))],nomA=id=>id?actNom(id):"Sans activité";
+   const rows=ids.map(id=>{const ms=D.ms.filter(m=>(m.activite||"")===id),q=qte(ms),qp=P?qte(P.ms.filter(m=>(m.activite||"")===id)):0,np=id?passagesEntre(a,b,id):0;
+     return [nomA(id),q].concat(aP?[qp,ev(q,qp)]:[]).concat([ms.length,Math.round(val(ms)),np||null,np?q/np:null])}).sort((p,q)=>q[1]-p[1]);
+   const cols=[{t:"Activité",f:"s"},{t:"Unités "+y,f:"n"}].concat(aP?[{t:"Unités "+(y-1),f:"n"},{t:"Évolution",f:"v"}]:[]).concat([{t:"Saisies",f:"n"},{t:"Valeur",f:"e"},{t:"Passages",f:"n"},{t:"Unités par passage",f:"d"}]);
+   if(rows.length)rows.push(tot("Total",rows,aP?[1,2,4,5]:[1,2,3],r=>{if(aP)r[3]=ev(r[1],r[2])}));
+   const ys=yrs.slice(-6),top=ids.slice().sort((p,q)=>qte(D.ms.filter(m=>(m.activite||"")===q))-qte(D.ms.filter(m=>(m.activite||"")===p))).slice(0,6);
+   const T2=ys.length>1?{titre:"Les activités, année par année",cols:[{t:"Année",f:"s"}].concat(top.map(id=>({t:nomA(id),f:"n"}))),rows:ys.map(yy=>[String(yy)].concat(top.map(id=>qte(dat(yy).ms.filter(m=>(m.activite||"")===id))))),chart:{type:"line",titre:"Unités par activité et par année",cat:0,ser:top.map((_,i)=>i+1)}}:null;
+   sec("Par activité","Où part le matériel : accueil, maraude, bus, festif…",[],[{titre:"Activités "+cN,cols,rows,total:true,chart:{type:"barh",titre:"Unités par activité",cat:0,ser:aP?[1,2]:[1]}},T2])}
+
+  /* 4. Mois */
+  {const pm=MOIS.map((_,i)=>passagesEntre(moisDebut(y,i),moisDebut(y,i+1)));const aPass=pm.some(v=>v>0);
+   const cols=[{t:"Mois",f:"s"},{t:"Unités "+y,f:"n"}].concat(aP?[{t:"Unités "+(y-1),f:"n"}]:[]).concat(aPass?[{t:"Passages "+y,f:"n"}]:[]);
+   const rows=MOIS.map((mo,i)=>[mo,D.parMois[i]].concat(aP?[P.parMois[i]]:[]).concat(aPass?[pm[i]]:[]));
+   sec("Mois par mois","Les creux et les pics de l'année"+(aP?", comparés à "+(y-1):"")+".",[],[{titre:"Unités distribuées par mois",cols,rows,chart:{type:"bar",titre:"Unités par mois",cat:0,ser:aP?[1,2]:[1]}}])}
+
+  /* 5. Produits */
+  {const acts=D.acts,rows=[];for(const k of Object.keys(CATS)){for(const p of ordreCat([...S.produits.values()]).filter(p=>catOf(p)===k&&(D.rows[p.id]||(P&&P.rows[p.id])))){const r=D.rows[p.id]||{tot:0,act:{}},q0=P&&P.rows[p.id]?P.rows[p.id].tot:0;
+     rows.push([p.nom,CATS[k],r.tot].concat(aP?[q0,ev(r.tot,q0)]:[]).concat([Math.round(val(D.ms.filter(m=>m.produit===p.id)))]).concat(acts.map(x=>r.act[x.id]||null)))}}
+   const cols=[{t:"Produit",f:"s"},{t:"Catégorie",f:"s"},{t:"Unités "+y,f:"n"}].concat(aP?[{t:"Unités "+(y-1),f:"n"},{t:"Évolution",f:"v"}]:[]).concat([{t:"Valeur",f:"e"}]).concat(acts.map(x=>({t:x.nom,f:"n"})));
+   const top=rows.slice().sort((p,q)=>q[2]-p[2]).slice(0,12).map(r=>[r[0],r[2]].concat(aP?[r[3]]:[]));
+   sec("Produit par produit","Tout le matériel distribué, avec le détail par activité.",[],[{titre:"Les 12 produits les plus distribués",cols:[{t:"Produit",f:"s"},{t:"Unités "+y,f:"n"}].concat(aP?[{t:"Unités "+(y-1),f:"n"}]:[]),rows:top,chart:{type:"barh",titre:"Les produits les plus distribués",cat:0,ser:aP?[1,2]:[1]}},{titre:"Tous les produits",cols,rows}])}
+
+  /* 6 et 7. Prêts et dons, dans les deux sens */
+  {const R1=rendusSet(),inY=(m,yy)=>an(m)===yy;
+   const faits=yy=>M.filter(m=>inY(m,yy)&&((m.type==="depannage"&&!m.rendBack)||m.type==="donneHisto")&&S.produits.has(m.produit)),recus=yy=>M.filter(m=>inY(m,yy)&&((m.type==="entree"&&(m.origine==="don"||m.origine==="emprunt"))||m.type==="recuHisto")&&S.produits.has(m.produit));
+   const estPret=m=>!!m.aRendre||m.nature==="pret";
+   const bloc=(ms,msP,titre,intro,labPret,noteReste)=>{const G=parAsso(ms,asso),rows=Object.keys(G).map(k=>{const A=G[k],pr=A.filter(estPret),suivis=pr.filter(m=>!HT.has(m.type)),reste=suivis.filter(m=>!estRendu(m,R1));return [k,qte(A),Math.round(val(A)),qte(A)-qte(pr),qte(pr),suivis.length?qte(suivis)-qte(reste):null,suivis.length?qte(reste):null]}).sort((p,q)=>q[1]-p[1]);
+     if(rows.length)rows.push(tot("Total",rows,[1,2,3,4,5,6]));
+     const det=[];for(const k of Object.keys(G).sort((p,q)=>qte(G[q])-qte(G[p]))){const bp={};for(const m of G[k]){const kk=m.produit+"|"+(estPret(m)?"Prêt":"Don");bp[kk]=bp[kk]||{q:0,v:0};bp[kk].q+=num(m.qte,0);bp[kk].v+=coutM(m)}
+       for(const kk of Object.keys(bp).sort((p,q)=>bp[q].q-bp[p].q)){const [pid,nat]=kk.split("|");det.push([k,pn(pid),nat,bp[kk].q,Math.round(bp[kk].v)])}}
+     const q=qte(ms),qp=qte(msP);
+     sec(titre,intro,[["Unités",nfr(q)],val(ms)>0&&["Valeur estimée",eur(val(ms))],["Associations concernées",String(Object.keys(G).length)],aP&&["En "+(y-1),nfr(qp)+" unités"+(qp>0?" ("+pcs((q-qp)/qp*100)+")":"")]],
+      [{titre:"Par association",note:noteReste,cols:[{t:"Association",f:"s"},{t:"Unités",f:"n"},{t:"Valeur",f:"e"},{t:"dont dons",f:"n"},{t:labPret,f:"n"},{t:"rendus",f:"n"},{t:"reste à rendre",f:"n"}],rows,total:true,chart:rows.length>2?{type:"pie",titre:"Répartition par association",cat:0,ser:[1]}:null},
+       {titre:"Détail par association et par produit",cols:[{t:"Association",f:"s"},{t:"Produit",f:"s"},{t:"Nature",f:"s"},{t:"Unités",f:"n"},{t:"Valeur",f:"e"}],rows:det}]);
+     if(!ms.length)S_[S_.length-1].intro+=" Rien d'enregistré "+cN+"."};
+   bloc(faits(y),aP?faits(y-1):[],"Prêts et dons à d'autres associations","Le matériel sorti du stock pour dépanner une autre structure. Il n'est pas compté dans le matériel distribué.","dont prêts","« Reste à rendre » : ce que l'association doit encore nous rendre.");
+   bloc(recus(y),aP?recus(y-1):[],"Dons et prêts reçus","Le matériel entré en stock sans achat : dons, et emprunts à une autre structure.","dont emprunts","« Reste à rendre » : ce que nous devons encore rendre.")}
+
+  /* 8. Achats et budget */
+  {const ach=yy=>{const o={};const add=(f,q,v)=>{f=f||"Non précisé";o[f]=o[f]||{q:0,v:0};o[f].q+=q;o[f].v+=v};
+     for(const m of M){if(an(m)!==yy)continue;if(m.type==="reception"&&S.produits.has(m.produit))add(fournNom(S.produits.get(m.produit)),num(m.qte,0),coutM(m));else if(m.type==="achatHisto")add(m.fournisseurNom||(m.produit&&fournNom(S.produits.get(m.produit))),num(m.qte,0),num(m.montant,0)>0?num(m.montant):coutM(m))}return o};
+   const A=ach(y),AP=aP?ach(y-1):{},ks=[...new Set(Object.keys(A).concat(Object.keys(AP)))],tv=o=>sum(Object.values(o).map(x=>x.v));
+   const rows=ks.map(k=>[k,Math.round((A[k]||{v:0}).v)].concat(aP?[Math.round((AP[k]||{v:0}).v),ev((A[k]||{v:0}).v,(AP[k]||{v:0}).v)]:[]).concat([(A[k]||{q:0}).q])).sort((p,q)=>q[1]-p[1]);
+   if(rows.length)rows.push(tot("Total",rows,aP?[1,2,4]:[1,2],r=>{if(aP)r[3]=ev(r[1],r[2])}));
+   const bud=num(c.budget,0),tA=tv(A),aAch=yrs.map(yy=>[String(yy),Math.round(tv(ach(yy))),Math.round(dat(yy).cout)]);
+   sec("Achats et budget","Ce qui a été acheté (livraisons reçues), par fournisseur, et ce que le matériel distribué représente. Montants calculés au prix actuel de chaque produit, sauf prix d'époque saisi.",[
+     ["Achats reçus "+cN,eur(tA)],aP&&["Achats reçus "+cP,eur(tv(AP))+(tv(AP)>0?" ("+pcs((tA-tv(AP))/tv(AP)*100)+")":"")],bud>0&&y===cy&&["Budget annuel",eur(bud)],bud>0&&y===cy&&["Part du budget déjà distribuée",pcf(D.cout/bud*100)+" ("+eur(D.cout)+")"],bud>0&&y===cy&&["Reste sur le budget",eur(Math.max(0,bud-D.cout))]],
+    [{titre:"Achats par fournisseur",cols:[{t:"Fournisseur",f:"s"},{t:"Achats "+y,f:"e"}].concat(aP?[{t:"Achats "+(y-1),f:"e"},{t:"Évolution",f:"v"}]:[]).concat([{t:"Unités reçues",f:"n"}]),rows,total:true,chart:rows.length>2?{type:"barh",titre:"Achats par fournisseur",cat:0,ser:aP?[1,2]:[1]}:null},
+     {titre:"Achats et matériel distribué, année par année",cols:[{t:"Année",f:"s"},{t:"Achats reçus",f:"e"},{t:"Valeur du matériel distribué",f:"e"}],rows:aAch,chart:aAch.length>1?{type:"bar",titre:"Achats et valeur distribuée",cat:0,ser:[1,2]}:null}])}
+
+  /* 9. Pertes */
+  {const pe=yy=>M.filter(m=>m.type==="perte"&&an(m)===yy&&S.produits.has(m.produit)),L=pe(y),LP=aP?pe(y-1):[];
+   const rows=MOTIFS.map(([k,n])=>{const A=L.filter(m=>(m.motif||"autre")===k||(k==="autre"&&!MOTIFS.some(x=>x[0]===m.motif))),Ap=LP.filter(m=>(m.motif||"autre")===k);return [n,qte(A),Math.round(val(A))].concat(aP?[qte(Ap)]:[])}).filter(r=>r[1]||r[3]);
+   if(rows.length)rows.push(tot("Total",rows,aP?[1,2,3]:[1,2]));
+   const bp={};for(const m of L){bp[m.produit]=bp[m.produit]||{q:0,v:0};bp[m.produit].q+=num(m.qte,0);bp[m.produit].v+=coutM(m)}
+   const q=qte(L);
+   sec("Pertes, casse et péremptions","Le matériel sorti du stock sans être distribué.",[["Unités perdues",nfr(q)],val(L)>0&&["Valeur",eur(val(L))],D.unites+q>0&&["Part du matériel sorti",pcf(q/(D.unites+q)*100)],aP&&["En "+(y-1),nfr(qte(LP))+" unités"]],
+    [{titre:"Par motif",cols:[{t:"Motif",f:"s"},{t:"Unités "+y,f:"n"},{t:"Valeur",f:"e"}].concat(aP?[{t:"Unités "+(y-1),f:"n"}]:[]),rows,total:true,chart:rows.length>2?{type:"pie",titre:"Pertes par motif",cat:0,ser:[1]}:null},
+     {titre:"Par produit",cols:[{t:"Produit",f:"s"},{t:"Unités",f:"n"},{t:"Valeur",f:"e"}],rows:Object.keys(bp).map(k=>[pn(k),bp[k].q,Math.round(bp[k].v)]).sort((p,r)=>r[1]-p[1])}]);
+   if(!L.length)S_[S_.length-1].intro+=" Aucune perte enregistrée "+cN+"."}
+
+  /* 10. Ruptures */
+  {let R={P:{}};try{if(histoDebut()<Math.min(now,b))R=ruptures(Math.max(a,histoDebut()),Math.min(now,b))}catch(e){}
+   const rows=Object.keys(R.P).map(k=>[pn(k),R.P[k].nD+R.P[k].nC,R.P[k].nD,R.P[k].nC]).sort((p,q)=>q[1]-p[1]);
+   sec("Ruptures de stock","Les jours où un produit a manqué : signalés par l'équipe, ou déduits d'un stock à zéro.",[["Produits touchés",String(rows.length)],["Jours de rupture cumulés",nfr(sum(rows.map(r=>r[1])))]],
+    [{titre:"Par produit",cols:[{t:"Produit",f:"s"},{t:"Jours de rupture",f:"n"},{t:"dont signalés par l'équipe",f:"n"},{t:"dont déduits du stock",f:"n"}],rows,chart:rows.length>1?{type:"barh",titre:"Jours de rupture par produit",cat:0,ser:[1],max:12}:null}]);
+   if(!rows.length)S_[S_.length-1].intro+=" Aucune rupture "+cN+"."}
+
+  /* 11. Stock de fin d'année */
+  {const F=stockFinAnnee(y),FP=stockFinAnnee(y-1),vs=F0=>{const o={},t={q:0,v:0};if(F0)for(const [pid,q] of F0.map){const p=S.produits.get(pid);if(!p||!(q>0))continue;const k=catOf(p);o[k]=o[k]||{q:0,v:0};o[k].q+=q;o[k].v+=q*prix(p);t.q+=q;t.v+=q*prix(p)}return {o,t}},V=vs(F),VP=vs(FP);
+   const rows=F?Object.keys(CATS).filter(k=>V.o[k]||VP.o[k]).map(k=>[CATS[k],(V.o[k]||{q:0}).q,Math.round((V.o[k]||{v:0}).v)].concat(FP?[(VP.o[k]||{q:0}).q,Math.round((VP.o[k]||{v:0}).v),ev((V.o[k]||{v:0}).v,(VP.o[k]||{v:0}).v)]:[])):[];
+   if(rows.length)rows.push(tot("Total",rows,FP?[1,2,3,4]:[1,2],r=>{if(FP)r[5]=ev(r[2],r[4])}));
+   const det=F?ordreCat([...S.produits.values()]).filter(p=>F.map.get(p.id)>0).map(p=>{const q=F.map.get(p.id),so=D.rows[p.id]?D.rows[p.id].tot:0,jr=y===cy?Math.max(1,(now-a)/DAY):365;return [p.nom,CATS[catOf(p)],q,Math.round(q*prix(p)),so>0?Math.round(q/(so/jr)):null]}):[];
+   const inv=M.filter(m=>m.type==="inventaire"&&an(m)===y&&!m.histo&&typeof m.theorique==="number"&&S.produits.has(m.produit)),ec=inv.filter(m=>num(m.qte,0)!==num(m.theorique,0));
+   sec("Stock "+(F?F.src:"de fin d'année"),F?"Ce qui reste en stock, et ce que ça représente au prix actuel. La couverture dit combien de jours ce stock tiendrait au rythme de l'année.":"Pas de stock connu pour "+y+" : il est calculé à partir du démarrage sur Stockaarud, ou repris de l'historique (onglet « Stock fin d'année » du modèle).",
+    [F&&["Unités en stock",nfr(V.t.q)],F&&["Valeur du stock",eur(V.t.v)],F&&FP&&["Valeur un an plus tôt",eur(VP.t.v)+(VP.t.v>0?" ("+pcs((V.t.v-VP.t.v)/VP.t.v*100)+")":"")],inv.length&&["Lignes d'inventaire dans l'année",nfr(inv.length)+", dont "+nfr(ec.length)+" avec un écart"],ec.length&&["Valeur des écarts d'inventaire",eur(sum(ec.map(m=>Math.abs(num(m.qte,0)-num(m.theorique,0))*prix(S.produits.get(m.produit)))))]],
+    [{titre:"Stock par catégorie",cols:[{t:"Catégorie",f:"s"},{t:"Unités",f:"n"},{t:"Valeur",f:"e"}].concat(FP?[{t:"Unités un an plus tôt",f:"n"},{t:"Valeur un an plus tôt",f:"e"},{t:"Évolution de la valeur",f:"v"}]:[]),rows,total:true,chart:rows.length>2?{type:"bar",titre:"Valeur du stock par catégorie",cat:0,ser:FP?[2,4]:[2]}:null},
+     {titre:"Stock par produit",cols:[{t:"Produit",f:"s"},{t:"Catégorie",f:"s"},{t:"Unités",f:"n"},{t:"Valeur",f:"e"},{t:"Couverture (jours)",f:"n"}],rows:det}])}
+
+  /* 12. Repères de réduction des risques */
+  {const fa=(c.fileActive||{})[y]||{},faP=(c.fileActive||{})[y-1]||{},ser=d=>sum(d.ms.map(m=>num(m.qte,0)*seringuesDe(S.produits.get(m.produit)||{}))),rec=yy=>sum(terrainAll().filter(x=>x.type==="recup"&&x.quoi==="seringues"&&x.t>=moisDebut(yy,0)&&x.t<moisDebut(yy+1,0)).map(x=>num(x.qte,0)));
+   const sN=ser(D),sP=P?ser(P):0,rN=rec(y),rP=aP?rec(y-1):0,np=passY(y),npP=aP?passY(y-1):0,cat=(d,k)=>d.parCat[k]||0,conso=d=>cat(d,"injection")+cat(d,"inhalation")+cat(d,"sniff");
+   const L=[],li=(lab,f,vn,vp,rep)=>{if(vn===null&&vp===null)return;L.push([lab,vn===null?null:{v:vn,f},aP?(vp===null?null:{v:vp,f}):null,rep||""])},nz=(x,ok)=>ok?x:null;
+   li("Seringues distribuées (kits compris, 2 par kit)","n",nz(sN,sN>0),nz(sP,sP>0),"");
+   li("Seringues usagées récupérées","n",nz(rN,rN>0),nz(rP,rP>0),"");
+   li("Taux de récupération des seringues","p",nz(rN/sN,sN>0&&rN>0),nz(rP/sP,sP>0&&rP>0),"Récupérées / distribuées");
+   li("Seringues par personne qui s'injecte","d",nz(sN/num(fa.inj,0),num(fa.inj,0)>0&&sN>0),nz(sP/num(faP.inj,0),num(faP.inj,0)>0&&sP>0),"Cible de l'OMS pour 2030 : 300 par personne et par an");
+   li("Personnes accueillies (file active)","n",nz(num(fa.tot,0),num(fa.tot,0)>0),nz(num(faP.tot,0),num(faP.tot,0)>0),"Saisi par le responsable stock");
+   li("Unités de matériel par personne accueillie","d",nz(D.unites/num(fa.tot,0),num(fa.tot,0)>0),nz(P&&P.unites/num(faP.tot,0),num(faP.tot,0)>0&&!!P),"");
+   li("Valeur du matériel par personne accueillie (€)","d",nz(D.cout/num(fa.tot,0),num(fa.tot,0)>0&&D.cout>0),nz(P&&P.cout/num(faP.tot,0),num(faP.tot,0)>0&&!!P&&P.cout>0),"");
+   li("Unités de matériel par passage","d",nz(D.unites/np,np>0),nz(P&&P.unites/npP,npP>0&&!!P),"");
+   li("Valeur du matériel par passage (€)","d",nz(D.cout/np,np>0&&D.cout>0),nz(P&&P.cout/npP,npP>0&&!!P&&P.cout>0),"");
+   li("Part de l'injection dans le matériel de consommation","p",nz(cat(D,"injection")/conso(D),conso(D)>0),nz(P&&cat(P,"injection")/conso(P),!!P&&conso(P)>0),"Injection / (injection + inhalation + sniff)");
+   li("Part de l'inhalation","p",nz(cat(D,"inhalation")/conso(D),conso(D)>0),nz(P&&cat(P,"inhalation")/conso(P),!!P&&conso(P)>0),"En hausse dans les CAARUD d'après l'OFDT");
+   li("Part du sniff","p",nz(cat(D,"sniff")/conso(D),conso(D)>0),nz(P&&cat(P,"sniff")/conso(P),!!P&&conso(P)>0),"");
+   li("Matériel de prévention des surdoses (unités)","n",nz(cat(D,"surdose"),cat(D,"surdose")>0),nz(P&&cat(P,"surdose"),!!P&&cat(P,"surdose")>0),"Naloxone, etc.");
+   li("Matériel de santé sexuelle (unités)","n",nz(cat(D,"sexualite"),cat(D,"sexualite")>0),nz(P&&cat(P,"sexualite"),!!P&&cat(P,"sexualite")>0),"Préservatifs, gel…");
+   li("Matériel de dépistage (unités)","n",nz(cat(D,"depistage"),cat(D,"depistage")>0),nz(P&&cat(P,"depistage"),!!P&&cat(P,"depistage")>0),"");
+   const cols=[{t:"Repère",f:"s"},{t:String(y),f:"n"}].concat(aP?[{t:String(y-1),f:"n"}]:[]).concat([{t:"Pour lire ce chiffre",f:"s"}]);
+   const rows=L.map(r=>aP?r:[r[0],r[1],r[3]]);
+   const sp=[...S.produits.values()].filter(p=>seringuesDe(p)&&D.rows[p.id]).map(p=>p.nom+(seringuesDe(p)===2?" (×2)":""));
+   sec("Repères de réduction des risques","Les indicateurs que suivent les rapports d'activité des CAARUD (ASA-CAARUD, analysés par l'OFDT) et l'OMS. Ce sont des ordres de grandeur, à commenter avec ce que l'équipe sait du terrain.",[],
+    [{titre:"Repères "+cN,cols,rows,note:(sp.length?"Produits comptés comme seringues : "+sp.join(", ")+". ":"")+(num(fa.tot,0)>0?"":"Pour les chiffres par personne, saisis la file active de l'année dans Statistiques, Bilan.")}])}
+
+  return {titre:"Bilan du matériel de réduction des risques "+y,sous:"Du 1er janvier au "+(y===cy?dateFr(now)+" (année en cours)":"31 décembre "+y)+".",structure:(c.nomStructure||"").trim(),annee:y,sections:S_}}
+
+/* Le PDF complet, en paysage : un chapitre par page, graphique puis tableau. */
+async function bilanCompletPdf(B){await loadBilan();const K=window.STKBilan,doc=await newPdf("landscape"),C=PDFC,W=297,tx=t=>pdfTxt(t).replace(/−/g,"-");
+  let y=pdfHead(doc,B.titre,B.sous);
+  doc.setFont("helvetica","bold");doc.setFontSize(22);doc.setTextColor(...C.G);doc.text(tx(B.titre),12,y+12);doc.setFontSize(14);doc.setTextColor(...C.K);if(B.structure)doc.text(tx(B.structure),12,y+22);
+  doc.setFont("helvetica","normal");doc.setFontSize(11);doc.setTextColor(...C.M);doc.text(tx(B.sous),12,y+(B.structure?30:22));y+=44;
+  doc.setFont("helvetica","bold");doc.setFontSize(12);doc.setTextColor(...C.K);doc.text("Sommaire",12,y);y+=7;doc.setFont("helvetica","normal");doc.setFontSize(11);B.sections.forEach((s,i)=>{doc.text(tx((i+1)+". "+s.titre),14,y);y+=6.2});
+  y+=4;doc.setFontSize(9);doc.setTextColor(...C.M);doc.text(doc.splitTextToSize(tx("Ce document est volontairement complet : garde les chapitres utiles à ton rapport d'activité. Les versions Excel (graphiques modifiables) et Word se téléchargent au même endroit dans l'appli."),270),12,y);
+  B.sections.forEach((s,i)=>{const titre=(i+1)+". "+s.titre;doc.addPage();y=pdfHead(doc,titre,"");
+    if(s.intro){doc.setFont("helvetica","normal");doc.setFontSize(9.5);doc.setTextColor(...C.M);const L=doc.splitTextToSize(tx(s.intro),272);doc.text(L,12,y);y+=L.length*4.4+3}
+    if(s.kpis.length){const per=Math.min(4,s.kpis.length),kw=273/per;s.kpis.forEach(([l,v],k)=>{const col=k%per;if(k&&!col)y+=19;const x=12+col*kw;doc.setFillColor(...C.BG);doc.roundedRect(x,y,kw-4,16,2,2,"F");doc.setFont("helvetica","bold");doc.setFontSize(11.5);doc.setTextColor(...C.K);let t=tx(v);while(t.length>3&&doc.getTextWidth(t)>kw-10)t=t.slice(0,-2);doc.text(t,x+3.5,y+7);doc.setFont("helvetica","normal");doc.setFontSize(8);doc.setTextColor(...C.M);let lb=tx(l);while(lb.length>3&&doc.getTextWidth(lb)>kw-10)lb=lb.slice(0,-2);doc.text(lb,x+3.5,y+12.5)});y+=23}
+    for(const T of s.tables){
+      const nC=K.chartRows(T).length,img=T.chart&&nC>1?K.chartPng(K.chartSpec(T),1000,T.chart.type==="barh"?Math.min(640,150+nC*34):430):null,ih=img?150*img.h/img.w:0;
+      if(y+12+ih>188){doc.addPage();y=pdfHead(doc,titre+" (suite)","")}
+      doc.setFont("helvetica","bold");doc.setFontSize(11);doc.setTextColor(...C.K);doc.text(tx(T.titre),12,y+2);y+=7;
+      if(img){doc.addImage(img.jpg,"JPEG",12,y,150,ih);y+=ih+7}
+      y=pdfTable(doc,y,titre,T.cols.map(c=>c.t),T.rows.map(r=>T.cols.map((c,k)=>tx(K.fmt(r[k],c)))));
+      if(T.note){doc.setFont("helvetica","normal");doc.setFontSize(8.5);doc.setTextColor(...C.M);const L=doc.splitTextToSize(tx(T.note),272);if(y+L.length*4>196){doc.addPage();y=pdfHead(doc,titre+" (suite)","")}doc.text(L,12,y);y+=L.length*4+4}}});
+  return pdfBlob(doc)}
+function bilanCompletUI(y){const fa=(cfg().fileActive||{})[y]||{};
+  return '<div class="bilx"><h3>Le bilan complet de '+y+'</h3><p class="note">Douze chapitres, avec la comparaison à l\'année d\'avant quand elle existe : synthèse, catégories, activités, mois, produits, prêts et dons faits et reçus (par association), achats et budget, pertes, ruptures, stock de fin d\'année et sa valeur, repères de réduction des risques. Volontairement complet : garde ce qui sert à ton rapport d\'activité.</p>'
+   +'<div class="form" style="margin-top:8px"><label>Personnes accueillies en '+y+' (file active)<input id="baF" type="number" min="0" inputmode="numeric" value="'+esc(fa.tot||"")+'"></label><label>dont personnes qui s\'injectent<input id="baI" type="number" min="0" inputmode="numeric" value="'+esc(fa.inj||"")+'"></label><button class="btn small" data-act="baSave">Enregistrer</button></div><p class="note">Facultatif : sert aux chiffres par personne, dont les seringues par personne qui s\'injecte (cible de l\'OMS : 300 par an).</p>'
+   +'<div class="row" style="margin-top:10px"><button class="btn primary" data-act="bcPdf">PDF complet</button><button class="btn" data-act="bcXlsx">Excel, graphiques modifiables</button><button class="btn" data-act="bcDocx">Word (.docx)</button></div></div>'}
+
+/* ---------- Reprendre un historique depuis un classeur Excel : sorties, achats, stock de fin d'année, prêts et dons ---------- */
+function histoVide(){return {rows:[],pass:[],parAn:{},passAn:{},avecPrix:0,inconnus:[],actInc:[],bad:[],tard:0,lim:histoDebut()}}
+function histoLireWb(wb){const f=k=>{const n=wb.noms.find(x=>norm(x).startsWith(k));return n?wb.feuilles[n]:null},csv=R=>R.map(r=>r.map(x=>String(x??"").replace(/;/g,",").replace(/[\r\n]+/g," ")).join(";")).join("\n");
+  const sh={achats:f("achat"),stocks:f("stock"),dons:f("pret")||f("don")},autres=sh.achats||sh.stocks||sh.dons,so=f("sortie")||(autres?null:wb.feuilles[wb.noms[0]]);
+  let I=so&&so.length>1?histoLire(csv(so)):histoVide();if(I.err){if(!autres)return I;I=histoVide()}
+  histoAnnexes(I,sh);return I}
+function histoAnnexes(I,sh){const P=[...S.produits.values()],trouveP=n=>P.find(x=>norm(x.nom)===norm(n||""))||P.find(x=>(x.synonymes||[]).some(z=>norm(z)===norm(n||""))),y0=new Date(histoDebut()).getFullYear(),inc=new Set(I.inconnus);
+  I.achats=[];I.stocks=[];I.dons=[];
+  const lire=(R,fn)=>{if(!R||R.length<2)return;const H=R[0].map(norm),ci=n=>H.findIndex(h=>h.startsWith(n));for(const c of R.slice(1)){const y=Math.round(num(c[ci("an")],NaN));if(!(y>1990&&y<2200))continue;fn(c,ci,y)}};
+  const prod=(n,oblig)=>{n=String(n||"").trim();if(!n)return oblig?undefined:null;const p=trouveP(n);if(!p){inc.add(n);return undefined}return p.id};
+  lire(sh.achats,(c,ci,y)=>{const q=Math.round(num(c[ci("quantit")],0)),mt=num(c[ci("montant")],0);if(!(q>0||mt>0))return;if(y>=y0){I.tard++;return}const p=prod(c[ci("produit")],false);if(p===undefined)return;I.achats.push({y,f:String(c[ci("fournisseur")]||"").trim(),p,q:Math.max(0,q),mt:Math.max(0,mt)})});
+  lire(sh.stocks,(c,ci,y)=>{const q=Math.round(num(c[ci("quantit")],NaN));if(!(q>=0))return;if(y>=y0){I.tard++;return}const p=prod(c[ci("produit")],true);if(!p)return;I.stocks.push({y,p,q})});
+  lire(sh.dons,(c,ci,y)=>{const q=Math.round(num(c[ci("quantit")],0));if(!(q>0))return;if(y>=y0){I.tard++;return}const p=prod(c[ci("produit")],true);if(!p)return;I.dons.push({y,p,q,recu:norm(c[ci("sens")]||"").startsWith("re"),pret:norm(c[ci("nature")]||"").startsWith("pr"),a:String(c[ci("asso")]||"").trim()})});
+  I.inconnus=[...inc]}
+function histoModeleWb(){const y0=new Date().getFullYear(),P=ordreCat(prodsActifs()),A=activitesActives(),vide=new Array(12).fill(""),so=[];
+  for(const y of [y0-1,y0-2]){for(const a of A)so.push([y,"Passages",a.nom,""].concat(vide));for(const p of P)so.push([y,p.nom,"",""].concat(vide))}
+  const S0=t=>({t,f:"s"}),ex=P[0]?P[0].nom:"Nom du produit",F=[
+   {nom:"Lisez-moi",largeurs:[115],blocs:[{texte:["Reprendre un historique dans Stockaarud","Remplis les onglets que tu veux, enregistre, puis importe ce fichier dans Réglages, « Reprendre un historique ».","Tous les onglets sont facultatifs. Tu peux reprendre autant d'années que tu veux : recopie les lignes et change l'année.","Seules les années d'avant ton démarrage sur Stockaarud sont reprises : le stock actuel n'est jamais touché."]},
+     {titre:false,texte:["Les onglets","Sorties : une ligne par produit et par année, une colonne par mois. Activité et prix unitaire de l'époque sont facultatifs. Les lignes « Passages » comptent les personnes.","Achats : ce que tu as acheté dans l'année, par fournisseur. Le produit et la quantité sont facultatifs : le montant suffit.","Stock fin d'année : ce qu'il restait au 31 décembre, en unités.","Prêts et dons : sens = « donné » ou « reçu » ; nature = « don » ou « prêt » ; le nom de l'association."]},
+     {titre:false,texte:["Un produit que tu ne distribues plus ?","Écris son nom tel quel : à l'import, Stockaarud propose de le créer en « archivé ». Il comptera dans les bilans sans apparaître à l'équipe."]}]},
+   {nom:"Sorties",largeurs:[8,38,18,12].concat(new Array(12).fill(8)),blocs:[{simple:true,cols:["année","produit","activité","prix unitaire"].concat(MOIS).map(S0),rows:so}]},
+   {nom:"Achats",largeurs:[8,28,38,12,14],blocs:[{simple:true,cols:["année","fournisseur","produit","quantité","montant"].map(S0),rows:[[y0-1,"","","",""]]}]},
+   {nom:"Stock fin d'année",largeurs:[8,38,12],blocs:[{simple:true,cols:["année","produit","quantité"].map(S0),rows:P.map(p=>[y0-1,p.nom,""])}]},
+   {nom:"Prêts et dons",largeurs:[8,12,30,38,12,12],blocs:[{simple:true,cols:["année","sens","association","produit","quantité","nature"].map(S0),rows:[[y0-1,"donné","",ex,"","don"],[y0-1,"reçu","",ex,"","prêt"]]}]}];
+  return window.STKBilan.classeur(F)}
+/* Une page pour présenter Stockaarud à la direction : à quoi ça sert, ce que ça demande, les données, la sécurité. */
+async function directionPdf(){
+  await loadJsPdf();const doc=new window.jspdf.jsPDF({unit:"mm",format:"a4"}),c=cfg(),nomS=(c.nomStructure||"").trim(),G=[31,77,58],Y=[242,183,5],K=[20,32,29],M=[83,100,93];
+  let y=0;const X=18,Wd=174,BAS=282;
+  const head=(t)=>{doc.setFillColor(...G);doc.rect(0,0,210,30,"F");doc.setFillColor(...Y);doc.rect(0,30,210,2.5,"F");doc.setTextColor(255,255,255);doc.setFont("helvetica","bold");doc.setFontSize(24);doc.text("STOCK",X,19);const w=doc.getTextWidth("STOCK");doc.setTextColor(...Y);doc.text("AARUD",X+w,19);doc.setFontSize(12);doc.setTextColor(255,255,255);doc.text(t,192,19,{align:"right"});y=44};
+  const place=h=>{if(y+h>BAS){doc.addPage();head("Présentation (suite)")}};
+  const h2=t=>{place(16);doc.setFont("helvetica","bold");doc.setFontSize(14);doc.setTextColor(...G);doc.text(t,X,y);y+=7};
+  const p=(t,o={})=>{doc.setFont("helvetica",o.b?"bold":"normal");doc.setFontSize(o.s||11);const L=doc.splitTextToSize(t,o.w||Wd);place(L.length*(o.s||11)*0.45);doc.setTextColor(...(o.c||K));doc.text(L,o.x||X,y);y+=L.length*(o.s||11)*0.45+(o.gap??2)};
+  const li=(a,b)=>{doc.setFont("helvetica","bold");doc.setFontSize(11);const La=doc.splitTextToSize(a,Wd-6);const Lb=b?doc.splitTextToSize(b,Wd-6):[];place((La.length+Lb.length)*5+3);
+    doc.setFillColor(...Y);doc.circle(X+1.6,y-1.3,1.3,"F");doc.setTextColor(...K);doc.text(La,X+6,y);y+=La.length*5;if(b){doc.setFont("helvetica","normal");doc.setTextColor(...M);doc.text(Lb,X+6,y);y+=Lb.length*5}y+=2.2};
+  head("Présentation pour la direction");
+  doc.setFont("helvetica","bold");doc.setFontSize(19);doc.setTextColor(...K);doc.text(doc.splitTextToSize("Le matériel de RdR suivi au jour le jour, sans tableur ni papier",Wd),X,y);y+=17;
+  if(nomS){p("Proposé pour : "+nomS,{c:M,gap:5})}
+  h2("Le problème");
+  p("Un CAARUD distribue chaque année des dizaines de milliers d'unités de matériel, venant de plusieurs fournisseurs, vers plusieurs activités (accueil, maraude, festif, bus...). Sans suivi fiable, on découvre les ruptures trop tard, on commande au jugé, des lots périment, et les chiffres annuels sont longs à reconstituer.",{gap:5});
+  h2("Ce que fait Stockaarud");
+  li("L'équipe note ce qu'elle prend en quelques secondes, sur son téléphone,","même sans réseau : la saisie part dès que la connexion revient.");
+  li("Le stock est connu en temps réel, pour chaque lieu de stockage.");
+  li("Une alerte prévient avant chaque rupture, et avant qu'un lot ne périme.");
+  li("La commande est proposée par fournisseur, arrondie au carton,","selon le rythme réel des sorties et le délai de livraison.");
+  li("Les chiffres de l'année sont prêts pour le rapport d'activité :","matériel distribué par catégorie, par produit et par activité.");
+  y+=2;h2("Ce que ça demande");
+  li("Installation : environ 3 minutes, une seule fois, par le responsable stock.","Puis 10 à 20 minutes pour compter le stock de départ, en une ou plusieurs fois.");
+  li("Pour l'équipe : quelques secondes à chaque prise de matériel.","Aucune formation : une fiche de deux pages, un QR code pour rejoindre l'appli, sans compte ni mot de passe.");
+  li("Coût : aucun.","Logiciel libre (licence MIT), base de données sur l'offre gratuite de Supabase (500 Mo par base, très largement suffisant pour des données de stock). Aucun abonnement.");
+  doc.addPage();head("Données et sécurité");
+  h2("Quelles données, et où");
+  li("Uniquement du matériel : stocks, sorties, commandes, fournisseurs.","Aucune donnée nominative sur les personnes accueillies, aucune donnée de santé.");
+  li("Une base propre au CAARUD, que personne d'autre ne voit,","hébergée par Supabase en Europe. Chaque CAARUD a la sienne : rien n'est mis en commun.");
+  li("Seuls les membres invités y accèdent.","L'équipe entre avec un code d'invitation (lien ou QR code) qui ne donne que les droits de l'équipe ; celui d'un responsable stock expire au bout de 7 jours et ne sert qu'une fois. Le responsable stock peut désactiver les codes et couper les accès de l'équipe à tout moment.");
+  li("Réversible à tout moment :","sauvegarde complète et exports en tableur, en un clic. L'appli rappelle chaque mois de télécharger une sauvegarde, car l'offre gratuite n'en garde pas.");
+  y+=2;h2("Audits de sécurité effectués (novembre 2026)");
+  li("Deux audits complets de l'appli et de la base de données :","lecture de tout le code, analyse automatique de Supabase, et tests de chaque rôle (équipe, responsable stock, personne extérieure) directement sur la base.");
+  li("Failles corrigées à la suite de ces audits :","droits vérifiés par la base elle-même pour chaque rôle (l'équipe ne peut modifier que ses propres saisies, sans toucher aux réglages, au catalogue ni aux commandes, et ne peut pas saisir de quantités aberrantes) ; codes de responsable stock qui expirent et ne servent qu'une fois ; protection contre l'injection de code dans l'affichage ; bibliothèques hébergées avec l'appli, sans dépendre de sites tiers ; politique de sécurité du contenu (CSP) ; alertes par e-mail réservées aux membres de la base, avec un plafond d'envois.");
+  li("Un audit dédié à l'installation automatique (grilles OWASP et CWE) :","autorisation liée à l'appareil qui l'a demandée, limite du nombre de demandes, autorisation chiffrée puis effacée dès la base prête. Seule la clé publique de la base est conservée, jamais une clé secrète.");
+  li("Limites connues et assumées :","l'appli garde une copie du stock sur chaque téléphone, pour marcher sans réseau : un téléphone perdu y donne accès tant que son accès n'est pas retiré. Les photos de produits sont publiques (aucune donnée sensible).");
+  p("Ces audits ont été menés par le concepteur de l'appli, avec l'aide d'un assistant d'intelligence artificielle. Ils ne remplacent pas un audit par un prestataire indépendant.",{c:M,s:10,gap:4});
+  place(24);y+=2;doc.setFillColor(242,245,243);doc.roundedRect(X,y,Wd,18,3,3,"F");doc.setFillColor(...Y);doc.rect(X,y,2.5,18,"F");
+  doc.setFont("helvetica","bold");doc.setFontSize(11);doc.setTextColor(...K);doc.text("Voir par soi-même",X+7,y+7);doc.setFont("helvetica","normal");doc.setTextColor(...M);doc.text("Démo avec un CAARUD fictif : stockaarud.github.io/demo  ·  Guide : stockaarud.github.io",X+7,y+13);
+  return doc.output("blob");
+}
 async function fichePdf(link){
   await loadJsPdf();const doc=new window.jspdf.jsPDF({unit:"mm",format:"a4"}),n=cfg().nomStock||"stock",G=[31,77,58],Y=[242,183,5],K=[20,32,29],M=[83,100,93];
   let y=0;const X=18,Wd=174;
@@ -1630,12 +1872,30 @@ function fieldErr(el,msg){if(typeof el==="string")el=document.getElementById(el)
   p.textContent=msg;el.setAttribute("aria-invalid","true");el.setAttribute("aria-describedby",((el.getAttribute("aria-describedby")||"").replace(eid,"").trim()+" "+eid).trim());el.focus()}
 function fieldOk(el){if(el.getAttribute("aria-invalid")!=="true")return;const eid=el.id+"-err",p=document.getElementById(eid);if(p)p.remove();el.removeAttribute("aria-invalid");const d=(el.getAttribute("aria-describedby")||"").replace(eid,"").trim();if(d)el.setAttribute("aria-describedby",d);else el.removeAttribute("aria-describedby")}
 function wizardNeeded(){if(!S.isAdmin||S.dbState!=="ok")return false;if(S.wiz)return true;if(S.wizSkip)return false;return !S.config||(!S.config.assistant&&S.produits.size===0)}
+/* Fonctions qui se débloquent : sans assez de sorties notées, les calculs seraient faux. */
+const DEBLOC=[["cmd","Commandes conseillées",14],["prev","Prévisions sur 3 mois",30]];
+function joursSorties(){let t0=Infinity;for(const m of allMvts())if(m.type==="sortie"&&!m.exemple&&m.t<t0)t0=m.t;return t0===Infinity?-1:Math.floor((Date.now()-t0)/DAY)}
+function verrou(k){const d=DEBLOC.find(x=>x[0]===k),j=joursSorties();return j>=d[2]?null:{j:Math.max(0,j),aucune:j<0,reste:d[2]-Math.max(0,j),tot:d[2],nom:d[1]}}
+function lockCard(k,texte,extra){const v=verrou(k);if(!v)return "";
+  return '<div class="pp lock"><h2>🔒 '+esc(v.nom)+(v.aucune?'':' : encore '+v.reste+' jour'+(v.reste>1?"s":""))+'</h2><p class="ppmot">'+(v.aucune?"Ça démarre à la première sortie notée.":v.j<v.tot/2?"C'est en route : chaque sortie notée compte.":"Plus que quelques jours, continuez comme ça !")+'</p>'
+   +'<div class="ppbar" role="progressbar" aria-valuemin="0" aria-valuemax="'+v.tot+'" aria-valuenow="'+v.j+'"><span style="width:'+Math.round(100*v.j/v.tot)+'%"></span></div><p class="note">'+esc(texte)+'</p>'
+   +'<p class="note" style="margin-top:6px">Tu as déjà un historique de sorties dans un tableur ? <button class="link" data-act="ppHisto">Importe-le</button> : tout se débloque tout de suite.</p>'+(extra||"")+'</div>'}
+function bientot(){const L=DEBLOC.map(d=>[d,verrou(d[0])]).filter(x=>x[1]);if(!L.length||!prodsActifs().length)return "";
+  return '<div class="unl" aria-label="Bientôt débloqué">'+L.map(([d,v])=>'<span>🔒 <b>'+esc(d[1])+'</b> '+(v.aucune?"après "+d[2]+" jours de sorties":"dans "+v.reste+" jour"+(v.reste>1?"s":""))+'</span>').join("")+'</div>'}
+function checkDebloc(){if(!S.isAdmin||S.dbState!=="ok")return;const now=DEBLOC.filter(d=>!verrou(d[0])).map(d=>d[0]),prev=ls.get("debloque",null);
+  if(prev===null||!Array.isArray(prev)){ls.set("debloque",now);return}
+  const nw=now.filter(k=>!prev.includes(k));ls.set("debloque",now);if(!nw.length)return;
+  const T={cmd:["Commandes conseillées débloquées !","Deux semaines de sorties notées : l'appli te propose maintenant les quantités à commander. Merci à l'équipe !"],prev:["Prévisions débloquées !","Un mois de sorties notées : tu peux maintenant voir venir les 3 prochains mois."]}[nw[nw.length-1]];
+  setTimeout(()=>fete(T[0],T[1]),400)}
+/* Inventaire de départ : on peut le faire en plusieurs fois. */
+function invDepart(){const D=new Set(),ps=prodsActifs();let t0=Infinity;for(const m of allMvts())if(m.type==="inventaire"&&!m.exemple){D.add(m.produit);if(m.t<t0)t0=m.t}
+  const fait=ps.filter(p=>D.has(p.id)).length;return {D,fait,tot:ps.length,enCours:fait<ps.length&&(t0===Infinity||t0>Date.now()-60*DAY)}}
 /* Premiers pas : ce qu'il reste au responsable stock pour que l'appli tourne vraiment. */
 function ppEtapes(){const c=cfg(),loc=!!(window.SKB&&window.SKB.local),M=allMvts().filter(m=>!m.exemple),sorties=M.filter(m=>m.type==="sortie").length;
   return [
    {k:"base",ok:!loc,t:loc?"Mettre ta base en ligne, pour que l'équipe puisse noter":"Créer la base",a:"goOnline",l:"Passer en ligne"},
    {k:"mat",ok:S.produits.size>0&&(c.activites||[]).some(a=>!a.archive),t:"Choisir les activités et le matériel",a:"wzStart",l:"Reprendre"},
-   {k:"inv",ok:invDejaFait(),t:"Compter le stock une première fois",a:"goInv",l:"Compter"},
+   (()=>{const d=invDepart(),ok=d.tot>0&&d.fait>=Math.ceil(d.tot*0.8);return {k:"inv",ok,t:"Compter le stock une première fois"+(d.fait&&!ok?" ("+d.fait+" sur "+d.tot+")":""),a:"goInv",l:d.fait?"Continuer":"Compter"}})(),
    {k:"eq",ok:loc?false:!!(c.equipeInvitee||lienEquipe()||sorties>=20),t:"Inviter l'équipe",a:loc?"goOnline":"ppEq",l:loc?"Passer en ligne":"Inviter"},
    {k:"so",ok:sorties>0,t:"Noter une première sortie (toi, ou un collègue)",a:"view",v:"equipe",l:"Essayer"}]}
 function premiersPas(){
@@ -2181,6 +2441,7 @@ function bilanData(y){const ms=sortiesEntre(moisDebut(y,0),moisDebut(y+1,0)),act
   const parCat={};for(const m of ms){const k=catOf(S.produits.get(m.produit));parCat[k]=(parCat[k]||0)+num(m.qte,0)}
   return {ms,acts,rows,parMois,parCat,unites:ms.reduce((x,m)=>x+num(m.qte,0),0),cout:ms.reduce((x,m)=>x+coutM(m),0),refs:Object.keys(rows).length,
     rupt:(()=>{const R=ruptures(moisDebut(y,0),Math.min(Date.now(),moisDebut(y+1,0)));const k=Object.keys(R.P);return {n:k.length,j:k.reduce((x,i)=>x+R.P[i].nD+R.P[i].nC,0),c:k.reduce((x,i)=>x+R.P[i].nD,0)}})(),pertes:allMvts().filter(m=>m.type==="perte"&&new Date(m.t).getFullYear()===y).reduce((x,m)=>x+num(m.qte,0),0),dep:allMvts().filter(m=>m.type==="depannage"&&new Date(m.t).getFullYear()===y).reduce((x,m)=>x+num(m.qte,0),0)}}
+function bilanAnnee(){const ys=[...new Set(allMvts().filter(m=>m.type==="sortie").map(m=>new Date(m.t).getFullYear()))].sort((a,b)=>b-a);return num(S.svyr,ys[0]||new Date().getFullYear())}
 function svBilan(){const ys=[...new Set(allMvts().filter(m=>m.type==="sortie").map(m=>new Date(m.t).getFullYear()))].sort((a,b)=>b-a);const y=num(S.svyr,ys[0]||new Date().getFullYear());
   const D=bilanData(y),sl=parts(Object.entries(D.parCat).map(([k,v])=>({label:CATS[k],v,col:CATCOL[k]})),7);
   let h=chipsSV("svyr",y,(ys.length?ys:[y]).map(v=>[v,String(v)]))+'<button class="btn small" style="margin-top:8px" data-act="bilanExp">'+SHARE_ICO+'Exporter le bilan (rapport d\'activité)</button>';
@@ -2193,7 +2454,7 @@ function svBilan(){const ys=[...new Set(allMvts().filter(m=>m.type==="sortie").m
     h+='<tr><td colspan="'+(2+D.acts.length)+'" style="font-weight:700;color:var(--accent)">'+esc(CATS[k])+' · '+nfr(D.parCat[k]||0)+' u.</td></tr>'+ps.map(p=>{const r=D.rows[p.id];return '<tr><td>'+esc(p.nom)+'</td><td class="n"><b>'+nfr(r.tot)+'</b></td>'+D.acts.map(a=>'<td class="n">'+(r.act[a.id]?nfr(r.act[a.id]):"")+'</td>').join("")+'</tr>'}).join("")}
   {const a0=moisDebut(y,0),b0=moisDebut(y+1,0),np=passagesEntre(a0,b0),rs=terrainAll().filter(x=>x.type==="recup"&&x.quoi==="seringues"&&x.t>=a0&&x.t<b0).reduce((x,m)=>x+num(m.qte,0),0);D.passages=np;D.recupSer=rs;D.pp=parPassage(a0,b0)}
   h+='</tbody></table></div>'+(D.passages||D.recupSer?'<p class="note">'+(D.pp?nfr(D.pp.np)+' passages comptés sur '+D.pp.nj+' jour'+(D.pp.nj>1?"s":"")+', soit '+String(D.pp.r).replace(".",",")+' unités par passage ces jours-là. ':'')+(D.recupSer?nfr(D.recupSer)+' seringues usagées récupérées.':'')+'</p>':'')+'<p class="note">Pertes et casse : '+nfr(D.pertes)+' u. · Prêts et dons à d\'autres associations : '+nfr(D.dep)+' u. (non comptés dans les sorties).'+(D.rupt.n?' Ruptures : '+D.rupt.n+' produit'+(D.rupt.n>1?"s":"")+', '+nfr(D.rupt.j)+' jours au total, dont '+nfr(D.rupt.c)+' constatés par l\'équipe.':' Aucune rupture.')+'</p>';
-  return '<div class="panel bilanp" style="margin-top:12px"><h2>Les chiffres de l\'année '+y+'</h2><p class="note">Pour le rapport d\'activité : tout le matériel distribué dans l\'année, par catégorie, par produit et par activité.</p>'+h+'</div>'}
+  return '<div class="panel bilanp" style="margin-top:12px"><h2>Les chiffres de l\'année '+y+'</h2><p class="note">Pour le rapport d\'activité : tout le matériel distribué dans l\'année, par catégorie, par produit et par activité.</p>'+h+bilanCompletUI(y)+'</div>'}
 async function bilanPdf(){const d=await bilanDoc();await savePdf(d,"stockaarud-bilan-"+num(S.svyr,new Date().getFullYear()))}
 async function bilanDoc(){const ys=[...new Set(allMvts().filter(m=>m.type==="sortie").map(m=>new Date(m.t).getFullYear()))].sort((a,b)=>b-a),y=num(S.svyr,ys[0]||new Date().getFullYear()),D=bilanData(y),C=PDFC;
   const doc=await newPdf("portrait");let yy=pdfHead(doc,"Matériel distribué en "+y,"Sorties vers les activités. Les pertes et les prêts ou dons à d'autres associations sont comptés à part.");
@@ -2284,10 +2545,11 @@ function viewCoordo(st){
     h+='<nav class="subnav tabbar" aria-label="Sections">'+(open?'<div class="more">'+extra.map(tb).join("")+'</div>':'')+'<div class="main">'+tabs.slice(0,3).map(tb).join("")
      +'<button data-act="tabMore" aria-expanded="'+open+'" aria-pressed="'+!!inX+'">'+tabIco(inX?inX[0]:"more")+'<span>'+(inX?inX[1]:"Plus")+'</span></button></div></nav>'
      +(open?'<div class="tabveil" data-act="tabMore" aria-hidden="true"></div>':'')}}
-  if(S.ctab==="bord")h+=premiersPas()+tabBord(st);
+  checkDebloc();
+  if(S.ctab==="bord")h+=premiersPas()+bientot()+tabBord(st);
   if(S.ctab==="stats")h+=tabStats();
-  if(S.ctab==="prev")h+=tabPrev(st);
-  if(S.ctab==="cmd")h+=tabCmd(st);
+  if(S.ctab==="prev")h+=(verrou("prev")&&!S.prevForce?lockCard("prev","Les prévisions suivent le rythme des sorties. Avec moins d'un mois de données, elles seraient fausses : l'appli préfère attendre.",'<button class="btn small" style="margin-top:10px" data-act="prevForce">Afficher quand même</button>'):tabPrev(st));
+  if(S.ctab==="cmd")h+=lockCard("cmd","Pour conseiller les bonnes quantités, l'appli a besoin d'environ 2 semaines de sorties notées. D'ici là, commande comme d'habitude : tu peux saisir tes commandes normalement.")+tabCmd(st);
   if(S.ctab==="mvt")h+=tabMvt(st);
   if(S.ctab==="inv")h+=tabInv(st);
   if(S.ctab==="reg")h+=tabReg(st);
@@ -2492,7 +2754,7 @@ function tabMvt(st){
   const RD1=rendusSet(),prets=allMvts().filter(m=>(m.type==="depannage"||m.type==="entree")&&m.aRendre&&!estRendu(m,RD1));
   h+='<div class="panel" style="margin-top:14px"><h2>Prêts et emprunts à rendre</h2>'+(prets.length?'<div class="list">'+prets.map(m=>{const p=S.produits.get(m.produit)||{nom:"?"};return '<div class="it"><span style="flex:1;min-width:150px"><b>'+esc(p.nom)+'</b> · '+esc(fmtQ(p,m.qte))+'<br><span class="note">'+(m.type==="depannage"?"Prêté à ":"Emprunté à ")+esc(assoNom(m))+' le '+fmtDate(m.t)+'</span></span><button class="btn small" data-act="rendu" data-id="'+esc(m.id)+'">'+(m.type==="depannage"?"Rendu par l\'asso":"Rendu à l\'asso")+'</button></div>'}).join("")+'</div>':'<div class="empty">Rien à rendre.</div>')+'</div>';
   if(S.sigs.length)h+='<div class="panel" style="margin-top:14px"><h2>Signalements de l\'équipe</h2><div class="list">'+S.sigs.map(s=>'<div class="it"><span style="flex:1">Produit cherché : « '+esc(s.texte)+' »</span><span class="note">'+fmtDT(s.t)+'</span><button class="btn small" data-act="delSig" data-id="'+esc(s.id)+'">Traité</button></div>').join("")+'</div></div>';
-  const JA=allMvts(),jf=S.jf||(S.jf={ty:"",p:"",per:"",n:120}),d0=new Date();d0.setHours(0,0,0,0);
+  const JA=allMvts().filter(m=>!HT.has(m.type)),jf=S.jf||(S.jf={ty:"",p:"",per:"",n:120}),d0=new Date();d0.setHours(0,0,0,0);
   const jty=m=>m.type==="entree"&&m.origine==="retour"?"retour":m.type==="entree"||m.type==="reception"?"recep":m.type;
   const from={"7":d0-6*DAY,"30":d0-29*DAY,"90":d0-89*DAY,mois:new Date(d0.getFullYear(),d0.getMonth(),1).getTime(),an:new Date(d0.getFullYear(),0,1).getTime()}[jf.per]||0,filt=!!(jf.ty||jf.p||from);
   const JF=filt?JA.filter(m=>(!jf.ty||jty(m)===jf.ty)&&(!jf.p||m.produit===jf.p)&&m.t>=from):JA,J=JF.slice(-jf.n).reverse();
@@ -2511,15 +2773,17 @@ function tabMvt(st){
 function nomLieuP(){const n=((principal()||{}).nom||cfg().nomStock||"").trim();return !n||norm(n)==="stock principal"?"le stock principal":"le stock « "+n+" »"}
 function invDejaFait(){return allMvts().some(m=>m.type==="inventaire")}
 function invRapide(st,ps,L,wiz){
-  const K=Object.keys(CATS),D=S.invDraft||{};let first=true;let h='<div class="panel" style="margin-top:12px"><h2>'+(invDejaFait()?"Saisie rapide de l\'inventaire":"Inventaire de départ")+'</h2><p class="note">'+(wiz?"Le matériel est rangé par catégorie : ouvre-en une, compte, puis passe à la suivante.":"Tout le matériel sur une seule page.")+' Remplis seulement ce que tu as compté : les lignes vides ne changent rien. Cartons et unités en vrac s\'additionnent.</p>'
+  const K=Object.keys(CATS),D=S.invDraft||{},dep=invDepart(),enDep=dep.enCours;let first=true;let h='<div class="panel" style="margin-top:12px"><h2>'+(invDejaFait()&&!enDep?"Saisie rapide de l\'inventaire":"Inventaire de départ")+'</h2><p class="note">'+(wiz?"Le matériel est rangé par catégorie : ouvre-en une, compte, puis passe à la suivante.":"Tout le matériel sur une seule page.")+' Remplis seulement ce que tu as compté : les lignes vides ne changent rien. Cartons et unités en vrac s\'additionnent.</p>'
+   +(enDep&&dep.fait?'<div class="invpg"><p class="ppmot">'+(dep.fait>=dep.tot*0.8?"Presque fini : ":dep.fait>=dep.tot*0.3?"Bien avancé : ":"C\'est parti : ")+dep.fait+' produits comptés sur '+dep.tot+'.</p><div class="ppbar"><span style="width:'+Math.round(100*dep.fait/dep.tot)+'%"></span></div><p class="note">Tu peux t\'arrêter quand tu veux : ce qui est enregistré est gardé, et ce que tu as tapé aussi, même si tu fermes l\'appli.</p></div>':enDep?'<p class="note" style="margin-top:6px">Pas besoin de tout faire d\'un coup : compte une étagère, enregistre, et reviens plus tard. Ce que tu tapes est gardé, même si tu fermes l\'appli.</p>':"")
    +(L.length>1?'<div class="chips" style="margin-top:8px">'+L.map(l=>'<button class="chip" data-act="invLieu" data-id="'+esc(l.id)+'" aria-pressed="'+(S.invLieu===l.id)+'">'+esc(l.nom)+'</button>').join("")+'</div>':"");
   for(const k of K){const a=ps.filter(p=>catOf(p)===k);if(!a.length)continue;
-    const nf=a.filter(p=>D["iqC-"+p.id]||D["iqU-"+p.id]).length;
+    const nf=a.filter(p=>D["iqC-"+p.id]||D["iqU-"+p.id]||(enDep&&dep.D.has(p.id))).length;
     h+=(wiz?'<details class="cat invcat"'+dk("wzi-"+k,first)+' style="--cat:var('+(CATCOL[k]||"--muted")+')"><summary><span class="cic">'+iconSvg(catIcon(k))+'</span><span class="ct">'+esc(CATS[k])+'</span><span class="note invn">'+nf+' / '+a.length+' compté'+(nf>1?'s':'')+'</span></summary>':'<h3 style="margin:18px 0 6px;font-family:var(--display);font-size:16px;color:var(--fg)">'+esc(CATS[k])+'</h3>')+'<div class="list invq">'+a.map(p=>{const pc=p.parCarton>1?p.parCarton:0,theo=st[p.id].byLieu[S.invLieu]||0;
-      return '<div class="it">'+badge(p)+'<span style="flex:1;min-width:130px"><b style="font-weight:600">'+esc(p.nom)+'</b><br><span class="note">'+(p.groupe?esc(p.groupe)+' · ':'')+'théorique '+esc(fmtQ(p,theo))+'</span></span><span class="invin">'
+      const dj=enDep&&dep.D.has(p.id);
+      return '<div class="it'+(dj?' deja':'')+'">'+badge(p)+'<span style="flex:1;min-width:130px"><b style="font-weight:600">'+esc(p.nom)+'</b><br><span class="note">'+(p.groupe?esc(p.groupe)+' · ':'')+(dj?'<span class="invok">✓ compté</span> · stock '+esc(fmtQ(p,theo)):'théorique '+esc(fmtQ(p,theo)))+'</span></span><span class="invin">'
        +(pc?'<label class="note invf">Cartons ('+pc+')<input id="iqC-'+esc(p.id)+'" type="number" min="0" inputmode="numeric" value="'+esc((S.invDraft||{})["iqC-"+p.id]||"")+'"></label>':'')
        +'<label class="note invf">'+(pc?'+ unités':'Unités')+'<input id="iqU-'+esc(p.id)+'" type="number" min="0" inputmode="numeric" value="'+esc((S.invDraft||{})["iqU-"+p.id]||"")+'"></label></span></div>'}).join("")+'</div>'+(wiz?'</details>':'');first=false}
-  return h+'<div class="row" style="margin-top:14px;position:sticky;bottom:calc(10px + env(safe-area-inset-bottom,0px))"><button class="btn primary big" data-act="invRapideOk"'+(S.invBusy?' disabled aria-busy="true">Enregistrement…':'>Enregistrer l\'inventaire')+'</button></div></div>';
+  return h+'<div class="row" style="margin-top:14px;position:sticky;bottom:calc(10px + env(safe-area-inset-bottom,0px))"><button class="btn primary big" data-act="invRapideOk"'+(S.invBusy?' disabled aria-busy="true">Enregistrement…':enDep?'>Enregistrer · la suite plus tard':'>Enregistrer l\'inventaire')+'</button></div></div>';
 }
 /* ---------- Rapports d'inventaire : écarts entre stock théorique et stock compté ---------- */
 const eurC=v=>v.toLocaleString("fr-FR",{style:"currency",currency:"EUR",minimumFractionDigits:2,maximumFractionDigits:2});
@@ -2599,7 +2863,7 @@ function tabInvGuide(st,ps,L){
 /* Réglages */
 function tabReg(st){
   const c=cfg();
-  let h='<div class="row" style="margin-top:12px;justify-content:flex-end"><button class="btn small" data-act="wzStart">Relancer l\'installation guidée</button>'+(ls.get("ppCache",false)&&cfg().premiersPas!=="fini"?'<button class="btn small" data-act="ppMontre">Afficher les premiers pas</button>':'')+'</div>'+equipePanel(false)+aCompleter()+(window.SKB&&window.SKB.local?'':accesPanel())+(S.db?codePanel():'')+alertesPanel(false)+'<div class="panel" style="margin-top:14px"><button class="btn small pbtn" data-act="schemaExp">'+SHARE_ICO+'Exporter le schéma</button><h2>Stocks et organisation</h2><p class="note">Le stock central reçoit les commandes des fournisseurs. Si tu stockes aussi ailleurs (un local, une antenne), ajoute un stock intermédiaire : il est réapprovisionné depuis le stock central, et l\'équipe peut y prendre le matériel. Un seul stock suffit dans la plupart des CAARUD.</p><label class="wizl" style="margin:0 0 12px">Nom de la structure, affiché en haut de l\'appli<input id="nomStruct" value="'+esc(c.nomStructure||"")+'" placeholder="Ex. CAARUD Centre-ville"></label>'+schemaStocks(false)+'<div class="list" style="margin-top:8px">'
+  let h='<div class="row" style="margin-top:12px;justify-content:flex-end"><button class="btn small" data-act="dirPdf">Présenter Stockaarud à ta direction (PDF)</button><button class="btn small" data-act="wzStart">Relancer l\'installation guidée</button>'+(ls.get("ppCache",false)&&cfg().premiersPas!=="fini"?'<button class="btn small" data-act="ppMontre">Afficher les premiers pas</button>':'')+'</div>'+equipePanel(false)+aCompleter()+(window.SKB&&window.SKB.local?'':accesPanel())+(S.db?codePanel():'')+alertesPanel(false)+'<div class="panel" style="margin-top:14px"><button class="btn small pbtn" data-act="schemaExp">'+SHARE_ICO+'Exporter le schéma</button><h2>Stocks et organisation</h2><p class="note">Le stock central reçoit les commandes des fournisseurs. Si tu stockes aussi ailleurs (un local, une antenne), ajoute un stock intermédiaire : il est réapprovisionné depuis le stock central, et l\'équipe peut y prendre le matériel. Un seul stock suffit dans la plupart des CAARUD.</p><label class="wizl" style="margin:0 0 12px">Nom de la structure, affiché en haut de l\'appli<input id="nomStruct" value="'+esc(c.nomStructure||"")+'" placeholder="Ex. CAARUD Centre-ville"></label>'+schemaStocks(false)+'<div class="list" style="margin-top:8px">'
    +c.lieux.map(l=>'<div class="it"><input id="ln-'+esc(l.id)+'" value="'+esc(l.nom)+'" style="flex:1;min-width:160px" aria-label="Nom du stock">'+(l.principal?'<span class="pill good">stock central</span>':'<span class="pill mute">stock intermédiaire</span>'+'<button class="btn small" data-act="lieuArch" data-id="'+esc(l.id)+'">'+(l.archive?"Réactiver":"Archiver")+'</button>')+'</div>').join("")
    +'</div><div class="row" style="margin-top:10px"><button class="btn primary" data-act="saveLieux">Enregistrer les noms</button><button class="btn" data-act="addLieu">Ajouter un stock intermédiaire</button></div></div>';
   h+='<div class="panel" style="margin-top:14px"><h2>Passages et matériel récupéré</h2><p class="note"><b>Tout est facultatif.</b> Rien ne s\'affiche sur l\'écran de l\'équipe tant que tu ne coches rien. Aucun nom, aucune donnée personnelle : seulement des nombres par activité et par jour.</p>'
@@ -2637,6 +2901,8 @@ function regOrder(t,titres){const P=[...t.content.children].filter(el=>el.classL
   const fr=document.createDocumentFragment();let g0=-2;for(const [el,g] of srt){if(titres&&g!==g0&&g>=0){const h=document.createElement("h2");h.className="regg";h.textContent=REG_GRP[g][0];fr.appendChild(h)}g0=g;fr.appendChild(el)}mk.replaceWith(fr)}
 const zSel=(id,v)=>{const o=[[1.28,90],[1.65,95],[2.05,98],[2.33,99]],has=o.some(([z])=>Math.abs(z-v)<0.005);
   return '<select id="'+esc(id)+'">'+(has?'':'<option value="'+v+'" selected>Réglage actuel (z = '+String(v).replace(".",",")+')</option>')+o.map(([z,p])=>'<option value="'+z+'"'+(Math.abs(z-v)<0.005?" selected":"")+'>Éviter la rupture '+p+'\u00a0% du temps (niveau de service, z = '+String(z).replace(".",",")+')</option>').join("")+'</select>'};
+/* Ouvrir les Réglages directement sur une rubrique */
+function regVa(k){S.view="coordo";S.ctab="reg";S.regSel=k;const o=new Set(ls.get("regOpen",[]));o.add(k);ls.set("regOpen",[...o]);window.scrollTo(0,0);render(true);setTimeout(()=>{const t=[...document.querySelectorAll("#app h2")].find(x=>x.textContent.trim()===k);t&&t.scrollIntoView({block:"start",behavior:"smooth"})},120)}
 function foldPanels(html){
   const t=document.createElement("template");t.innerHTML=html;const open=new Set(ls.get("regOpen",[]));const wide=(window.innerWidth||0)>=1100;regOrder(t,!wide);
   if(wide){const P=[...t.content.children].filter(el=>el.classList&&el.classList.contains("panel")&&el.querySelector(":scope > h2, :scope > summary h2")),key=el=>el.querySelector("h2").textContent.trim();
@@ -2755,14 +3021,16 @@ function val(id){const e=document.getElementById(id);return e?e.value:""}
 async function downloadBlob(name,blob){if(!S.dl){toast("Le téléchargement n'est pas disponible dans cette vue");return}try{await S.dl.save({filename:name,data:blob})}catch(e){if(e&&e.code!=="dismissed"&&e.code!=="declined")toast("Téléchargement annulé")}}
 document.addEventListener("input",e=>{const t=e.target;if(t&&t.id&&/^lot/.test(t.id)){S.lotDraft=S.lotDraft||{};if(t.id==="lotD")S.lotDraft.date=t.value;else if(t.id==="lotA")S.lotDraft.act=t.value;else if(t.id==="lotL")S.lotDraft.lieu=t.value;else S.lotDraft[t.id]=t.value}
   if(t&&t.id&&/^me[A-Z]-/.test(t.id)){S.matDraft=S.matDraft||{};S.matDraft[t.id]=t.type==="checkbox"?t.checked:t.value}
-  if(t&&t.id&&/^iq[CU]-/.test(t.id)){S.invDraft=S.invDraft||{};S.invDraft[t.id]=t.value;const d=t.closest("details.invcat"),n=d&&d.querySelector(".invn");if(n){const its=d.querySelectorAll(".invq>.it"),k=[...its].filter(it=>[...it.querySelectorAll("input")].some(i=>i.value.trim()!=="")).length;n.textContent=k+" / "+its.length+" compté"+(k>1?"s":"")}}
+  if(t&&t.id&&/^iq[CU]-/.test(t.id)){S.invDraft=S.invDraft||{};S.invDraft[t.id]=t.value;ls.set("invDraft",S.invDraft);const d=t.closest("details.invcat"),n=d&&d.querySelector(".invn");if(n){const its=d.querySelectorAll(".invq>.it"),k=[...its].filter(it=>it.classList.contains("deja")||[...it.querySelectorAll("input")].some(i=>i.value.trim()!=="")).length;n.textContent=k+" / "+its.length+" compté"+(k>1?"s":"")}}
   if(t&&t.getAttribute&&t.getAttribute("aria-invalid")==="true")fieldOk(t)});
 async function saveInvRapide(){if(S.invBusy)return 0;S.invBusy=true;try{return await saveInvRapide0()}finally{S.invBusy=false;render()}}
-async function saveInvRapide0(){const st=computeStats(),sess="inv"+uid();let n=0;S.lastSess=sess;const vals=prodsActifs().map(p=>{const c=document.getElementById("iqC-"+p.id),u=document.getElementById("iqU-"+p.id);return [p,c?c.value.trim():"",u?u.value.trim():""]});
+async function saveInvRapide0(){const st=computeStats(),sess="inv"+uid(),dep0=invDepart();let n=0,neufs=0;S.lastSess=sess;const vals=prodsActifs().map(p=>{const c=document.getElementById("iqC-"+p.id),u=document.getElementById("iqU-"+p.id);return [p,c?c.value.trim():"",u?u.value.trim():""]});
   if(vals.some(v=>v[1]!==""||v[2]!=="")){const bs=document.querySelectorAll('[data-act="invRapideOk"],.wiznav button');bs.forEach(x=>x.disabled=true);document.querySelectorAll('.wiznav .primary,[data-act="invRapideOk"]').forEach(m=>{m.textContent="Enregistrement…";m.setAttribute("aria-busy","true")});await new Promise(r=>requestAnimationFrame(()=>setTimeout(r,0)))}
   for(const [p,cv,uv] of vals){if(cv===""&&uv==="")continue;
-  const q=Math.max(0,Math.round(num(cv,0)*(p.parCarton>1?p.parCarton:1)+num(uv,0)));await write("set","mouvements/"+uid(),{t:Date.now(),type:"inventaire",produit:p.id,qte:q,lieu:S.invLieu||(principal()||{}).id,theorique:st[p.id].byLieu[S.invLieu||(principal()||{}).id]||0,session:sess});n++}
-  if(n)S.invDraft={};
+  const q=Math.max(0,Math.round(num(cv,0)*(p.parCarton>1?p.parCarton:1)+num(uv,0)));await write("set","mouvements/"+uid(),{t:Date.now(),type:"inventaire",produit:p.id,qte:q,lieu:S.invLieu||(principal()||{}).id,theorique:st[p.id].byLieu[S.invLieu||(principal()||{}).id]||0,session:sess});n++;if(!dep0.D.has(p.id))neufs++}
+  if(n){S.invDraft={};ls.set("invDraft",{})}
+  if(n&&dep0.enCours&&!S.wiz){const f=dep0.fait+neufs;if(f>=dep0.tot){setTimeout(()=>fete("Inventaire de départ terminé !","Tout le matériel est compté : les alertes et les commandes partent maintenant de vrais chiffres."),300);return n}
+    toast("Bravo : "+f+" produits comptés sur "+dep0.tot+". Le reste quand tu veux, rien n'est perdu.");return n}
   toast(n?"Inventaire enregistré : "+n+" produit"+(n>1?"s":""):"Rien de compté pour l'instant");return n}
 async function download(name,text,type){
   if(!S.dl){toast("Le téléchargement n'est pas disponible dans cette vue");return}
@@ -3064,7 +3332,10 @@ document.addEventListener("change",async e=>{
       document.querySelectorAll(".icpick button").forEach(x=>x.setAttribute("aria-pressed","false"));const nb=document.getElementById("fpNoPhotoBtn");if(nb)nb.hidden=false;
     }catch(err){toast("Cette image n'a pas pu être lue")}t.value=""}
   if(t.id==="restoreIn"&&t.files[0]){try{const d=JSON.parse(await t.files[0].text());if(!d||!d.stockaarud||!Array.isArray(d.mouvements))throw 0;S.restoreData=d;wipeStep1("restore",true);const b2=document.querySelector('[data-act="wipe2"]');if(b2)b2.dataset.v="restore"}catch(err){toast("Ce fichier n'est pas une sauvegarde Stockaarud")}t.value=""}
-  if(t.id==="histoCsv"&&t.files[0]){S.histoImp=histoLire(await t.files[0].text());t.value="";render()}
+  if(t.id==="histoCsv"&&t.files[0]){const f=t.files[0];t.value="";
+    if(/\.xlsx$/i.test(f.name)){try{await loadBilan();const wb=window.STKBilan.lireXlsx(await f.arrayBuffer());S.histoSrc={wb};S.histoImp=histoLireWb(wb)}catch(err){S.histoSrc=null;S.histoImp={err:"Ce fichier Excel n\'a pas pu être lu. Enregistre-le au format .xlsx (pas .xls), ou repars du modèle."}}}
+    else if(/\.xls$/i.test(f.name)){S.histoImp={err:"L\'ancien format .xls n\'est pas lu : dans Excel, Fichier, Enregistrer sous, format .xlsx."}}
+    else{const txt=await f.text();S.histoSrc={txt};S.histoImp=histoLire(txt)}render()}
   if(t.id==="passCsv"&&t.files[0]){S.passImp=passLire(await t.files[0].text());t.value="";render()}
   if((t.id==="impCsv"||t.id==="impCsv2")&&t.files[0]){parseCsv(await t.files[0].text());t.value="";render()}
 });
@@ -3162,13 +3433,26 @@ document.addEventListener("click",async e=>{
   case "recupOk":{const L=[["seringues",Math.round(num(val("ruS"),0))],["collecteurs",Math.round(num(val("ruC"),0))],["kg",Math.round(num(val("ruK"),0)*10)/10]].filter(x=>x[1]>0);if(!L.length){toast("Indique au moins une quantité");break}
     $("#layer").innerHTML="";const ids=[];for(const [quoi,q] of L){const i2=uid();ids.push(i2);await write("set","mouvements/"+i2,{t:Date.now(),type:"recup",quoi,qte:q,activite:S.activite,jour:today(),lieu:S.lieu||(principal()||{}).id})}
     toast("Matériel récupéré noté",async()=>{for(const i2 of ids){S.queue=S.queue.filter(o=>o.path!=="mouvements/"+i2);ls.set("queue",S.queue);await write("delete","mouvements/"+i2)}render()});render();break}
-  case "histoModele":await download("stockaarud-historique-modele.csv",histoModele(),"text/csv");break;
+  case "histoModele":try{await loadBilan();await downloadBlob("stockaarud-historique-modele.xlsx",histoModeleWb())}catch(err){await download("stockaarud-historique-modele.csv",histoModele(),"text/csv")}break;
+  case "histoCreer":{const I=S.histoImp,src=S.histoSrc;if(!I||!src)break;b.disabled=true;b.textContent="Création…";const noms=I.inconnus.filter(n=>n&&n!=="(vide)");
+    for(const n of noms){if([...S.produits.values()].some(p=>norm(p.nom)===norm(n)))continue;await write("set","produits/"+slug(n),{nom:n,categorie:"autre",groupe:"",synonymes:[],parCarton:1,unite:"both",securiteJours:7,prix:"",fournisseurId:"",actif:false,ancien:true})}
+    for(let k=0;k<30&&noms.some(n=>![...S.produits.values()].some(p=>norm(p.nom)===norm(n)));k++)await new Promise(r=>setTimeout(r,100));
+    S.histoImp=src.wb?histoLireWb(src.wb):histoLire(src.txt);toast(noms.length+" produit"+(noms.length>1?"s":"")+" créé"+(noms.length>1?"s":"")+" en archivé");render();break}
+  case "bcPdf":case "bcXlsx":case "bcDocx":{const y=bilanAnnee(),t0=b.innerHTML;b.disabled=true;b.textContent="Préparation…";await new Promise(r=>setTimeout(r,30));
+    try{await loadBilan();const B=bilanComplet(y),nom="stockaarud-bilan-complet-"+y;
+      if(a==="bcPdf")await downloadBlob(nom+".pdf",await bilanCompletPdf(B));else if(a==="bcXlsx")await downloadBlob(nom+".xlsx",window.STKBilan.xlsx(B));else await downloadBlob(nom+".docx",window.STKBilan.docx(B))}
+    catch(err){console.error(err);toast("Bilan pas créé\u202f: vérifie le réseau, puis réessaie."+errC(err))}b.disabled=false;b.innerHTML=t0;break}
+  case "baSave":{const y=bilanAnnee(),fa={...(cfg().fileActive||{})};fa[y]={tot:Math.max(0,Math.round(num(val("baF"),0))),inj:Math.max(0,Math.round(num(val("baI"),0)))};await saveConfig({fileActive:fa});toast("Enregistré");break}
   case "histoNo":S.histoImp=null;render();break;
   case "histoOk":{const I=S.histoImp;if(!I||!I.rows)break;S.histoImp=null;const lieu=(principal()||{}).id,agg={};for(const r of I.rows){const k=r.iso+"|"+r.prod+"|"+r.act;agg[k]=agg[k]||{...r,q:0};agg[k].q+=r.q}
     const L=Object.values(agg).concat((I.pass||[]).map(r=>({...r,passage:true})));$("#layer").innerHTML='<div class="sheet-back"><div class="sheet" role="dialog" aria-modal="true" aria-label="Import"><h2>Import de l\'historique…</h2><p id="hiP" class="note" style="margin:0">0 / '+L.length+'</p></div></div>';
     let i=0;for(const r of L){if(r.passage)await write("set","mouvements/pas-imp-"+r.iso+"-"+r.act,{t:new Date(r.iso+"T00:00:01").getTime(),type:"passage",activite:r.act,qte:r.q,jour:r.iso,importe:true,histo:true});
       else{const m={t:r.t,type:"sortie",produit:r.prod,qte:r.q,lieu,histo:true};if(r.act)m.activite=r.act;if(r.pu>0)m.pu=r.pu;await write("set","mouvements/his-"+r.iso+"-"+r.prod+(r.act?"-"+r.act:""),m)}i++;if(i%10===0||i===L.length){const el=document.getElementById("hiP");if(el)el.textContent=i+" / "+L.length}}
-    $("#layer").innerHTML="";toast(nfr(L.length)+" chiffres d'historique importés");render();break}
+    let nx=0;const mi=y=>new Date(y,6,1,12).getTime();
+    for(const r of I.achats||[]){const m={t:mi(r.y),type:"achatHisto",histo:true,qte:r.q,montant:r.mt,fournisseurNom:r.f};if(r.p)m.produit=r.p;await write("set","mouvements/ha-"+r.y+"-"+slug(r.f||"x")+"-"+(r.p||"x"),m);nx++}
+    for(const r of I.stocks||[]){await write("set","mouvements/hs-"+r.y+"-"+r.p,{t:new Date(r.y,11,31,12).getTime(),type:"stockHisto",histo:true,produit:r.p,qte:r.q});nx++}
+    for(const r of I.dons||[]){await write("set","mouvements/hd-"+r.y+"-"+(r.recu?"r":"d")+"-"+slug(r.a||"x")+"-"+r.p+(r.pret?"-p":""),{t:mi(r.y),type:r.recu?"recuHisto":"donneHisto",histo:true,produit:r.p,qte:r.q,partenaireNom:r.a,nature:r.pret?"pret":"don"});nx++}
+    $("#layer").innerHTML="";S.histoSrc=null;toast(nfr(L.length+nx)+" chiffres d'historique importés");render();break}
   case "histoDel":if(b.dataset.sure!=="1"){b.dataset.sure="1";b.textContent="Confirmer la suppression";break}{const L=S.mvts.filter(m=>m.histo).concat((S.terrain||[]).filter(m=>m.histo));for(const m of L)await write("delete","mouvements/"+m.id);toast("Historique importé supprimé");render();break}
   case "passModele":await download("stockaarud-passages-modele.csv",passModele(),"text/csv");break;
   case "passImpNo":S.passImp=null;render();break;
@@ -3257,7 +3541,10 @@ document.addEventListener("click",async e=>{
     else{const q=v=>'"'+String(v).replace(/"/g,'""')+'"';const rows=[["Référence","Produit","Quantité","Conditionnement","Unités","Montant estimé TTC"]].concat(bonLignes(ps,st).map(l=>[l.ref,l.nom,l.qte,l.cond,l.u,l.total?l.total.toFixed(2).replace(".",","):""]));await download("bon-de-commande-"+f.replace(/\W+/g,"-").toLowerCase()+"-"+today()+".csv",rows.map(r=>r.map(q).join(";")).join("\n"),"text/csv")}break}
   case "ppCache":ls.set("ppCache",true);toast("Premiers pas masqués. Ils restent dans Réglages.",async()=>{ls.set("ppCache",false);render()});render();break;
   case "ppFin":await saveConfig({premiersPas:"fini"});render();fete("Bravo !","Ton stock est suivi, l'équipe note ses sorties : Stockaarud fait le reste.");break;
-  case "ppEq":S.view="coordo";S.ctab="reg";window.scrollTo(0,0);render();setTimeout(()=>{const t=[...document.querySelectorAll("#app h2")].find(x=>/Inviter l'équipe/.test(x.textContent));t&&t.scrollIntoView({block:"start",behavior:"smooth"})},80);break;
+  case "ppEq":regVa("Inviter l'équipe");break;
+  case "dirPdf":{const t0=b.innerHTML;b.disabled=true;b.textContent="Préparation…";try{await downloadBlob("stockaarud-presentation-direction.pdf",await directionPdf())}catch(err){toast("PDF pas créé\u202f: le module PDF n\'a pas pu se charger. Vérifie le réseau, puis réessaie."+errC(err))}b.disabled=false;b.innerHTML=t0;break}
+  case "prevForce":S.prevForce=true;render();break;
+  case "ppHisto":regVa("Reprendre un historique");break;
   case "ppMontre":ls.set("ppCache",false);S.ctab="bord";window.scrollTo(0,0);render();break;
   case "wzStart":S.wiz=1;S.wizSkip=false;S.view="coordo";window.scrollTo(0,0);render();break;
   case "wzSkip":S.wiz=null;S.wizSkip=true;render();break;
