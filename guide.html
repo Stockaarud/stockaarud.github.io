@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Le guide Stockaarud : installer et utiliser</title>
-<meta name="description" content="Installer Stockaarud en quinze minutes, puis tout ce que fait l’appli, écran par écran : noter les sorties, suivre l’autonomie du stock, commander, faire l’inventaire et sortir les statistiques.">
+<meta name="description" content="Installer Stockaarud en trois minutes, puis tout ce que fait l’appli, écran par écran : noter les sorties, suivre l’autonomie du stock, commander, faire l’inventaire et sortir les statistiques.">
 <meta name="theme-color" content="#1f4d3a">
 <meta property="og:type" content="article">
 <meta property="og:locale" content="fr_FR">
@@ -76,14 +76,14 @@
   <div class="container guide">
 
       <div class="who" role="tablist" aria-label="Le guide pour">
-        <button class="tab who-btn" type="button" role="tab" id="tab-installation" aria-controls="installation" aria-selected="true" tabindex="0"><span class="tab-t"><b>L’installation</b>Une fois, en quinze minutes.</span></button>
+        <button class="tab who-btn" type="button" role="tab" id="tab-installation" aria-controls="installation" aria-selected="true" tabindex="0"><span class="tab-t"><b>L’installation</b>Une fois, en trois minutes.</span></button>
         <button class="tab who-btn" type="button" role="tab" id="tab-equipe" aria-controls="equipe" aria-selected="false" tabindex="-1"><span class="tab-t"><b>L’équipe</b>Noter les sorties.</span></button>
         <button class="tab who-btn" type="button" role="tab" id="tab-gestion" aria-controls="gestion" aria-selected="false" tabindex="-1"><span class="tab-t"><b>Le responsable stock</b>Commander, suivre, compter.</span></button>
       </div>
 
       <section class="guide-part who-pane" id="installation" role="tabpanel" aria-labelledby="tab-installation">
         <h2 id="t-installation" class="doc-h2 part-h">L’installation</h2>
-        <p class="part-lead">Quinze minutes sur un ordinateur, un compte Supabase gratuit, rien à télécharger, aucun mot de passe à retenir. À faire une seule fois, par le responsable stock.</p>
+        <p class="part-lead">Trois minutes, sur téléphone ou sur ordinateur, avec un compte Supabase gratuit : rien à télécharger, aucun mot de passe à retenir. À faire une seule fois, par le responsable stock.</p>
       <section class="qsheet qsheet--top screen-only" id="essai" aria-labelledby="t-essai">
         <h2 id="t-essai" class="doc-h2">D’abord essayer, sans compte</h2>
         <p>Ouvrez <a href="https://stockaarud.github.io/stockaarud/" target="_blank" rel="noopener">l’appli</a> et choisissez <strong>Essayer tout de suite, sans compte</strong>. L’installation guidée démarre aussitôt, avec votre vrai matériel.</p>
@@ -93,37 +93,31 @@
 
       <ol class="steps">
         <li class="step" id="base">
-          <h2>Créer le projet Supabase</h2>
+          <h2>Connecter Supabase</h2>
           <div class="step-body">
+            <p>Ouvrez <a href="https://stockaarud.github.io/stockaarud/" target="_blank" rel="noopener">l’appli</a>, sur téléphone ou sur ordinateur, et touchez <strong>Connecter Supabase</strong>.</p>
             <ol>
-              <li>Créez un compte sur <a href="https://supabase.com">supabase.com</a>.</li>
-              <li><strong>New project</strong> (nouveau projet) : nom <code>stockaarud</code>, région <strong>Europe (Paris)</strong>.</li>
+              <li>Supabase vous demande de vous connecter, ou de créer un compte gratuit.</li>
+              <li>Une page en anglais vous demande d’autoriser Stockaarud. Vérifiez que l’organisation proposée est bien la vôtre, puis validez.</li>
+              <li>Vous revenez dans l’appli : la base se crée et se règle toute seule, en 2 à 3 minutes. Laissez la page ouverte.</li>
             </ol>
+            <p>L’autorisation sert uniquement à l’installation : elle est effacée dès que la base est prête. Vous pouvez aussi la retirer vous-même dans Supabase.</p>
           </div>
+          <figure class="sheet shot shot--setup" style="--r: 1.2deg"><div data-slot="brancher" data-kind="product" data-alt="L’écran d’installation de l’appli"><img src="img/setup1.jpg?v=13" width="780" height="1688" alt="Écran Installer Stockaarud pour mon CAARUD : ce que l’appli apporte, ce qui va se passer, et le bouton Connecter Supabase." loading="lazy"></div></figure>
         </li>
 
-        <li class="step" id="preparer">
-          <h2>Préparer la base</h2>
+        <li class="step step--full step--fold" id="preparer"><details class="fold"><summary class="fold-s"><span class="fold-t"><h2>Ou à la main</h2><span class="fold-hint">Quinze minutes sur un ordinateur, si vous préférez ne pas autoriser Stockaarud.</span></span></summary><div class="fold-in">
           <div class="step-body">
-            <p>Ouvrez <a href="https://stockaarud.github.io/stockaarud/" target="_blank" rel="noopener">l’appli</a> sur l’ordinateur : l’écran <strong>Installer Stockaarud pour mon CAARUD</strong> a un bouton pour chaque étape.</p>
             <ol>
-              <li><strong>Copier le script</strong>, puis <strong>Ouvrir l’éditeur SQL</strong>.</li>
-              <li>Collez, cliquez sur <strong>Run</strong> (exécuter).</li>
+              <li>Créez un compte sur <a href="https://supabase.com">supabase.com</a>, puis <strong>New project</strong> (nouveau projet) : nom <code>stockaarud</code>, région <strong>Europe (Paris)</strong>.</li>
+              <li>Dans l’appli, dépliez <strong>Installer à la main</strong> : chaque étape a son bouton. <strong>Copier le script</strong>, <strong>Ouvrir l’éditeur SQL</strong>, collez, cliquez sur <strong>Run</strong> (exécuter).</li>
               <li id="compte"><strong>Ouvrir le réglage</strong>, activez <strong>Allow anonymous sign-ins</strong> (autoriser les connexions anonymes), puis <strong>Save</strong> (enregistrer). Ce réglage permet d’entrer avec un QR code, sans compte ni mot de passe.</li>
+              <li id="brancher"><strong>Ouvrir la page des clés</strong>, copiez la <strong>Publishable key</strong> (la clé publique, elle commence par <code>sb_publishable</code>) et collez-la dans l’appli, avec l’adresse de cette page. Quand les deux lignes sont vertes, cliquez sur <strong>Installer</strong>, dans l’heure qui suit le script.</li>
             </ol>
-          </div>
-          <figure class="sheet shot shot--setup" style="--r: 1.2deg"><div data-slot="brancher" data-kind="product" data-alt="L’écran d’installation de l’appli"><img src="img/setup1.jpg?v=12" width="780" height="1688" alt="Écran Installer Stockaarud pour mon CAARUD : trois étapes, chacune avec son bouton vers Supabase." loading="lazy"></div></figure>
-        </li>
-
-        <li class="step" id="brancher">
-          <h2>Brancher l’appli sur votre base</h2>
-          <div class="step-body">
-            <p><strong>Ouvrir la page des clés</strong>, copiez la <strong>Publishable key</strong> (la clé publique, elle commence par <code>sb_publishable</code>) et collez-la dans l’appli. Copiez aussi l’adresse de cette page, dans la barre du navigateur.</p>
-            <p>L’appli vérifie toute seule que la base est prête et vous dit ce qui manque. Quand les deux lignes sont vertes, cliquez sur <strong>Installer</strong>, dans l’heure qui suit le script. Aucun code à recopier.</p>
             <p class="sheet sheet--fluoro warn" style="--r: -0.8deg">Jamais une clé <code>secret</code> ou <code>service_role</code> : elles donnent tous les droits.</p>
           </div>
-          <figure class="sheet shot shot--setup" style="--r: -1deg"><div data-slot="compte" data-kind="product" data-alt="La clé et l’adresse remplies, la base vérifiée"><img src="img/setup2.jpg?v=12" width="780" height="1688" alt="La clé publique et l’adresse remplies, deux lignes vertes : base préparée, connexions par code autorisées." loading="lazy"></div></figure>
-        </li>
+          <figure class="sheet shot shot--setup" style="--r: -1deg"><div data-slot="compte" data-kind="product" data-alt="La clé et l’adresse remplies, la base vérifiée"><img src="img/setup2.jpg?v=13" width="780" height="1688" alt="La clé publique et l’adresse remplies, deux lignes vertes : base préparée, connexions par code autorisées." loading="lazy"></div></figure>
+        </div></details></li>
 
         <li class="step" id="guidee">
           <h2>Suivre l’installation guidée</h2>
