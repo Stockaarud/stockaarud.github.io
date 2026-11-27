@@ -361,7 +361,7 @@ details.cat>.grid{margin:0;padding:0 10px 10px}
 details.jfold{margin:6px 0 10px}details.jfold>summary{cursor:pointer;font-weight:700;color:var(--accent);min-height:44px;display:flex;align-items:center;gap:6px}
 details.cmdhelp>summary{cursor:pointer;font-weight:600;color:var(--accent);min-height:44px;display:flex;align-items:center}details.cmdhelp p{margin:0 0 8px}
 .note.clamp{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}.lire{background:none;border:0;padding:4px 0;min-height:32px;color:var(--accent);font:600 13px var(--body);text-decoration:underline;text-underline-offset:3px;cursor:pointer}
-@media (max-width:899px){.svnav{flex-wrap:wrap;overflow:visible;position:static}}
+@media (max-width:899px){.svnav{position:static;margin:10px 0 2px;padding:2px 0 4px;scrollbar-width:none}.svnav::-webkit-scrollbar{display:none}.svnav button{padding:6px 12px;min-height:36px}}
 .fete{position:fixed;inset:0;z-index:60;display:grid;place-items:center;background:rgb(0 0 0/.45);padding:16px;overflow:hidden}
 .fete .carte{position:relative;z-index:1;max-width:380px;width:100%;background:var(--surface);color:var(--fg);border-radius:18px;padding:24px 20px;text-align:center;box-shadow:0 12px 40px rgb(0 0 0/.3)}
 .fete .carte .big{font-size:52px;line-height:1;margin-bottom:8px}.fete h2{margin:0 0 6px;font-size:24px}.fete p{margin:0 0 16px}
@@ -524,9 +524,22 @@ details summary{cursor:pointer;font-weight:600}
   body.v-coordo [style*="position:sticky;bottom"]{bottom:calc(84px + env(safe-area-inset-bottom,0px))!important}
   .svnav{top:var(--hdrH,0px)}
 }
+.kittile .kitc{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;color:var(--muted);font-size:12.5px;line-height:1.3}
+.savedhint{position:fixed;left:50%;bottom:calc(84px + env(safe-area-inset-bottom,0px));transform:translate(-50%,8px);z-index:60;background:var(--fg);color:var(--bg);border-radius:999px;padding:7px 14px;font:700 13px var(--body);opacity:0;pointer-events:none;transition:opacity .2s,transform .2s}.savedhint.on{opacity:1;transform:translate(-50%,0)}
+#app [data-act="saveLieux"].primary,#app [data-act="saveActs"].primary,#app [data-act="saveParts"].primary,#app [data-act="saveFourn"].primary,#app [data-act="saveSaisons"].primary,#app [data-act="saveCalc"].primary,#app [data-act="saveCats"].primary{display:none}
+.regsearch{margin:6px 0 12px}.regtiles{display:grid;gap:10px;margin-top:6px}
+.regtile{display:flex;align-items:center;gap:14px;text-align:left;background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:14px 14px;min-height:72px;color:var(--fg);cursor:pointer;font:inherit}
+.regtile>svg{width:28px;height:28px;flex:none;fill:none;stroke:var(--accent);stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.regtile span{flex:1;min-width:0;display:flex;flex-direction:column;gap:3px}.regtile b{font:700 16px var(--head,var(--body))}.regtile small{color:var(--muted);font-size:13px;line-height:1.35}
+.regtile .chev{width:18px;height:18px;stroke:var(--muted);stroke-width:2}
+.regback{display:flex;align-items:center;gap:12px;margin:4px 0 6px}.regback h2{margin:0;font-size:19px}
+.qhelp{display:inline-grid;place-items:center;width:24px;height:24px;min-height:24px;margin-left:8px;border-radius:50%;border:1.5px solid var(--line);background:none;color:var(--muted);font:700 13px var(--body);vertical-align:2px;cursor:pointer;padding:0}
+.qhelp[aria-expanded="true"]{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
+details.fold>*:not(summary):not(.pbtn):not(p){clear:both}.panel p.regintro{display:none}.panel.helpon p.regintro{display:block}
+.kittile .kitc
 .svfam{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));margin-top:16px}
 .svfam button[aria-pressed="true"]{font-weight:800;box-shadow:0 1px 3px rgb(0 0 0/.16),inset 0 -3px 0 var(--brand-2)}
-@media (max-width:899px){.svnav{-webkit-mask-image:linear-gradient(to right,#000 calc(100% - 28px),transparent);mask-image:linear-gradient(to right,#000 calc(100% - 28px),transparent)}.svnav::after{content:"";flex:none;width:22px}}.svfam button{padding-inline:4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+@media (max-width:899px){.svnav{-webkit-mask-image:linear-gradient(to right,#000 calc(100% - 28px),transparent);mask-image:linear-gradient(to right,#000 calc(100% - 28px),transparent)}.svnav::after{content:"";flex:none;width:22px}}.svfam button{padding-inline:4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;display:flex;align-items:center;justify-content:center;gap:5px}.svfam .fic{width:19px;height:19px;flex:none;fill:none;stroke:currentColor;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round;opacity:.85}.svfam button[aria-pressed="true"] .fic{opacity:1;stroke:var(--brand-2)}@media (max-width:359px){.svfam .fic{display:none}}
 @media (min-width:900px){.svfam{display:inline-flex}.svfam button{padding-inline:18px}}
 .filt{margin:6px 0 4px;border:1px solid var(--line);border-radius:12px;background:var(--surface)}
 .filt>summary{list-style:none;cursor:pointer;display:flex;flex-wrap:wrap;align-items:baseline;gap:4px;padding:10px 12px;font-size:14px;min-height:44px;box-sizing:border-box}
@@ -852,7 +865,37 @@ function terrainAll(){const m=new Map((S.terrain||[]).map(x=>[x.id,x]));for(cons
 const terrainOn=k=>!!((cfg().terrain||{})[k]);
 function devId(){let d=ls.get("dev",null);if(!d){d=uid().slice(-6);ls.set("dev",d)}return d}
 const passId=(act,day)=>"pas-"+devId()+"-"+(day||today())+"-"+act;
-function passagesEff(){const A=terrainAll().filter(x=>x.type==="passage"),imp=new Set(A.filter(x=>x.importe).map(x=>x.jour+"|"+x.activite));return A.filter(x=>x.importe||!imp.has(x.jour+"|"+x.activite))}
+function passagesEff(){const A=terrainAll().filter(x=>x.type==="passage"),imp=new Set(A.filter(x=>x.importe).map(x=>x.jour+"|"+x.activite)),M=A.filter(x=>x.mois&&num(x.qte,0)>0),mA=new Set(M.map(x=>x.mois+"|"+x.activite)),mT=new Set(M.filter(x=>x.activite==="_tout").map(x=>x.mois));
+  return A.filter(x=>x.mois?num(x.qte,0)>0:!(mT.has((x.jour||"").slice(0,7))||mA.has((x.jour||"").slice(0,7)+"|"+x.activite))&&(x.importe||!imp.has(x.jour+"|"+x.activite)))}
+function passMoisVal(mo,act){const x=terrainAll().find(z=>z.id==="pas-mois-"+mo+"-"+act);return x?num(x.qte,0):0}
+function passMoisUI(){const mo=S.passMois||new Date(Date.now()-15*864e5).toISOString().slice(0,7),A=activitesActives(),fs=A.map(a=>[a.id,a.nom]).concat([["_tout","Sans détail par activité"]]);
+  const deja=[...new Set(terrainAll().filter(x=>x.type==="passage"&&x.mois&&num(x.qte,0)>0).map(x=>x.mois))].sort().reverse().slice(0,6);
+  return '<h3 style="margin-top:14px">Ou les saisir à la main, mois par mois</h3><div class="form" style="margin-top:6px;grid-template-columns:repeat(auto-fill,minmax(140px,1fr))"><label style="grid-column:1/-1">Mois<input id="passM" type="month" value="'+esc(mo)+'" max="'+today().slice(0,7)+'"></label>'
+   +fs.map(([id,n])=>'<label>'+esc(n)+'<input id="pm-'+esc(id)+'" type="text" inputmode="numeric" placeholder="—" value="'+(passMoisVal(mo,id)||"")+'"></label>').join("")
+   +'</div><div class="row" style="margin-top:8px"><button class="btn primary" data-act="passMoisOk">Enregistrer ce mois</button></div>'
+   +(deja.length?'<p class="note" style="margin-top:6px">Déjà saisis : '+deja.map(m=>'<button class="lire" data-act="passMoisVoir" data-v="'+m+'">'+MOIS[+m.slice(5)-1]+' '+m.slice(0,4)+'</button>').join(" · ")+'. Un mois saisi ici remplace les chiffres jour par jour du même mois.</p>':'<p class="note" style="margin-top:6px">Laisse vide ce que tu ne sais pas. Un mois saisi ici remplace les chiffres jour par jour du même mois.</p>')}
+/* Kits maison : un kit est une recette (ex. 1 pipe + 2 grilles + 2 embouts). Le noter retire chaque produit du stock. */
+function kitsActifs(){return (cfg().kits||[]).filter(k=>k.actif!==false&&(k.items||[]).some(i=>S.produits.get(i.p)&&num(i.q,0)>0))}
+function kitItems(k){return (k.items||[]).filter(i=>S.produits.get(i.p)&&num(i.q,0)>0)}
+function kitCompo(k){return kitItems(k).map(i=>{const q=num(i.q,1);return (q>1?q+" ":"")+S.produits.get(i.p).nom}).join(" + ")}
+function kitPossible(k,st){let m=Infinity;for(const i of kitItems(k)){const s=st[i.p];const sl=s?(s.byLieu[S.lieu]||0):0;m=Math.min(m,Math.floor(Math.max(0,sl)/num(i.q,1)))}return m===Infinity?0:m}
+function kitPseudo(k){return {id:"kit:"+k.id,nom:k.nom,unite:"unite",categorie:k.categorie||"",icone:"kit",kit:k}}
+function kitTile(k,st){const n=kitPossible(k,st),low=n<=0;return '<button class="tile kittile'+(S.flash&&S.flash.id==="kit:"+k.id&&Date.now()<S.flash.until?' flash':'')+'" style="--cat:var(--brand-2)" data-act="pickKit" data-id="'+esc(k.id)+'">'+badge(kitPseudo(k))+'<span class="sq" aria-hidden="true"><span class="dot '+(low?"crit":"ok")+'"></span><b'+(low?' style="color:var(--crit)"':' style="font-weight:600"')+'>'+(low?"0":nfr(n))+'</b></span><span class="nm">'+esc(k.nom)+'</span><span class="st kitc">'+esc(kitCompo(k))+'</span><span class="st"><span class="dot '+(low?"crit":"ok")+'"></span>'+(low?'<b style="color:var(--crit)">Il manque un produit</b>':'de quoi faire '+nfr(n)+' kit'+(n>1?"s":""))+'</span></button>'}
+function openKit(id){const k=(cfg().kits||[]).find(x=>x.id===id);if(!k)return;if(!S.activite){S.pendPick="kit:"+id;drawActs();return}
+  sheet={p:kitPseudo(k),n:1,mode:"unite",part:ls.get("part",null),aRendre:true,autre:"",vers:null};lastFocus=document.activeElement;drawSheet();focusDialog()}
+function kitNote(k,n){return n>0?"soit "+kitItems(k).map(i=>nfr(n*num(i.q,1))+" "+S.produits.get(i.p).nom).join(", "):"kits"}
+function kitsPanel(){const K=cfg().kits||[],P=prodsActifs().slice().sort((a,b)=>a.nom.localeCompare(b.nom,"fr")),y=new Date().getFullYear(),a0=moisDebut(y,0);
+  const nb=id=>{const L=new Map();for(const m of allMvts())if(m.kit===id&&m.t>=a0&&m.type==="sortie"&&m.lot)L.set(m.lot,num(m.kitN,0));let t=0;for(const v of L.values())t+=v;return t};
+  const opt=sel=>'<option value="">Choisir un produit</option>'+P.map(x=>'<option value="'+esc(x.id)+'"'+(x.id===sel?" selected":"")+'>'+esc(x.nom)+'</option>').join("");
+  return '<div class="panel" style="margin-top:14px"><h2>Kits maison</h2><p class="note">Un kit que vous montez vous-mêmes (ex. kit base : 1 pipe + 2 grilles + 2 embouts). L\'équipe note « 10 kits base » et chaque produit est retiré du stock.</p><div class="list" style="margin-top:8px">'
+   +K.map(k=>'<div class="it kitrow" style="flex-direction:column;align-items:stretch;gap:8px"><div class="row" style="gap:8px;flex-wrap:nowrap"><input id="kn-'+esc(k.id)+'" class="kitf" value="'+esc(k.nom)+'" style="flex:1;min-width:0;font-weight:600" aria-label="Nom du kit"><label class="row note" style="gap:6px;flex-wrap:nowrap;white-space:nowrap"><input type="checkbox" id="ka-'+esc(k.id)+'" class="kitf"'+(k.actif!==false?" checked":"")+' style="width:20px;min-height:20px">Proposé</label></div>'
+     +(k.items||[]).map((i,j)=>'<div class="row" style="gap:6px;flex-wrap:nowrap"><input id="kq-'+esc(k.id)+'-'+j+'" class="kitf" type="text" inputmode="numeric" value="'+Math.round(num(i.q,1))+'" style="width:58px;text-align:center" aria-label="Quantité"><span class="note">×</span><select id="kp-'+esc(k.id)+'-'+j+'" class="kitf" style="flex:1;min-width:0">'+opt(i.p)+'</select><button class="btn small" data-act="kitDelItem" data-id="'+esc(k.id)+'" data-v="'+j+'" aria-label="Retirer ce produit">✕</button></div>').join("")
+     +'<div class="row" style="gap:8px"><button class="btn small" data-act="kitAddItem" data-id="'+esc(k.id)+'">+ Un produit</button>'+(nb(k.id)?'<span class="note">'+nfr(nb(k.id))+' distribués en '+y+'</span>':'')+'<button class="btn small danger" data-act="kitDel" data-id="'+esc(k.id)+'" style="margin-left:auto">Supprimer le kit</button></div></div>').join("")
+   +'</div><div class="row" style="margin-top:10px"><button class="btn'+(K.length?'':' primary')+'" data-act="kitAdd">Créer un kit</button></div></div>'}
+const REG_AUTO=["saveLieux","saveActs","saveParts","saveFourn","saveSaisons","saveCalc","saveCats"];
+function savedHint(){let t=document.getElementById("savedHint");if(!t){t=document.createElement("div");t.id="savedHint";t.className="savedhint";t.setAttribute("role","status");document.body.appendChild(t)}t.textContent="✓ Enregistré";t.classList.add("on");clearTimeout(t._t);t._t=setTimeout(()=>t.classList.remove("on"),1600)}
+function kitsFromForm(){return (cfg().kits||[]).map(k=>({...k,nom:((document.getElementById("kn-"+k.id)||{}).value||k.nom).trim()||k.nom,actif:(document.getElementById("ka-"+k.id)||{checked:k.actif!==false}).checked,
+  items:(k.items||[]).map((i,j)=>{const pe=document.getElementById("kp-"+k.id+"-"+j),qe=document.getElementById("kq-"+k.id+"-"+j);return {p:pe?pe.value:i.p,q:Math.max(1,Math.round(num(qe?qe.value:i.q,1)))}})}))}
 function passagesJour(act){const d=today();return passagesEff().filter(x=>x.activite===act&&x.jour===d).reduce((a,x)=>a+num(x.qte,0),0)}
 /* Reprendre un historique tenu ailleurs (Excel) : des sorties passées, par mois ou par jour */
 function histoDebut(){const A=S.mvts.filter(m=>!m.histo&&!m.exemple);return A.length?Math.min(...A.map(m=>m.t)):Date.now()}
@@ -906,7 +949,7 @@ function passLire(txt){const lines=txt.replace(/^\uFEFF/,"").split(/\r?\n/).filt
     cols.forEach((a,i)=>{const v=c[i+1];if(!a||v===undefined||v==="")return;const n=Math.round(num(v,NaN));if(!(n>=0))return;rows.push({jour:iso,act:a.id,nom:a.nom,n})})}
   return {rows,inconnues,bad,jours:new Set(rows.map(r=>r.jour)).size,total:rows.reduce((a,r)=>a+r.n,0)}}
 /* Unités par passage : on ne compare que les jours (et les activités) où un nombre de passages est connu */
-function parPassage(a,b,act){const P=passagesEff().filter(x=>x.t>=a&&x.t<b&&(!act||x.activite===act)&&num(x.qte,0)>0);if(!P.length)return null;const K=new Set(P.map(x=>x.jour+"|"+(x.activite||""))),np=P.reduce((s2,x)=>s2+num(x.qte,0),0),u=sortiesEntre(a,b,act||null).filter(m=>K.has(jourLocal(m.t)+"|"+(m.activite||""))).reduce((x,m)=>x+num(m.qte,0),0);return {np,u,r:Math.round(u/np*10)/10,nj:new Set(P.map(x=>x.jour)).size}}
+function parPassage(a,b,act){const P=passagesEff().filter(x=>x.t>=a&&x.t<b&&(!act||x.activite===act)&&num(x.qte,0)>0);if(!P.length)return null;const K=new Set(P.map(x=>x.mois?x.mois+"|"+(x.activite==="_tout"?"*":x.activite):x.jour+"|"+(x.activite||""))),np=P.reduce((s2,x)=>s2+num(x.qte,0),0),J=new Set(P.filter(x=>!x.mois).map(x=>x.jour)),u=sortiesEntre(a,b,act||null).filter(m=>{const j=jourLocal(m.t),ac=m.activite||"",ok=K.has(j+"|"+ac)||K.has(j.slice(0,7)+"|"+ac)||K.has(j.slice(0,7)+"|*");if(ok)J.add(j);return ok}).reduce((x,m)=>x+num(m.qte,0),0);return {np,u,r:Math.round(u/np*10)/10,nj:J.size}}
 function passagesEntre(a,b,act){return passagesEff().filter(x=>x.t>=a&&x.t<b&&(!act||x.activite===act)).reduce((s2,x)=>s2+num(x.qte,0),0)}
 S.passN={};
 const passMine=act=>{const id=passId(act);return id in S.passN?S.passN[id]:(terrainAll().find(x=>x.id===id)||{}).qte||0};
@@ -1206,9 +1249,10 @@ function viewEquipe(st){
     let o='<div class="subs">';for(const g of gs){const b=a.filter(p=>p.groupe===g),lw=b.filter(p=>(st[p.id].byLieu[S.lieu]||0)<=0||st[p.id].etat==="crit").length;
       o+='<details class="sub"'+dk("sub-"+k+"-"+g,a.length<=8)+'><summary><span class="ct">'+esc(g)+'</span>'+(lw?'<span class="pill crit">'+lw+' stock bas</span>':'')+'<span class="cn">'+b.length+'</span></summary>'+grid(b)+'</details>'}
     const r=a.filter(p=>!p.groupe);return o+'</div>'+(r.length?grid(r):'')};
-  if(S.query.trim().length>=2&&!ps.length)h+='<div class="empty" style="margin-top:14px">Rien trouvé pour « '+esc(S.query)+' ».<br><button class="btn" style="margin-top:10px" data-act="signal">Signaler au responsable stock</button></div>';
-  else if(S.query.trim().length>=2||!ps.length)h+=grid(ps);
+  if(S.query.trim().length>=2&&!ps.length&&!kitsActifs().some(k=>matches({nom:k.nom,synonymes:["kit"]},S.query)))h+='<div class="empty" style="margin-top:14px">Rien trouvé pour « '+esc(S.query)+' ».<br><button class="btn" style="margin-top:10px" data-act="signal">Signaler au responsable stock</button></div>';
+  else if(S.query.trim().length>=2||!ps.length){const KQ=S.query.trim().length>=2?kitsActifs().filter(k=>matches({nom:k.nom,synonymes:["kit"]},S.query)):[];h+=(KQ.length?'<div class="grid">'+KQ.map(k=>kitTile(k,st)).join("")+'</div>':'')+grid(ps)}
   else{
+    const KA=kitsActifs();if(KA.length)h+='<details class="cat"'+dk("cat-kits",true)+' style="--cat:var(--brand-2)"><summary><span class="cic">'+iconSvg("kit")+'</span><span class="ct">Kits maison</span><span class="cn">'+KA.length+'</span></summary><div class="grid">'+KA.map(k=>kitTile(k,st)).join("")+'</div></details>';
     const top=ps.filter(p=>freq[p.id]).slice(0,6);
     if(top.length&&ps.length>8)h+='<details class="cat"'+dk("cat-top",true)+'><summary><span class="ct">Les plus utilisés'+(S.activite&&!S.activite.startsWith("__")?" pour « "+esc(actNom(S.activite))+" »":"")+'</span><span class="cn">'+top.length+'</span></summary>'+grid(top)+'</details>';
     for(const k of Object.keys(CATS)){const a=ps.filter(p=>catOf(p)===k).sort((x,y)=>x.nom.localeCompare(y.nom,"fr"));if(!a.length)continue;
@@ -1228,6 +1272,7 @@ function viewEquipe(st){
 /* ----- Feuille de saisie ----- */
 let sheet=null;
 function openPick(id){
+  if(String(id).startsWith("kit:"))return openKit(String(id).slice(4));
   if(!S.activite){S.pendPick=id;drawActs();return}
   const p=S.produits.get(id);if(!p)return;
   const M=modesOf(p),last=ls.get("mode:"+p.id,null);
@@ -1248,7 +1293,7 @@ function drawSheet(){
   const p=sheet.p,canCarton=p.parCarton>1&&(p.unite||"both")!=="unite",canUnit=(p.unite||"both")!=="carton";
   const dep=S.activite==="__dep",trans=S.activite==="__trans",perte=S.activite==="__perte";
   let h='<div class="sheet-back'+(first?" enter":"")+'" data-act="closeSheet"><div class="sheet" role="dialog" aria-modal="true" aria-label="Quantité">'
-   +'<div class="row">'+badge(p)+'<div style="min-width:0"><h2>'+esc(p.nom)+'</h2><div class="sact" style="--c:'+esc(actColor(S.activite))+'"><b><span class="sw" aria-hidden="true"></span>'+(dep?(sheet.aRendre?"Prêt à une asso":"Don à une asso"):trans?"Transfert depuis "+esc(lieuNom(S.lieu)):perte?"Perte / casse":esc(actNom(S.activite)))+'</b><button type="button" class="link" data-act="actSheet" aria-label="Changer d\'activité">changer</button></div></div></div>';
+   +'<div class="row">'+badge(p)+'<div style="min-width:0"><h2>'+esc(p.nom)+'</h2>'+(p.kit?'<div class="note" style="margin:-2px 0 4px">'+esc(kitCompo(p.kit))+'</div>':'')+'<div class="sact" style="--c:'+esc(actColor(S.activite))+'"><b><span class="sw" aria-hidden="true"></span>'+(dep?(sheet.aRendre?"Prêt à une asso":"Don à une asso"):trans?"Transfert depuis "+esc(lieuNom(S.lieu)):perte?"Perte / casse":esc(actNom(S.activite)))+'</b><button type="button" class="link" data-act="actSheet" aria-label="Changer d\'activité">changer</button></div></div></div>';
   if(dep)h+='<div class="toggle" role="group"><button data-act="pretDon" data-v="pret" aria-pressed="'+!!sheet.aRendre+'">Prêt (à rendre)</button><button data-act="pretDon" data-v="don" aria-pressed="'+!sheet.aRendre+'">Don</button></div>'
    +'<div><div class="label" style="margin-top:0">À quelle asso ?</div><div class="chips">'+cfg().partenaires.map(a=>'<button class="chip" data-act="part" data-id="'+esc(a.id)+'" aria-pressed="'+(sheet.part===a.id)+'">'+esc(a.nom)+'</button>').join("")
    +'<button class="chip ghost" data-act="part" data-id="__autre" aria-pressed="'+(sheet.part==="__autre")+'">Autre asso</button></div>'
@@ -1258,11 +1303,11 @@ function drawSheet(){
   h+='<div class="label" style="margin:0"><span class="stepn">3</span>Combien ?</div>';
   const M=modesOf(p);if(M.length>1)h+='<div class="toggle" role="group">'+M.map(k=>'<button data-act="mode" data-v="'+esc(k)+'" aria-pressed="'+(sheet.mode===k)+'">'+PACK_L[k]+(k!=="unite"?' <span class="note">('+factor(p,k)+')</span>':'')+'</button>').join("")+'</div>';
   h+='<div class="stepper"><button data-act="minus" aria-label="Moins">−</button><input id="qty" type="number" inputmode="numeric" min="1" step="1" value="'+(sheet.n||"")+'" aria-label="Quantité"><button data-act="plus" aria-label="Plus">+</button></div>'
-   +'<div class="note" id="qtyNote" style="text-align:center">'+esc(qtyNote(p,sheet.mode,sheet.n||0))+'</div>'
+   +'<div class="note" id="qtyNote" style="text-align:center">'+esc(p.kit?kitNote(p.kit,sheet.n||0):qtyNote(p,sheet.mode,sheet.n||0))+'</div>'
    +'<div class="quick" role="group" aria-label="Ajouter">'+[5,10,20,50].map(n=>'<button data-act="qadd" data-v="'+esc(n)+'" aria-label="Ajouter '+n+'">+'+n+'</button>').join("")+'</div>'
    +(sheet.confirm?'<div class="confirm">Grosse quantité : '+esc(sheet.n+" "+(sheet.mode==="unite"?"unités":plur(sheet.mode,sheet.n))+(sheet.mode!=="unite"?", soit "+(sheet.n*factor(p,sheet.mode)).toLocaleString("fr-FR")+" unités":""))+'. C\'est bien ça ?</div>':'')
    +'<button class="btn primary big" data-act="valider">'+(sheet.confirm?"Oui, valider":"Valider")+'</button><button class="btn big" data-act="cancelSheet" style="min-height:46px">Annuler</button>'
-   +(!dep&&!trans&&!perte?'<button class="link" data-act="rupture" style="align-self:center;color:var(--crit)">Il n\'y en a plus'+(lieux().length>1?' au '+esc(lieuNom(S.lieu)):'')+' : signaler une rupture</button>':'')+'</div></div>';
+   +(!dep&&!trans&&!perte&&!p.kit?'<button class="link" data-act="rupture" style="align-self:center;color:var(--crit)">Il n\'y en a plus'+(lieux().length>1?' au '+esc(lieuNom(S.lieu)):'')+' : signaler une rupture</button>':'')+'</div></div>';
   L.innerHTML=h;
 }
 async function valider(){
@@ -1278,6 +1323,11 @@ async function valider(){
   const m={t:Date.now(),type:dep?"depannage":trans?"transfert":perte?"perte":"sortie",produit:p.id,qte,lieu:S.lieu};
   if(dep){if(s.part==="__autre")m.partenaireNom=s.autre.trim();else{m.partenaire=s.part;ls.set("part",s.part)}m.aRendre=!!s.aRendre}
   else if(trans)m.vers=s.vers;else if(perte)m.motif=s.motif;else m.activite=S.activite;
+  if(p.kit){const k=p.kit,lot=uid(),ids=[];for(const i of kitItems(k)){const mi={...m,produit:i.p,qte:s.n*num(i.q,1),kit:k.id,kitN:s.n,lot},iid=uid();ids.push(iid);await write("set","mouvements/"+iid,mi)}
+    closeSheet();S.flash={id:p.id,until:Date.now()+1300};render();try{navigator.vibrate&&navigator.vibrate(12)}catch(e){}
+    const saisi=s.n+" kit"+(s.n>1?"s":""),dest=dep?(s.aRendre?"Prêt à ":"Don à ")+(m.partenaireNom||partNom(m.partenaire)):trans?"Vers "+lieuNom(s.vers):perte?"Perte · "+motifNom(s.motif):actNom(S.activite);
+    mesAdd({id:lot,t:m.t,prod:p.id,nom:k.nom,saisi,dest,qte:s.n,ret:false});
+    toast("Enregistré : "+k.nom+", "+saisi,async()=>{mesDel(lot);for(const iid of ids){S.queue=S.queue.filter(o=>o.path!=="mouvements/"+iid);await write("delete","mouvements/"+iid)}ls.set("queue",S.queue);render()});return}
   ls.set("mode:"+p.id,s.mode);
   const id=uid();closeSheet();S.flash={id:p.id,until:Date.now()+1300};render();
   try{navigator.vibrate&&navigator.vibrate(12)}catch(e){}
@@ -1472,6 +1522,7 @@ function codePanel(){
 function bumpQty(){const q=$("#qty");if(q){q.classList.remove("bump");void q.offsetWidth;q.classList.add("bump")}}
 const errC=e=>e&&(e.code||e.name)?" ("+(e.code||e.name)+")":"";
 function toast(msg,undo){
+  if(S.quiet&&Date.now()-S.quiet<1500&&/^Enregistré/.test(msg))return;
   let el=$(".toast");if(el)el.remove();clearTimeout(toastT);
   el=document.createElement("div");el.className="toast";el.setAttribute("role","status");
   el.innerHTML='<span>'+esc(msg)+'</span>'+(undo?'<button>Annuler</button>':"");
@@ -2543,9 +2594,10 @@ function rupturesOuvertes(){const out=[];const byP={};for(const m of allMvts())(
   for(const pid in byP){let open=null;for(const m of byP[pid]){if(m.type==="rupture")open=open||m;else if(open&&m.t>open.t&&(m.type==="reception"||m.type==="entree"||(m.type==="inventaire"&&m.qte>0)))open=null}if(open&&S.produits.has(pid))out.push(open)}return out}
 
 const SV_VUES=[["conso","Consommation"],["explo","Tableau croisé"],["repart","Camemberts par dossier"],["prat","Évolution des pratiques"],["coh","Cohérence des kits"],["act","Par activité"],["jours","Jours forts"],["budget","Budget"],["bprev","Budget prévisionnel"],["chg","Ce qui a changé"],["four","Fournisseurs"],["recup","Récupération"],["annee","Année / an dernier"],["meteo","Météo du stock"],["rupt","Ruptures"],["dorm","Produits dormants"],["bilan","Chiffres de l\'année"]];
+const FAM_IC={"Sorties":'<path d="M4 13v6h11v-6"/><path d="M10 15V4"/><path d="M6.5 7.5 10 4l3.5 3.5"/><path d="M14 10h6m-2.5-2.5L20 10l-2.5 2.5"/>',"Stock":'<path d="M3 20h18"/><rect x="4" y="12" width="7" height="8"/><rect x="13" y="12" width="7" height="8"/><rect x="8.5" y="4" width="7" height="8"/>',"Budget":'<circle cx="12" cy="12" r="8.5"/><path d="M15.5 8.6a4.2 4.2 0 1 0 0 6.8"/><path d="M7 11h6M7 13.5h6"/>',"Bilan":'<path d="M6 3h9l4 4v14H6z"/><path d="M15 3v4h4"/><path d="M9 17v-3m3 3v-6m3 6v-4"/>'};
 const SV_FAM=[["Sorties",["conso","explo","repart","prat","act","jours","coh"]],["Stock",["rupt","meteo","dorm","recup"]],["Budget",["budget","bprev","four"]],["Bilan",["bilan","annee","chg"]]];
 function svNav(){const cur=S.sv||"conso",fam=SV_FAM.find(f=>f[1].includes(cur))||SV_FAM[0],L=Object.fromEntries(SV_VUES);
-  return '<div class="seg svfam" role="group" aria-label="Familles de graphiques">'+SV_FAM.map(([l,ks])=>'<button data-act="sv" data-v="'+ks[0]+'" aria-pressed="'+(fam===SV_FAM.find(f=>f[0]===l))+'">'+l+'</button>').join("")+'</div>'
+  return '<div class="seg svfam" role="group" aria-label="Familles de graphiques">'+SV_FAM.map(([l,ks])=>'<button data-act="sv" data-v="'+ks[0]+'" aria-pressed="'+(fam===SV_FAM.find(f=>f[0]===l))+'">'+(FAM_IC[l]?'<svg class="fic" viewBox="0 0 24 24" aria-hidden="true">'+FAM_IC[l]+'</svg>':'')+'<span>'+l+'</span></button>').join("")+'</div>'
    +'<div class="svnav" role="tablist" aria-label="Graphiques : '+fam[0]+'">'+fam[1].map(k=>'<button data-act="sv" data-v="'+esc(k)+'" aria-pressed="'+(cur===k)+'">'+L[k]+'</button>').join("")+'</div>'}
 function svView(){const v=S.sv||"conso";return v==="recup"?svRecup():v==="four"?svFourn():v==="bprev"?svBprev():v==="chg"?svChg():v==="explo"?svExplo():v==="repart"?svRepart():v==="prat"?svPratiques():v==="coh"?svCoherence():v==="act"?svActivites():v==="jours"?svJours():v==="budget"?svBudget():v==="annee"?svAnnee():v==="meteo"?svMeteo():v==="rupt"?svRuptures():v==="dorm"?svDormants():v==="bilan"?svBilan():null}
 
@@ -2631,7 +2683,7 @@ function viewEcran(st){const ps=prodsActifs().filter(p=>st[p.id].moy>0),now=new 
    +'<h2 style="margin-top:22px">Le plus sorti cette semaine</h2>'+(top.length?'<ul>'+top.map(([id,v])=>{const p=S.produits.get(id);return '<li>'+badge(p)+'<span class="en">'+esc(p.nom)+'</span><span class="ej">'+esc(fmtQ(p,v))+'</span></li>'}).join("")+'</ul>':'<p class="eok">Aucune sortie cette semaine.</p>')+'</section></div>'
    +'<p class="ef">Mis à jour en direct · Échap ou « Quitter » pour revenir</p></div>'}
 /* Les 5 produits les plus urgents ; les autres dans un repli */
-function clampNotes(){S.noteOpen=S.noteOpen||new Set();document.querySelectorAll("#app .panel p.note").forEach(p=>{if(p.closest(".wiz,form,.form,.narr,details:not([open])")||p.querySelector("input,select,button"))return;const t=p.textContent.trim();if(t.length<190)return;const k=t.slice(0,60);if(S.noteOpen.has(k))return;
+function clampNotes(){S.noteOpen=S.noteOpen||new Set();document.querySelectorAll("#app .panel p.note").forEach(p=>{if(p.classList.contains("regintro")||p.closest(".wiz,form,.form,.narr,details:not([open])")||p.querySelector("input,select,button"))return;const t=p.textContent.trim();if(t.length<190)return;const k=t.slice(0,60);if(S.noteOpen.has(k))return;
   p.classList.add("clamp");const b=document.createElement("button");b.type="button";b.className="lire";b.textContent="Lire la suite";b.onclick=()=>{S.noteOpen.add(k);p.classList.remove("clamp");b.remove()};p.after(b)})}
 function autoListe(L,fn){const n=5;if(L.length<=n+1)return L.map(fn).join("");return L.slice(0,n).map(fn).join("")+'<details class="automore"'+dk("automore")+'><summary>Voir les '+(L.length-n)+' autres produits</summary>'+L.slice(n).map(fn).join("")+'</details>'}
 function tabBord(st0){
@@ -2892,6 +2944,7 @@ function tabReg(st){
    +'<div class="row" style="margin-top:8px"><button class="btn" data-act="passModele">Télécharger le modèle (CSV)</button><label class="btn primary">Importer le fichier des passages<input type="file" accept=".csv,.txt,text/csv" id="passCsv" hidden></label></div>'
    +'<p class="note" style="margin-top:6px">Le modèle a une ligne par jour du mois en cours et une colonne par activité. Remplis le nombre de personnes, laisse vide ce que tu ne sais pas, puis importe. Tu peux ajouter des lignes pour d\'autres mois, et réimporter un fichier corrigé : il remplace les chiffres des mêmes jours.</p>'
    +(S.passImp?'<div class="narr" style="margin-top:10px">'+(S.passImp.err?'<b>Fichier non reconnu</b><p>'+esc(S.passImp.err)+'</p><button class="btn small" data-act="passImpNo">Fermer</button>':'<b>'+nfr(S.passImp.total)+' passages sur '+S.passImp.jours+' jour'+(S.passImp.jours>1?"s":"")+'</b><p>'+[...new Set(S.passImp.rows.map(r=>r.nom))].map(n=>esc(n)+" : "+nfr(S.passImp.rows.filter(r=>r.nom===n).reduce((a,r)=>a+r.n,0))).join(" · ")+'</p>'+(S.passImp.inconnues.length?'<p>Colonnes ignorées (aucune activité de ce nom) : '+esc(S.passImp.inconnues.join(", "))+'</p>':'')+(S.passImp.bad.length?'<p>Dates non comprises : '+esc(S.passImp.bad.slice(0,5).join(", "))+'</p>':'')+'<div class="row" style="margin-top:8px"><button class="btn primary" data-act="passImpOk">Enregistrer ces chiffres</button><button class="btn" data-act="passImpNo">Annuler</button></div>')+'</div>':'')
+   +passMoisUI()
    +'<label class="it" style="cursor:pointer;margin-top:10px"><input type="checkbox" data-act="terrTog" data-v="passages"'+(terrainOn("passages")?" checked":"")+' style="width:22px;min-height:22px"><span style="flex:1"><b>Ou : compter sur le téléphone</b><br><span class="note">Ajoute un compteur + sous l\'activité, sur l\'écran de l\'équipe. À cocher seulement si personne d\'autre ne compte les passages.</span></span></label>'
    +'<h3 style="margin-top:16px">Matériel récupéré</h3><label class="it" style="cursor:pointer"><input type="checkbox" data-act="terrTog" data-v="recup"'+(terrainOn("recup")?" checked":"")+' style="width:22px;min-height:22px"><span style="flex:1"><b>Noter le matériel récupéré</b><br><span class="note">Ajoute un bouton sur l\'écran de l\'équipe : seringues usagées, collecteurs pleins, kilos de DASRI. Donne le taux de récupération.</span></span></label></div>';
   h+='<div class="panel" style="margin-top:14px"><h2>Points de distribution</h2><p class="note">Ce que l\'équipe choisit à l\'étape « Où ? ». Les dates rendent un point temporaire (festival). Un point archivé reste dans les stats.</p><div class="list" style="margin-top:8px">'
@@ -2906,6 +2959,7 @@ function tabReg(st){
   h+='<div class="panel" style="margin-top:14px"><h2>Calcul des stocks</h2><div class="form" style="margin-top:10px"><label style="grid-column:1/-1">Marge de sécurité (stock de sécurité)<select id="cfM"><option value="jours"'+(c.methode==="jours"?" selected":"")+'>Quelques jours de consommation en plus, réglés par produit</option><option value="pharmacie"'+(c.methode==="pharmacie"?" selected":"")+'>Tenir compte des variations de consommation (méthode pharmacie)</option></select></label><label style="grid-column:1/-1">Prudence, méthode pharmacie'+zSel("cfZ",num(c.z,1.65))+'</label><label>Marge en plus pour les produits essentiels, méthode en jours (%)<input id="cfME" type="number" min="0" step="10" value="'+num(c.margeEss,50)+'"></label><label style="grid-column:1/-1">Prudence pour les produits essentiels, méthode pharmacie'+zSel("cfZE",num(c.zEss,2.33))+'</label><label>Historique pris en compte (semaines)<input id="cfF" type="number" min="2" value="'+c.fenetre+'"></label><label>Période entre commandes « au besoin » (jours)<input id="cfP" type="number" min="1" value="'+c.periode+'"></label><label>Budget annuel matériel (€)<input id="cfB" type="number" min="0" value="'+(c.budget||"")+'"></label><button class="btn primary" data-act="saveCalc">Enregistrer</button></div><p class="note" style="margin-top:8px">La méthode pharmacie regarde à quel point la consommation varie d\'un jour à l\'autre : plus la prudence est haute, plus le stock de sécurité est grand. La marge des produits essentiels s\'ajoute au stock de sécurité en jours (+50 % : 7 jours deviennent 10,5).</p></div>';
   h+=catPanel();
   h+=catalogue();
+  h+=kitsPanel();
   h+=histoPanel();
   h+='<div class="panel" style="margin-top:14px"><h2>Documents et outils</h2><div class="row" style="flex-wrap:wrap;gap:8px"><button class="btn small" data-act="dirPdf">Présenter Stockaarud à ta direction (PDF)</button><button class="btn small" data-act="wzStart">Relancer l\'installation guidée</button>'+(ls.get("ppCache",false)&&cfg().premiersPas!=="fini"?'<button class="btn small" data-act="ppMontre">Afficher les premiers pas</button>':'')+'</div>'+themeBar()+'</div>';
   h+='<div class="panel" style="margin-top:14px"><h2>Partager et tester</h2><div class="list"><div class="it"><span style="flex:1">Importer le modèle d\'un autre CAARUD : catalogue, dossiers et conditionnements, sans stocks ni prix.</span><label class="btn small">Choisir un fichier<input type="file" accept=".json" id="impCfg" hidden></label></div>'
@@ -2915,8 +2969,8 @@ function tabReg(st){
 }
 /* Réglages : chaque bloc se replie sous son titre ; ce qui est ouvert est retenu sur cet appareil */
 /* les rubriques, rangées sous quelques titres (les rubriques et leurs ancres ne changent pas) */
-const REG_GRP=[["L'équipe et les accès",["Inviter l'équipe","Accès et appareils","Accès à la gestion"]],["Le stock et le matériel",["Stocks et organisation","Points de distribution","Catégories de matériel","Matériel","Passages et matériel récupéré"]],["Les commandes et les alertes",["Fournisseurs","Saisonnalité","Alertes par e-mail","Associations partenaires"]],["Avancé",["Calcul des stocks","Reprendre un historique","Partager et tester","Sauvegarde et remise à zéro"]],["Outils",["Documents et outils"]]];
-const regKey=el=>{const h=el.querySelector(":scope > h2, :scope > summary h2");return h?h.textContent.trim():null};
+const REG_GRP=[["L'équipe et les accès",["Inviter l'équipe","Accès et appareils","Accès à la gestion"]],["Le stock et le matériel",["Stocks et organisation","Points de distribution","Catégories de matériel","Matériel","Kits maison","Passages et matériel récupéré"]],["Les commandes et les alertes",["Fournisseurs","Saisonnalité","Alertes par e-mail","Associations partenaires"]],["Avancé",["Calcul des stocks","Reprendre un historique","Partager et tester","Sauvegarde et remise à zéro"]],["Outils",["Documents et outils"]]];
+const regKey=el=>{const h=el.querySelector(":scope > h2, :scope > summary h2");return h?h.firstChild.textContent.trim():null};
 const regG=k=>/^À compléter/.test(k)?-1:(g=>g<0?REG_GRP.length-1:g)(REG_GRP.findIndex(([,ks])=>ks.includes(k)));
 function regOrder(t,titres){const P=[...t.content.children].filter(el=>el.classList&&el.classList.contains("panel")&&regKey(el)!=null);if(!P.length)return;
   const srt=P.map((el,i)=>[el,regG(regKey(el)),i]).sort((a,b)=>a[1]-b[1]||a[2]-b[2]),mk=document.createComment("");P[0].before(mk);
@@ -2924,18 +2978,33 @@ function regOrder(t,titres){const P=[...t.content.children].filter(el=>el.classL
 const zSel=(id,v)=>{const o=[[1.28,90],[1.65,95],[2.05,98],[2.33,99]],has=o.some(([z])=>Math.abs(z-v)<0.005);
   return '<select id="'+esc(id)+'">'+(has?'':'<option value="'+v+'" selected>Réglage actuel (z = '+String(v).replace(".",",")+')</option>')+o.map(([z,p])=>'<option value="'+z+'"'+(Math.abs(z-v)<0.005?" selected":"")+'>Éviter la rupture '+p+'\u00a0% du temps (niveau de service, z = '+String(z).replace(".",",")+')</option>').join("")+'</select>'};
 /* Ouvrir les Réglages directement sur une rubrique */
-function regVa(k){S.view="coordo";S.ctab="reg";S.regSel=k;const o=new Set(ls.get("regOpen",[]));o.add(k);ls.set("regOpen",[...o]);window.scrollTo(0,0);render(true);setTimeout(()=>{const t=[...document.querySelectorAll("#app h2")].find(x=>x.textContent.trim()===k);t&&t.scrollIntoView({block:"start",behavior:"smooth"})},120)}
+function regVa(k){S.view="coordo";S.ctab="reg";S.regSel=k;S.regQ="";{const g=regG(k);S.regGrp=g>=0?String(g):""}const o=new Set(ls.get("regOpen",[]));o.add(k);ls.set("regOpen",[...o]);window.scrollTo(0,0);render(true);setTimeout(()=>{const t=[...document.querySelectorAll("#app h2")].find(x=>x.textContent.trim()===k);t&&t.scrollIntoView({block:"start",behavior:"smooth"})},120)}
+const REG_IC=['<circle cx="9" cy="8" r="3.2"/><path d="M3.5 19c.6-3.2 2.8-5 5.5-5s4.9 1.8 5.5 5"/><circle cx="17" cy="9" r="2.4"/><path d="M15.8 13.6c2.4.1 4 1.7 4.7 4.4"/>','<path d="M3 8.5 12 4l9 4.5-9 4.5z"/><path d="M3 8.5V16l9 4.5 9-4.5V8.5"/><path d="M12 13v7.5"/>','<path d="M3 4h2.5l2.2 10.5h10.6L20.5 7H7"/><circle cx="9.5" cy="19" r="1.5"/><circle cx="17" cy="19" r="1.5"/>','<path d="M4 6h10M18 6h2M4 12h4M12 12h8M4 18h12M20 18h0"/><circle cx="16" cy="6" r="2"/><circle cx="10" cy="12" r="2"/><circle cx="18" cy="18" r="2"/>','<path d="M6 3h9l4 4v14H6z"/><path d="M15 3v4h4"/><path d="M9 12h7M9 16h5"/>'];
+function regSearchBox(){return '<div class="search regsearch"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg><input id="regQ" type="search" autocomplete="off" placeholder="Chercher un réglage : fournisseur, code, kit…" value="'+esc(S.regQ||"")+'" aria-label="Chercher un réglage"></div>'}
+function regHelps(t){for(const el of [...t.content.children].filter(x=>x.classList&&x.classList.contains("panel"))){const h2=el.querySelector(":scope > h2");if(!h2)continue;const N=[...el.querySelectorAll(":scope > p.note")].filter((n,i)=>(i===0&&n===el.querySelector(":scope > p.note")&&n.textContent.length>90)||n.textContent.length>200);if(!N.length)continue;
+  N.forEach(n=>n.classList.add("regintro"));const q=document.createElement("button");q.className="qhelp";q.dataset.act="regHelp";q.setAttribute("aria-label","Explications");q.setAttribute("aria-expanded","false");q.textContent="?";h2.appendChild(q)}}
 function foldPanels(html){
-  const t=document.createElement("template");t.innerHTML=html;const open=new Set(ls.get("regOpen",[]));const wide=(window.innerWidth||0)>=1100;regOrder(t,!wide);
-  if(wide){const P=[...t.content.children].filter(el=>el.classList&&el.classList.contains("panel")&&el.querySelector(":scope > h2, :scope > summary h2")),key=el=>el.querySelector("h2").textContent.trim();
-    if(P.length>3){if(!S.regSel||!P.some(el=>key(el)===S.regSel))S.regSel=key(P[0]);
+  const t=document.createElement("template");t.innerHTML=html;const open=new Set(ls.get("regOpen",[]));const wide=(window.innerWidth||0)>=1100;regOrder(t,false);regHelps(t);
+  const isP=el=>el.classList&&el.classList.contains("panel")&&el.querySelector(":scope > h2, :scope > summary h2"),keyOf=el=>el.querySelector("h2").firstChild.textContent.trim();
+  const q=norm((S.regQ||"").trim()),hit=el=>q.length<2||norm(el.textContent).includes(q);
+  if(!wide){const P=[...t.content.children].filter(isP);
+    if(q.length>=2){P.forEach(el=>{if(!hit(el))el.remove()});const n=[...t.content.children].filter(isP).length;
+      const hd=document.createElement("div");hd.innerHTML=regSearchBox()+'<p class="note" style="margin:8px 2px 0">'+(n?n+" rubrique"+(n>1?"s":"")+" pour « "+esc(S.regQ.trim())+" »":"Rien trouvé pour « "+esc(S.regQ.trim())+" ».")+'</p>';t.content.prepend(...hd.childNodes);P.forEach(el=>{if(el.isConnected||el.parentNode)open.add(keyOf(el))})}
+    else if(S.regGrp==null||S.regGrp===""){const G=REG_GRP.map(()=>[]);P.forEach(el=>{const g=regG(keyOf(el));if(g>=0){G[g].push(keyOf(el));el.remove()}});
+      const hd=document.createElement("div");hd.innerHTML=regSearchBox();t.content.prepend(...hd.childNodes);
+      const tl=document.createElement("div");tl.className="regtiles";tl.innerHTML=REG_GRP.map(([n],i)=>G[i].length?'<button class="regtile" data-act="regGrp" data-v="'+i+'"><svg viewBox="0 0 24 24" aria-hidden="true">'+REG_IC[i]+'</svg><span><b>'+esc(n)+'</b><small>'+esc(G[i].join(" · "))+'</small></span><svg class="chev" viewBox="0 0 24 24" aria-hidden="true"><path d="m9 6 6 6-6 6"/></svg></button>':'').join("");t.content.appendChild(tl)}
+    else{const g=+S.regGrp;P.forEach(el=>{if(regG(keyOf(el))!==g)el.remove()});const rest=[...t.content.children].filter(isP);if(rest.length===1)open.add(keyOf(rest[0]));
+      const hd=document.createElement("div");hd.innerHTML='<div class="regback"><button class="btn small" data-act="regGrp" data-v="">← Réglages</button><h2>'+esc((REG_GRP[g]||[""])[0])+'</h2></div>';t.content.prepend(...hd.childNodes)}}
+  if(wide){const P=[...t.content.children].filter(el=>isP(el)&&hit(el)),key=keyOf;[...t.content.children].filter(el=>isP(el)&&!hit(el)).forEach(el=>el.remove());
+    {const hd=document.createElement("div");hd.innerHTML=regSearchBox();t.content.prepend(...hd.childNodes)}
+    if(P.length>3||(q.length>=2&&P.length)){if(!S.regSel||!P.some(el=>key(el)===S.regSel))S.regSel=key(P[0]);
       let g0=-2;const nav='<nav class="regnav" aria-label="Rubriques des réglages">'+P.map(el=>{const g=regG(key(el)),hd=g!==g0&&g>=0?'<p class="regh">'+esc(REG_GRP[g][0])+'</p>':'';g0=g;return hd+'<button data-act="regSel" data-v="'+esc(key(el))+'" aria-pressed="'+(key(el)===S.regSel)+'">'+esc(key(el))+'</button>'}).join("")+'</nav>';
       const cur=P.find(el=>key(el)===S.regSel);P.forEach(el=>el.remove());cur.style.marginTop="0";
       const top=document.createElement("div");top.appendChild(t.content);return top.innerHTML+'<div class="regwrap">'+nav+'<div class="regmain">'+cur.outerHTML+'</div></div>'}}
   [...t.content.children].forEach(el=>{
     if(!el.classList||!el.classList.contains("panel"))return;
     const h2=el.querySelector(":scope > h2");if(!h2)return;
-    const key=h2.textContent.trim(),d=document.createElement("details");
+    const key=h2.firstChild.textContent.trim(),d=document.createElement("details");
     d.className=el.className+" fold";const stl=el.getAttribute("style");if(stl)d.setAttribute("style",stl);d.dataset.fold=key;if(open.has(key))d.open=true;
     const sm=document.createElement("summary");sm.appendChild(h2);d.appendChild(sm);
     while(el.firstChild)d.appendChild(el.firstChild);el.replaceWith(d);
@@ -3322,8 +3391,9 @@ document.addEventListener("pointerdown",e=>{const sv=e.target.closest&&e.target.
 
 document.addEventListener("input",e=>{
   if(e.target.id==="q"){S.query=e.target.value;render()}
+  if(e.target.id==="regQ"){S.regQ=e.target.value;render()}
   if(e.target.id==="autreAsso"&&sheet)sheet.autre=e.target.value;
-  if(e.target.id==="qty"&&sheet){sheet.n=Math.round(num(e.target.value,0));const nt=document.getElementById("qtyNote");if(nt)nt.textContent=qtyNote(sheet.p,sheet.mode,sheet.n||0);if(sheet.confirm){sheet.confirm=false;const c=document.querySelector(".sheet .confirm");if(c)c.remove();const vb=document.querySelector('.sheet [data-act="valider"]');if(vb)vb.textContent="Valider"}}
+  if(e.target.id==="qty"&&sheet){sheet.n=Math.round(num(e.target.value,0));const nt=document.getElementById("qtyNote");if(nt)nt.textContent=sheet.p.kit?kitNote(sheet.p.kit,sheet.n||0):qtyNote(sheet.p,sheet.mode,sheet.n||0);if(sheet.confirm){sheet.confirm=false;const c=document.querySelector(".sheet .confirm");if(c)c.remove();const vb=document.querySelector('.sheet [data-act="valider"]');if(vb)vb.textContent="Valider"}}
   if(e.target.id==="pvPct"){const v=+e.target.value;const l=document.getElementById("pvPctV");if(l)l.textContent=(v>0?"+":"")+v+" %"}
 });
 document.addEventListener("submit",e=>{if(e.target.id==="codeForm"){e.preventDefault();checkCode()}});
@@ -3337,6 +3407,9 @@ document.addEventListener("change",async e=>{
   if(t.id==="chartProd"){S.chartProd=t.value;render()}
   if(t.id==="jfT"||t.id==="jfP"||t.id==="jfD"){S.jf[{jfT:"ty",jfP:"p",jfD:"per"}[t.id]]=t.value;S.jf.n=120;render()}
   if(t.id==="svY"){S.svy=t.value;render()}
+  if(t.id==="passM"){S.passMois=t.value;render()}
+  if(S.view==="coordo"&&S.ctab==="reg"&&!t.closest("#layer")&&t.type!=="file"){const pn=t.closest(".panel"),sb=pn&&pn.querySelector(REG_AUTO.map(x=>'[data-act="'+x+'"]').join(","));if(sb){S.quiet=Date.now();sb.click();savedHint()}}
+  if(t.classList&&t.classList.contains("kitf")){await saveConfig({kits:kitsFromForm()});savedHint()}
   if(t.id==="bpPct"){S.bp.pct=num(t.value,0);render()}if(t.id==="bpTr"){S.bp.trend=t.checked;render()}if(/^bpC-/.test(t.id)){S.bp.cat=S.bp.cat||{};S.bp.cat[t.id.slice(4)]=num(t.value,0);render()}
   if(t.id==="xR"){S.xr=t.value;if(S.xc===t.value)S.xc="aucune";render()}if(t.id==="xC"){S.xc=t.value;render()}if(t.id==="xM"){S.xm=t.value;render()}
   if(t.id==="pvProd"){S.prev.prod=t.value;S.prev.ov=null;render()}
@@ -3416,7 +3489,7 @@ document.addEventListener("click",async e=>{
     const salt=uid()+uid(),hash=await sha(salt+a);await write("set","secret/coordo",{salt,hash,t:Date.now()});ls.set("coordoKey",hash);S.unlockKey=hash;S.secret={salt,hash};toast("Code de l\'espace gestion enregistré");render();break}
   case "delCode":if(b.dataset.sure!=="1"){b.dataset.sure="1";b.textContent="Confirmer la suppression";break}await write("delete","secret/coordo");S.secret=null;toast("Code supprimé");render();break;
   case "lockDevice":try{localStorage.removeItem(NS+"coordoKey")}catch(_){}S.unlockKey=null;S.view="equipe";ls.set("view","equipe");toast("Espace gestion verrouillé sur cet appareil");render();break;
-  case "ctab":S.ctab=b.dataset.v;S.tabMore=false;render();break;
+  case "ctab":S.ctab=b.dataset.v;S.tabMore=false;if(S.ctab==="reg"){S.regGrp="";S.regQ=""}render();break;
   case "bilanExp":{const y=num(S.svyr,new Date().getFullYear()),D=bilanData(y),t="Matériel distribué en "+y,p=document.querySelector(".bilanp");
     openExport({titre:t,nom:"stockaarud-bilan-"+y,pdf:()=>bilanDoc(),csv:()=>tablesCsv(t,"",p?panelTables(p).filter(x=>!x.fmt||true):[]),texte:()=>t+"\n"+nfr(D.unites)+" unités distribuées en "+nfr(D.ms.length)+" sorties, "+D.refs+" références"+(D.cout>0?", coût estimé "+eur(D.cout):"")+".\n"+Object.entries(D.parCat).sort((a,b)=>b[1]-a[1]).map(([k,v])=>"- "+CATS[k]+" : "+nfr(v)+" u.").join("\n")+"\n\nEnvoyé depuis Stockaarud"});break}
   case "ecranGo":S.view="ecran";window.scrollTo(0,0);try{if(navigator.wakeLock)S.wake=await navigator.wakeLock.request("screen")}catch(err){}clearInterval(S.ecranT);S.ecranT=setInterval(()=>{if(S.view==="ecran")render();else clearInterval(S.ecranT)},30000);render();break;
@@ -3441,6 +3514,8 @@ document.addEventListener("click",async e=>{
   case "alCmd":S.ctab="cmd";S.tabMore=false;render(true);setTimeout(()=>{const i=document.getElementById("cq-"+id),r=i&&(i.closest(".prop")||i.closest("tr"));if(r){r.scrollIntoView({block:"center",behavior:"smooth"});r.classList.add("flash");setTimeout(()=>r.classList.remove("flash"),1800)}},60);break;
   case "alDon":S.view="equipe";ls.set("view","equipe");setActivite("__dep",0);render(true);setTimeout(()=>openPick(id),60);break;
   case "regSel":S.regSel=b.dataset.v;render();window.scrollTo(0,0);break;
+  case "regGrp":S.regGrp=b.dataset.v;S.regQ="";render(true);window.scrollTo(0,0);break;
+  case "regHelp":{e.preventDefault();e.stopPropagation();const pn=b.closest(".panel");if(!pn)break;const on=!pn.classList.contains("helpon");pn.classList.toggle("helpon",on);b.setAttribute("aria-expanded",on);if(on&&pn.tagName==="DETAILS")pn.open=true;break}
   case "cmdWhy":S.openD["cmd-"+id]=!S.openD["cmd-"+id];render();break;
   case "terrDel":if(b.dataset.sure!=="1"){b.dataset.sure="1";b.textContent="Confirmer";break}await write("delete","mouvements/"+id);toast("Saisie supprimée");render();break;
   case "affichePdf":openExport({titre:"Affiche QR code pour le local",nom:"stockaarud-affiche-qr",pdf:()=>afficheDoc()});break;
@@ -3478,6 +3553,11 @@ document.addEventListener("click",async e=>{
   case "histoDel":if(b.dataset.sure!=="1"){b.dataset.sure="1";b.textContent="Confirmer la suppression";break}{const L=S.mvts.filter(m=>m.histo).concat((S.terrain||[]).filter(m=>m.histo));for(const m of L)await write("delete","mouvements/"+m.id);toast("Historique importé supprimé");render();break}
   case "passModele":await download("stockaarud-passages-modele.csv",passModele(),"text/csv");break;
   case "passImpNo":S.passImp=null;render();break;
+  case "passMoisVoir":S.passMois=b.dataset.v;render();break;
+  case "passMoisOk":{const mo=val("passM");if(!/^\d{4}-\d{2}$/.test(mo)){toast("Choisis un mois");break}S.passMois=mo;const ids=activitesActives().map(a=>a.id).concat(["_tout"]);let n=0,tot=0;
+    for(const id of ids){const raw=(val("pm-"+id)||"").replace(/\s/g,""),q=raw===""?0:Math.round(num(raw,NaN));if(!(q>=0)){toast("Nombre non valide pour une activité");return}const pid="pas-mois-"+mo+"-"+id,had=passMoisVal(mo,id);
+      if(q>0){await write("set","mouvements/"+pid,{t:new Date(mo+"-01T00:00:02").getTime(),type:"passage",activite:id,qte:q,jour:mo+"-01",mois:mo,importe:true});n++;tot+=q}else if(had)await write("delete","mouvements/"+pid)}
+    toast(n?nfr(tot)+" passages enregistrés pour "+MOIS[+mo.slice(5)-1]+" "+mo.slice(0,4):"Mois vidé");render();break}
   case "passImpOk":{const I=S.passImp;if(!I||!I.rows)break;S.passImp=null;let n=0;for(const r of I.rows){await write("set","mouvements/pas-imp-"+r.jour+"-"+r.act,{t:new Date(r.jour+"T00:00:01").getTime(),type:"passage",activite:r.act,qte:r.n,jour:r.jour,importe:true});n++}toast(n+" chiffre"+(n>1?"s":"")+" de passages enregistré"+(n>1?"s":""));render();break}
   case "terrTog":{const k=b.dataset.v,t={...(cfg().terrain||{})};t[k]=!t[k];await saveConfig({terrain:t});break}
   case "xSwap":if((S.xc||"mois")!=="aucune"){const r0=S.xr||"categorie";S.xr=S.xc||"mois";S.xc=r0;render()}break;
@@ -3491,6 +3571,11 @@ document.addEventListener("click",async e=>{
   case "actClose":S.pendPick=null;if(sheet){drawSheet();focusDialog()}else{$("#layer").innerHTML="";restoreFocus()}break;
   case "vueLieu":S.vueLieu=id||null;render();break;
   case "pick":openPick(id);break;
+  case "pickKit":openKit(id);break;
+  case "kitAdd":{const K=kitsFromForm();K.push({id:"k"+uid().slice(0,8),nom:"Kit "+(K.length+1),items:[{p:"",q:1}],actif:true});await saveConfig({kits:K});break}
+  case "kitDel":{if(b.dataset.ok!=="1"){b.dataset.ok="1";b.textContent="Sûr ? Toucher encore";break}await saveConfig({kits:kitsFromForm().filter(k=>k.id!==id)});toast("Kit supprimé");break}
+  case "kitAddItem":{const K=kitsFromForm(),k=K.find(x=>x.id===id);if(k){k.items=(k.items||[]).concat([{p:"",q:1}]);await saveConfig({kits:K})}break}
+  case "kitDelItem":{const K=kitsFromForm(),k=K.find(x=>x.id===id);if(k){k.items.splice(+b.dataset.v,1);await saveConfig({kits:K})}break}
   case "closeSheet":case "cancelSheet":closeSheet();restoreFocus();break;
   case "mesRet":{const e=mesGet().find(x=>x.id===id);if(!e)break;lastFocus=document.activeElement;{const t=$(".toast");if(t)t.remove()}retS={id,n:Math.min(e.qte,1)};drawRet();setTimeout(focusDialog,30);break}
   case "retPlus":case "retMinus":case "retAll":{const e=retS&&mesGet().find(x=>x.id===retS.id);if(!e)break;const c=Math.round(num(val("retQ"),retS.n));retS.n=a==="retAll"?e.qte:Math.min(e.qte,Math.max(1,c+(a==="retPlus"?1:-1)));drawRet();break}
