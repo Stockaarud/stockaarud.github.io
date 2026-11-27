@@ -147,5 +147,26 @@
     bar.querySelector(".dm-reset").addEventListener("click", () => { if (confirm("Remettre la démo à zéro ? Ce que tu as saisi sera effacé.")) reset(); });
     document.body.prepend(bar);
   }
-  if (document.body) banner(); else document.addEventListener("DOMContentLoaded", banner);
+  /* Démo intégrée dans une page du site (?embed=1) : pas de bandeau, la page qui l'accueille pilote le rôle et la remise à zéro */
+  const EMBED = /[?&]embed=1\b/.test(location.search) && window.parent !== window;
+  if (EMBED) {
+    const tell = (m) => { try { window.parent.postMessage(Object.assign({ stk: "demo" }, m), location.origin); } catch (e) {} };
+    window.addEventListener("message", (e) => {
+      if (e.origin !== location.origin || !e.data || e.data.stk !== "demo") return;
+      if (e.data.cmd === "role" && (e.data.v === "equipe" || e.data.v === "coordo")) {
+        if (e.data.v === "coordo" && role !== "coordo") { flushNow(); localStorage.setItem(ROLE_KEY, e.data.v); try { sessionStorage.setItem("stk-embed-gestion", e.data.v === "coordo" ? "1" : ""); } catch (er) {} location.reload(); }
+        else if (e.data.v === "coordo") gestion();
+        else { const t = document.querySelector('[data-act="view"][data-v="equipe"]'); if (t) t.click(); }
+        setTimeout(() => tell({ ready: true, role, view: document.querySelector('[data-act="view"][data-v="equipe"]') ? "coordo" : "equipe" }), 400);
+      }
+      if (e.data.cmd === "reset") reset();
+      if (e.data.cmd === "hello") tell({ ready: true, role, view: document.querySelector('[data-act="view"][data-v="equipe"]') ? "coordo" : "equipe" });
+    });
+    /* Ouvre le côté responsable stock (bouton « Gestion ») dès qu'il est là */
+    function gestion(n) { const g = document.querySelector('[data-act="goCoordo"]'); if (g) { g.click(); return; } if ((n || 0) < 50) setTimeout(() => gestion((n || 0) + 1), 100); }
+    let go = false; try { go = sessionStorage.getItem("stk-embed-gestion") === "1"; sessionStorage.removeItem("stk-embed-gestion"); } catch (er) {}
+    if (go && role === "coordo") window.addEventListener("load", () => setTimeout(gestion, 300));
+    tell({ ready: true, role, view: go && role === "coordo" ? "coordo" : "equipe" });
+    document.addEventListener("click", (e) => { if (e.target.closest && e.target.closest('[data-act="goCoordo"],[data-act="view"]')) setTimeout(() => tell({ ready: true, role, view: document.querySelector('[data-act="view"][data-v="equipe"]') ? "coordo" : "equipe" }), 300); }, true);
+  } else if (document.body) banner(); else document.addEventListener("DOMContentLoaded", banner);
 })();

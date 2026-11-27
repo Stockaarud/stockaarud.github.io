@@ -61,7 +61,7 @@
         <p class="lead">Une application de gestion de stock dédiée aux CAARUD, simple et modulable.</p>
         <div class="actions">
           <a class="btn btn--primary" href="guide.html#installation">Installer pour mon CAARUD</a>
-          <a class="btn btn--secondary" href="demo/" target="_blank" rel="noopener">Essayer la démo</a>
+          <a class="btn btn--secondary" href="#essayer">Essayer la démo</a>
         </div>
         <p class="sheet sheet--fluoro tag-free" style="--r: -2deg"><span>Gratuit</span> Sans abonnement, sans licence à payer.</p>
       </div>
@@ -87,6 +87,35 @@
           <button class="film-play" type="button" aria-label="Lire le film de présentation, 1 minute 49"><span class="film-tri" aria-hidden="true"></span><span class="film-dur">1 min 49</span></button>
         </div>
       </figure>
+    </div>
+  </section>
+
+  <section class="section live" id="essayer" aria-labelledby="essayer-titre">
+    <div class="container live-grid">
+      <div class="live-text">
+        <h2 id="essayer-titre">Essayez-la ici</h2>
+        <p class="lead">L’appli tourne pour de vrai dans ce téléphone, avec un CAARUD fictif. Rien à installer, rien n’est envoyé.</p>
+        <ol class="live-steps">
+          <li>Touchez une activité, puis un produit.</li>
+          <li>Ajoutez la quantité, puis <b>Valider</b>.</li>
+          <li>Touchez « Responsable stock » : alertes, commandes, statistiques, bilan.</li>
+        </ol>
+        <div class="live-ctrl">
+          <div class="live-seg" role="group" aria-label="Voir l’appli comme">
+            <button type="button" data-role="equipe" aria-pressed="true">Équipe</button>
+            <button type="button" data-role="coordo" aria-pressed="false">Responsable stock</button>
+          </div>
+          <button type="button" class="live-reset">Remettre à zéro</button>
+          <a class="live-full" href="demo/" target="_blank" rel="noopener">Plein écran ↗</a>
+        </div>
+      </div>
+      <div class="live-phone" aria-label="Démo de l’appli Stockaarud">
+        <iframe class="live-frame" title="Démo de Stockaarud, CAARUD fictif" data-src="demo/?embed=1" loading="lazy" hidden></iframe>
+        <div class="live-cover">
+          <img src="img/k3.jpg?v=11" width="780" height="1688" alt="" loading="lazy">
+          <a class="btn btn--primary live-open" href="demo/" target="_blank" rel="noopener">Essayer en plein écran</a>
+        </div>
+      </div>
     </div>
   </section>
 
@@ -253,6 +282,18 @@ document.querySelectorAll('form[data-endpoint]').forEach((form) => {
       .finally(() => { btn.disabled = false; });
   });
 });
+</script>
+<script>
+/* Démo en direct : chargée seulement sur grand écran, quand la section approche */
+(function(){const ph=document.querySelector('.live-phone');if(!ph)return;const fr=ph.querySelector('.live-frame'),seg=[...document.querySelectorAll('.live-seg [data-role]')],big=matchMedia('(min-width: 900px)');let on=false;
+ const send=m=>{try{fr.contentWindow.postMessage(Object.assign({stk:'demo'},m),location.origin)}catch(e){}};
+ const mark=r=>seg.forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.role===r)));
+ function load(){if(on||!big.matches)return;on=true;fr.src=fr.dataset.src;fr.hidden=false;fr.addEventListener('load',()=>ph.classList.add('is-live'))}
+ window.addEventListener('message',e=>{if(e.origin===location.origin&&e.data&&e.data.stk==='demo'&&e.data.ready){mark(e.data.view||'equipe');ph.classList.add('is-live')}});
+ seg.forEach(b=>b.addEventListener('click',()=>{if(!on)return window.open('demo/','_blank');mark(b.dataset.role);send({cmd:'role',v:b.dataset.role})}));
+ document.querySelector('.live-reset').addEventListener('click',e=>{if(!on)return;const b=e.currentTarget;if(b.dataset.ok!=='1'){b.dataset.ok='1';b.textContent='Sûr ? Toucher encore';setTimeout(()=>{b.dataset.ok='';b.textContent='Remettre à zéro'},4000);return}b.dataset.ok='';b.textContent='Remettre à zéro';mark('equipe');send({cmd:'reset'})});
+ if('IntersectionObserver'in window){const io=new IntersectionObserver(es=>{if(es.some(x=>x.isIntersecting)){load();if(on)io.disconnect()}},{rootMargin:'600px 0px'});io.observe(ph);big.addEventListener('change',()=>{if(big.matches){io.disconnect();io.observe(ph)}})}else load();
+})();
 </script>
 <script>window.hallmarkSlots = (m) => { for (const [k, v] of Object.entries(m)) { const s = document.querySelector(`[data-slot="${k}"]`); if (!s) continue; const im = new Image(); im.src = typeof v === 'string' ? v : v.src; im.alt = (typeof v === 'object' && v.alt) || s.dataset.alt || ''; s.querySelectorAll(':scope > img').forEach((o) => o.remove()); s.prepend(im); } };
 document.querySelectorAll('[data-slot] img').forEach((i) => { if (i.complete && !i.naturalWidth) i.remove(); else i.addEventListener('error', () => i.remove(), { once: true }); });</script>

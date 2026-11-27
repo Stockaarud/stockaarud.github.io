@@ -627,3 +627,33 @@ figcaption { text-wrap: pretty; }
 .toc a, main li > a:only-child { display: inline-block; padding-block: 10px; }
 .nav .wordmark { padding-block: 5px; }
 main img:not([src*="logo"]):not([src*="wordmark"]) { outline: 1px solid oklch(0 0 0 / 0.1); outline-offset: -1px; }
+
+/* Démo en direct dans un téléphone */
+.live { padding-block: var(--space-2xl); }
+.live-grid { display: grid; grid-template-columns: minmax(0, 6fr) auto; gap: var(--space-3xl); align-items: center; }
+.live-text { display: grid; gap: var(--space-lg); align-content: center; }
+.live-text .lead { max-width: 38ch; margin: 0; }
+.live-steps { margin: 0; padding-left: 1.4em; display: grid; gap: var(--space-xs); max-width: 44ch; }
+.live-ctrl { display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-md) var(--space-lg); }
+.live-seg { display: inline-flex; box-shadow: 4px 4px 0 var(--color-ink); background: var(--color-paper-3); }
+.live-seg button { font: inherit; font-weight: 700; font-size: var(--text-md); min-height: 48px; padding: 0 var(--space-md); border: 0; background: transparent; color: var(--color-ink); cursor: pointer; }
+.live-seg button[aria-pressed="true"] { background: var(--color-ink); color: var(--color-paper-3); }
+.live-seg button:focus-visible, .live-reset:focus-visible { outline: 2px solid var(--color-focus); outline-offset: 3px; }
+.live-reset { font: inherit; font-size: var(--text-md); background: none; border: 0; padding: var(--space-xs) 0; text-decoration: underline; cursor: pointer; color: var(--color-ink); min-height: 44px; }
+.live-full { font-size: var(--text-md); font-weight: 700; }
+.live-phone { position: relative; width: 384px; height: 790px; border: 12px solid var(--color-ink); border-radius: 48px; background: var(--color-ink); box-shadow: 10px 12px 0 color-mix(in oklab, var(--color-ink) 18%, transparent); overflow: hidden; rotate: 1.2deg; }
+.live-frame { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; border-radius: 36px; background: #f4f1ea; opacity: 0; transition: opacity .3s; }
+.live-phone.is-live .live-frame { opacity: 1; }
+.live-cover { position: absolute; inset: 0; border-radius: 36px; overflow: hidden; display: grid; place-items: end center; padding-bottom: var(--space-xl); }
+.live-cover img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: top; }
+.live-open { position: relative; z-index: 1; display: none; }
+.live-phone.is-live .live-cover { visibility: hidden; }
+@media (max-width: 899px) {
+  .live-grid { grid-template-columns: minmax(0, 1fr); gap: var(--space-xl); }
+  .live-phone { justify-self: center; width: min(300px, 80vw); height: auto; aspect-ratio: 384 / 790; rotate: 0deg; }
+  .live-frame { display: none; }
+  .live-open { display: inline-flex; }
+  .live-cover::after { content: ""; position: absolute; inset: 0; background: linear-gradient(transparent 45%, color-mix(in oklab, var(--color-ink) 55%, transparent)); }
+  .live-seg, .live-reset { display: none; }
+}
+@media (prefers-reduced-motion: reduce) { .live-frame { transition: none; } }
