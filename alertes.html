@@ -85,6 +85,23 @@ document.addEventListener('keydown',(e)=>{if(e.key!=='Escape')return;const m=doc
   const etat = q.get('etat'), tk = (q.get('stop') || '').replace(/[^a-zA-Z0-9]/g, '');
   if (etat === 'confirme') dire('Adresse confirmée', 'Vous recevrez maintenant les alertes de stock à cette adresse. La fréquence se règle dans l’appli : Réglages, Alertes par e-mail.');
   else if (etat === 'inconnu') dire('Lien périmé', 'Ce lien de confirmation ne correspond plus à une inscription. Dans l’appli, Réglages, Alertes par e-mail, enregistrez à nouveau l’adresse pour recevoir un nouveau lien.');
+  else if (q.get('confirmer')) {
+    const ck = (q.get('confirmer') || '').replace(/[^a-zA-Z0-9]/g, ''), cb = (q.get('b') || '').replace(/[^a-z0-9]/g, '');
+    dire('Confirmer cette adresse ?', 'Vous recevrez les alertes de stock de votre CAARUD à cette adresse. Si vous n’avez rien demandé, fermez simplement cette page.');
+    const b = $('stop'); b.textContent = 'Oui, je veux recevoir les alertes'; $('act').hidden = false; $('app').hidden = true;
+    const non = $('act').querySelector('a'); if (non) non.hidden = true;
+    b.addEventListener('click', async () => {
+      b.disabled = true;
+      try {
+        const r = await fetch(RELAIS, { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ action: 'confirmer', token: ck, ref: cb }) });
+        const j = r.ok ? await r.json() : null; if (!j) throw 0;
+        $('act').hidden = true; $('app').hidden = false;
+        if (j.etat === 'confirme') dire('Adresse confirmée', 'Vous recevrez maintenant les alertes de stock à cette adresse. La fréquence se règle dans l’appli : Réglages, Alertes par e-mail.');
+        else dire('Lien périmé', 'Ce lien de confirmation ne correspond plus à une inscription. Dans l’appli, Réglages, Alertes par e-mail, enregistrez à nouveau l’adresse pour recevoir un nouveau lien.');
+      } catch (e) { b.disabled = false; dire('Ça n’a pas marché', 'Vérifiez votre connexion, puis touchez à nouveau le bouton.'); }
+      $('titre').focus();
+    });
+  }
   else if (tk) {
     dire('Arrêter les alertes ?', 'Cette adresse ne recevra plus aucun mail de Stockaarud. Pour seulement réduire la fréquence, passez plutôt par l’appli : Réglages, Alertes par e-mail.');
     $('act').hidden = false; $('app').hidden = true;
