@@ -2,6 +2,7 @@
 <html lang="fr">
 <head>
 <meta charset="utf-8">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; font-src 'self' data:; img-src 'self' data: blob: https:; media-src 'self' blob: data:; connect-src 'self'; worker-src 'self' blob:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'none'">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#1F4D3A">
 <meta name="description" content="Stockaarud : gestion des stocks de matériel de réduction des risques pour les CAARUD.">
@@ -19,13 +20,14 @@
 <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="Stockaarud">
-<style>:root{color-scheme:light;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0;font:14px system-ui,-apple-system,sans-serif}img{max-width:100%}[hidden]{display:none!important}</style>
+<style>
+@font-face{font-family:"Archivo";font-weight:100 900;font-stretch:62% 125%;font-display:swap;src:url(../fonts/archivo.woff2) format("woff2")}
+@font-face{font-family:"Atkinson Hyperlegible";font-weight:400;font-display:swap;src:url(../fonts/atkinson-hyperlegible-latin-400-normal.woff2) format("woff2")}
+@font-face{font-family:"Atkinson Hyperlegible";font-weight:700;font-display:swap;src:url(../fonts/atkinson-hyperlegible-latin-700-normal.woff2) format("woff2")}
+:root{color-scheme:light;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0;font:14px system-ui,-apple-system,sans-serif}img{max-width:100%}[hidden]{display:none!important}</style>
 <meta name="robots" content="noindex">
 <title>Démo · Stockaarud</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@100,600;100,800;112,800&family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&display=swap" onload="this.onload=null;this.rel='stylesheet'">
-<noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@100,600;100,800;112,800&family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&display=swap"></noscript>
+<link rel="preload" as="font" type="font/woff2" href="../fonts/atkinson-hyperlegible-latin-400-normal.woff2" crossorigin>
 <style>
 /* Layout : appli outil, une colonne étroite et rapide pour l'équipe, plus large pour le coordo */
 :root{
@@ -1906,13 +1908,14 @@ async function directionPdf(){
   h2("Quelles données, et où");
   li("Uniquement du matériel : stocks, sorties, commandes, fournisseurs.","Aucune donnée nominative sur les personnes accueillies, aucune donnée de santé.");
   li("Une base propre au CAARUD, que personne d'autre ne voit,","hébergée par Supabase en Europe. Chaque CAARUD a la sienne : rien n'est mis en commun.");
-  li("Seuls les membres invités y accèdent.","L'équipe entre avec un code d'invitation (lien ou QR code) qui ne donne que les droits de l'équipe ; celui d'un responsable stock expire au bout de 7 jours et ne sert qu'une fois. Le responsable stock peut désactiver les codes et couper les accès de l'équipe à tout moment.");
+  li("Seuls les membres invités y accèdent.","L'équipe entre avec un code d'invitation (lien ou QR code) qui ne donne que les droits de l'équipe ; celui d'un responsable stock expire au bout de 7 jours et ne sert qu'une fois. Les accès se coupent à tout moment.");
   li("Réversible à tout moment :","sauvegarde complète et exports en tableur, en un clic. L'appli rappelle chaque mois de télécharger une sauvegarde, car l'offre gratuite n'en garde pas.");
+  li("Très peu de données personnelles, à inscrire au registre des traitements :","les adresses e-mail qui reçoivent les alertes, et des traces techniques des appareils de l'équipe (adresse IP, heure des saisies). Sous-traitants : Supabase (base, Union européenne), GitHub (hébergement de l'appli), Brevo (envoi des alertes).");
   y+=2;h2("Audits de sécurité effectués (novembre 2026)");
-  li("Deux audits complets de l'appli et de la base de données :","lecture de tout le code, analyse automatique de Supabase, et tests de chaque rôle (équipe, responsable stock, personne extérieure) directement sur la base.");
-  li("Failles corrigées à la suite de ces audits :","droits vérifiés par la base elle-même pour chaque rôle (l'équipe ne peut modifier que ses propres saisies, sans toucher aux réglages, au catalogue ni aux commandes, et ne peut pas saisir de quantités aberrantes) ; codes de responsable stock qui expirent et ne servent qu'une fois ; protection contre l'injection de code dans l'affichage ; bibliothèques hébergées avec l'appli, sans dépendre de sites tiers ; politique de sécurité du contenu (CSP) ; alertes par e-mail réservées aux membres de la base, avec un plafond d'envois.");
-  li("Un audit dédié à l'installation automatique (grilles OWASP et CWE) :","autorisation liée à l'appareil qui l'a demandée, limite du nombre de demandes, autorisation chiffrée puis effacée dès la base prête. Seule la clé publique de la base est conservée, jamais une clé secrète.");
-  li("Limites connues et assumées :","l'appli garde une copie du stock sur chaque téléphone, pour marcher sans réseau : un téléphone perdu y donne accès tant que son accès n'est pas retiré. Les photos de produits sont publiques (aucune donnée sensible).");
+  li("Trois audits complets de l'appli et de la base de données :","lecture du code, tests de chaque rôle sur la base, attaques rejouées après correction.");
+  li("Failles corrigées à la suite de ces audits :","droits vérifiés par la base elle-même pour chaque rôle (l'équipe ne modifie que ses propres saisies, sans toucher aux réglages ni au catalogue) ; codes de responsable stock qui expirent et ne servent qu'une fois ; protection contre l'injection de code dans l'affichage ; aucune dépendance à des sites tiers ; alertes par e-mail réservées aux membres de la base, avec un plafond d'envois ; essais de code limités ; taille et nombre de saisies bornés.");
+  li("Un audit dédié à l'installation automatique (grilles OWASP et CWE) :","autorisation liée à l'appareil, chiffrée puis effacée dès la base prête. Jamais de clé secrète conservée.");
+  li("Limites connues et assumées :","une copie du stock reste sur chaque téléphone, pour marcher sans réseau : un téléphone perdu y donne accès tant que son accès n'est pas retiré. Le service commun qui envoie les alertes voit passer le nom du CAARUD, les noms de produits et les adresses d'alerte. La sécurité de l'ensemble dépend du compte qui publie l'appli.");
   p("Ces audits ont été menés par le concepteur de l'appli, avec l'aide d'un assistant d'intelligence artificielle. Ils ne remplacent pas un audit par un prestataire indépendant.",{c:M,s:10,gap:4});
   place(24);y+=2;doc.setFillColor(242,245,243);doc.roundedRect(X,y,Wd,18,3,3,"F");doc.setFillColor(...Y);doc.rect(X,y,2.5,18,"F");
   doc.setFont("helvetica","bold");doc.setFontSize(11);doc.setTextColor(...K);doc.text("Voir par soi-même",X+7,y+7);doc.setFont("helvetica","normal");doc.setTextColor(...M);doc.text("Démo avec un CAARUD fictif : stockaarud.github.io/demo  ·  Guide : stockaarud.github.io",X+7,y+13);
